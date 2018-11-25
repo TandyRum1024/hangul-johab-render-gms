@@ -1,0 +1,36 @@
+// 2018-11-26 00:57:13
+#event create
+hj_init();
+
+#event draw
+
+hj_set_center();
+
+global.hangulExternalAscii = false;
+hj_draw(room_width / 2, room_height / 2 - 300, "똠방각하", $E2F7FF, 1);
+hj_draw(room_width / 2, room_height / 2 - 200, chr(137) + "가나다라마바사\n약약약약약\nㄱㄱㄴㄴ ㅁㄴㅇㄹ ㅎㅅㅁ5\n다음줄은 >>\\n<< 로" + chr(133) + chr(136), $4400FF, 1);
+hj_draw(room_width / 2, room_height / 2 - 100, chr(1) + "모두들 11월 11일에 맥도날드[TM]에서\n포트나이트 버거[TM]를 주문해보자.\n점원들의 표정이 압권일거야!" + chr(134), $8BE714, 1);
+
+global.hangulExternalAscii = true;
+hj_draw(room_width / 2, room_height / 2 - 10, "[별도의 ASCII 스프라이트 폰트 사용 예:]", $E2F7FF, 1);
+hj_draw(room_width / 2, room_height / 2 + 70, "소방차는 손목 스냅으로 부수는거라고, BOY" + chr(11) + "\nABCEDFG HIJKLMNOP 1234567890\nA quick brown fox died\nYou have died of Dysentery.", $E2F7FF, 1);
+
+var steamed_hams = "Oh egads, my roast is ruined! But what if...\nI were to purchase fast food\nand disguise it as my own cooking?\nOh ho ho ho ho... delightfully devilish, Seymour!";
+hj_draw(room_width / 2, room_height / 2 + 240, steamed_hams, $00DDFF, 1);
+
+/*
+hj_draw(room_width / 2, room_height / 2 - 60, "이것은 한글 테스트입니드아ㅏㅏㅏㅐㅐㅑㅑㅑㅠㅡㅜㅠㅜ\nㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ\n", $00DDFF, 1, 0);
+hj_draw(room_width / 2 + 2, room_height / 2 + 2, chr(132) + "댕댕이 포-잉" + chr(136), $262526, 1, 12);
+hj_draw(room_width / 2, room_height / 2, chr(132) + "댕댕이 포-잉" + chr(136), $E2F7FF, 1, 12);
+// var asciiTest = "";
+// for (var i=0; i<=128; i++)
+// {
+//     asciiTest += chr(i);
+//     if (i % 8 == 0)
+//         asciiTest += '\n';
+// }
+// hj_draw(room_width / 2, room_height / 2 - 100, asciiTest, $00DDFF, 1, 0);
+hj_draw(room_width / 2, room_height / 2 + 80, "Hello world!\nA quick brown slavic ruzki\nJumps over the old man sitting\n1234567890", $00DDFF, 1, 0);
+*/
+
+hj_set_topleft();
