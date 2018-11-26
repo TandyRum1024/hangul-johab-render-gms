@@ -3,7 +3,7 @@
   <name>johabBoy</name>
   <version>1.0.0</version>
   <packageID></packageID>
-  <ProductID>F79C97955FD1AF4686EB4EF4EF90F0DB</ProductID>
+  <ProductID>ACBD3CFF4E539AD869A0E8E3B4B022DD</ProductID>
   <date>26/11/18</date>
   <license>Free to use, also for commercial games.</license>
   <description></description>
@@ -30,9 +30,9 @@
   </ConfigOptions>
   <androidPermissions/>
   <IncludedResources>
-    <Resource>Scripts\hj_init</Resource>
     <Resource>Sprites\sprYayoC64</Resource>
     <Resource>Sprites\sprHangul24</Resource>
+    <Resource>Scripts\hj_init</Resource>
   </IncludedResources>
   <files/>
 </extension>

@@ -174,7 +174,7 @@ var beolOffset;
 
 var lineWidth = hj_get_width_line(str);
 var lineHeight = hj_get_height(str);
-var offX, offY, tX, tY;
+var offX = 0, offY = 0, tX = 0, tY = 0;
 
 // Calc font offset via align
 if (halign == 1)
