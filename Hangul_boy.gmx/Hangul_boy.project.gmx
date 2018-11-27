@@ -11,6 +11,7 @@
     <sprite>sprites\hangul_joa_yo</sprite>
     <sprite>sprites\sprHangul24</sprite>
     <sprite>sprites\sprYayoC64</sprite>
+    <sprite>sprites\sprAnotherFont</sprite>
   </sprites>
   <backgrounds name="background"/>
   <paths name="paths"/>
