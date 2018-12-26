@@ -1,0 +1,55 @@
+// 2018-12-15 01:56:35
+/*
+    HANGUL
+    ===========
+*/
+show_debug_message("UPDATING");
+
+fntTexWid = cellSize * cellWid;
+fntTexHei = cellSize * cellHei;
+
+if (!surface_exists(fntTex))
+    fntTex = surface_create(fntTexWid, fntTexHei);
+else
+    surface_resize(fntTex, fntTexWid, fntTexHei);
+
+surface_set_target(fntTex);
+draw_clear(0);
+
+for (var X=0; X<=cellWid; X++)
+{
+    for (var Y=0; Y<=cellHei; Y++)
+    {
+        iui_rect(X * cellSize, 0, 1, fntTexHei, COL.HIGHLIGHT);
+        iui_rect(0, Y * cellSize, fntTexWid, 1, COL.HIGHLIGHT);
+    }
+}
+
+// draw glyph
+draw_set_halign(1); draw_set_valign(1);
+// JAMO
+draw_set_font(fntJamo);
+var halfCell = cellSize * 0.5;
+
+var rowoffset = 5;
+var celloffset = 1;
+var chroffset = $3131; // JAMO - 0x3131-0x3163
+for (var i=0; i<50; i++)
+{
+    iui_label(((celloffset + i) % 28) * cellSize + halfCell, ((celloffset + i) div 28) * cellSize + rowoffset * cellSize + halfCell, chr(chroffset + i), c_white);
+}
+
+// ASCII
+draw_set_font(fntAscii);
+rowoffset = 7;
+celloffset = 0;
+chroffset = (cellHei - rowoffset) * cellWid; // ASCII - 0-127
+for (var i=0; i<chroffset; i++)
+{
+    iui_label(((celloffset + i) % 28) * cellSize + halfCell, ((celloffset + i) div 28) * cellSize + rowoffset * cellSize + halfCell, chr(i), c_white);
+}
+draw_set_halign(0); draw_set_valign(0);
+
+surface_reset_target();
+
+draw_set_font(fntOWO);

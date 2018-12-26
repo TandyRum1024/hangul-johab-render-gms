@@ -1,0 +1,27 @@
+// 2018-12-18 22:30:44
+///iui_init_vars()
+/**
+    Variables for elements...
+
+    ===================================================
+**/
+
+// ex ] When you use tab...
+// you do it like this in DRAW event,
+//  ui_tab_main_idx = iui_tab(TAB_X, 30, 140, 50, pack("IMnotGUI", "..."), ui_tab_main_idx, 2);
+
+// and declare the variable Here.
+//  ui_tab_main_idx = 0;
+
+tbFntSize = "12";
+tbCellSize = "16";
+
+// colorem boyy
+enum COL
+{
+    BASE = $151414,
+    HIGHLIGHT = $3ba6fd
+}
+
+// top bar
+uToolbarHei = 250;

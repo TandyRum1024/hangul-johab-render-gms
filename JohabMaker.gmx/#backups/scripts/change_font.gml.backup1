@@ -1,0 +1,18 @@
+// 2018-12-20 21:10:46
+///change_font(fontDir, size)
+/*
+    Exec this when you change the font
+*/
+
+fntPath = argument0;
+
+if (font_exists(fntTemp))
+    font_delete(fntTemp);
+
+// REMEMBER : font_add with .ttf will add """ALL""" the glyphs in the font >:
+fntTemp = font_add(fntPath, argument1, false, false, 0, $FF);
+fntName = font_get_fontname(fntTemp);
+fntSize = argument1;
+
+// reset_char_surfaces();
+updateFontSurf = true;

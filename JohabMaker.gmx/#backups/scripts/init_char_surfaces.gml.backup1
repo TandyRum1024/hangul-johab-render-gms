@@ -1,0 +1,18 @@
+// 2018-12-19 01:10:17
+///init_char_surfaces()
+var _surf = surface_create(charWid, charHei);
+
+sprite_delete(charData);
+for (var i=0; i<charLen; i++)
+{
+    if (sprite_exists(charSpr)) // exists
+    {
+        sprite_add_from_surface(charSpr, _surf, 0, 0, charWid, charHei, false, false);
+    }
+    else // nyet
+    {
+        charSpr = sprite_create_from_surface(_surf, 0, 0, charWid, charHei, false, false, 0, 0);
+    }
+}
+
+surface_free(_surf);

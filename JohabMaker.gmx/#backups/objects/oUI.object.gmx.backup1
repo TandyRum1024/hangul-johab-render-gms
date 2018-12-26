@@ -1,0 +1,576 @@
+// 2018-12-27 01:19:39
+#event create
+iui_init();
+iui_init_vars();
+ui_vars();
+
+hj_init();
+
+// WINDOSSSSASDSADSAdWdasd
+WIN_WID = room_width;
+WIN_HEI = room_height;
+
+UI_SCALE = 1;
+winTex = surface_create(WIN_WID, WIN_HEI);
+
+
+// font container
+fntTemp = -1; // temp font; includes ALL the glyphs in the font.
+fntName = "NONE";
+fntPath = "";
+fntSize = 16;
+
+// Glyph data
+gridWid = 28; // How much cell/characters in single row?
+gridHei = 11;
+charLen = gridWid * gridHei;
+charWid = 24; // Single Cell's size/unit... default = 16px monospaced
+charHei = 24;
+fntTex = surface_create(gridWid * charWid, gridHei * charHei);
+
+glyphSurf = surface_create(charWid, charHei); // surface for display
+glyphSurfOverlay = surface_create(charWid, charHei);
+charSelected = -1; // Currently selected character
+charData = ds_list_create(); // List of glyph's data
+// 0 - The glyph to get sample from (ex : '갈')
+// 1 - Glyph surface
+// 2 - Enable bounding box
+// 3~6 - The bounding box
+
+maskSurfA = surface_create(charWid, charHei); // temp surface for mask drawing
+maskSurfB = surface_create(charWid, charHei);
+
+enum CHAR
+{
+    SAMPLE = 0,
+    SURFACE,
+    BBOX,
+    X,
+    Y,
+    W,
+    H
+}
+
+updateFontSurf = false;
+USE_ASCII = true;
+
+// Font picker window
+winCropX = 42;
+winCropY = uToolbarHei + 42;
+winCropPanelSize = 200;
+winCropTexSize = 200;
+
+cropping = false;
+cropShow = false;
+cropX1 = 0;
+cropY1 = 0;
+cropX2 = 0;
+cropY2 = 0;
+
+// shashlik
+PEPPERONI_SECRET = false;
+PEPPIS = false;
+PEP_X = 0;
+PEP_Y = 0;
+
+// Camera stuff
+camVX = 0;
+camVY = 0;
+camX = (gridWid * charWid) >> 1;
+camY = (gridHei * charHei) >> 1;
+camZ = 1;
+
+// Reset camera
+view_wport[0] = WIN_WID;
+view_hport[0] = WIN_HEI;
+
+draw_set_font(fntOWO);
+// application_surface_draw_enable(false);
+// application_surface_enable(false);
+
+// build_char_surfaces();
+reset_char_surfaces();
+build_font_tex();
+// show_debug_overlay(true);
+
+#event step
+// debug
+if (PEPPERONI_SECRET)
+{
+    if (mouse_check_button_pressed(mb_left))
+    {
+        PEPPIS = true;
+        PEP_X = window_mouse_get_x();
+        PEP_Y = window_mouse_get_y();
+    }
+    else if (mouse_check_button_released(mb_left))
+        PEPPIS = false;
+}
+
+#section I/O, Camera
+iui_update_io();
+
+var moveH = keyboard_check(vk_right) - keyboard_check(vk_left);
+var moveV = keyboard_check(vk_down) - keyboard_check(vk_up);
+var moveW = keyboard_check(vk_add) - keyboard_check(vk_subtract);
+
+// camVX += 0.5 * moveH;
+// camVY += 1 * moveV;
+var mult = 2;
+if (keyboard_check(vk_shift))
+    mult = 4;
+else if (keyboard_check(vk_control))
+    mult = 1;
+
+camX += moveH * mult;
+camY += moveV * mult;
+camZ += (0.005 * moveW) * mult;
+camZ = clamp(camZ, 0.001, 2);
+
+var _vwid = WIN_WID * camZ;
+var _vhei = WIN_HEI * camZ;
+view_xview[0] = camX - (_vwid * 0.5);
+view_yview[0] = camY - (_vhei * 0.5);
+view_wview[0] = _vwid;
+view_hview[0] = _vhei;
+
+#section glyph selecting & cropping
+
+var panelOffX = 0;
+var panelOffY = 42;
+var zoomRatio = winCropPanelSize / charWid;
+var zoomWid = charWid * zoomRatio;
+var zoomHei = charHei * zoomRatio;
+// var data = charData[| charSelected];
+
+var lx = floor((window_mouse_get_x() - (winCropX + panelOffX)) / zoomRatio);
+var ly = floor((window_mouse_get_y() - (winCropY + panelOffY)) / zoomRatio);
+
+if (mouse_check_button_pressed(mb_left))
+{
+    if (lx >= 0 && lx <= charWid &&
+        ly >= 0 && ly <= charHei)
+    {
+        cropping = true;
+        cropShow = true;
+        
+        cropX1 = lx;
+        cropY1 = ly;
+        /*
+        data[@ CHAR.BBOX] = true;
+        data[@ CHAR.X] = lx;
+        data[@ CHAR.Y] = ly;
+        */
+    }
+    else
+    {
+        cropping = false;
+        cropShow = false;
+        
+        var _mx = floor(mouse_x / charWid);
+        var _my = floor(mouse_y / charHei);
+        
+        show_debug_message("MOUSE : [" + string(_mx) + ", " + string(_my) + "]");
+        
+        if (_mx >= 0 && _mx <= gridWid &&
+            _my >= 0 && _my <= gridHei)
+        {
+            charSelected = _mx + _my * gridWid;
+            
+            build_glyph_surface_preview(charSelected);
+            var _data = charData[| charSelected];
+            
+            // if (_data)
+            cropX1 = _data[@ CHAR.X];
+            cropY1 = _data[@ CHAR.Y];
+            cropX2 = cropX1 + _data[@ CHAR.W];
+            cropY2 = cropY1 + _data[@ CHAR.H];
+        }
+    }
+}
+else if (mouse_check_button_released(mb_left))
+{
+    if (cropping)
+    {
+        cropping = false;
+        
+        var _tmp;
+        if (cropX2 < cropX1)
+        {
+            _tmp = cropX2;
+            cropX2 = cropX1;
+            cropX1 = _tmp;
+        }
+        
+        if (cropY2 < cropY1)
+        {
+            _tmp = cropY2;
+            cropY2 = cropY1;
+            cropY1 = _tmp;
+        }
+    }
+}
+else if (mouse_check_button(mb_left) && cropping)
+{
+    // data[@ CHAR.W] = abs(data[@ CHAR.X] - lx);
+    // data[@ CHAR.H] = abs(data[@ CHAR.Y] - ly);
+    
+    cropX2 = lx;
+    cropY2 = ly;
+}
+
+#event step_begin Surface heartbeat & window size
+
+// "AAGAGAAAGAAAAGAGGGGAAAGAGAAAGAAGASOAOSSSOASSSOSSOSSSOSSSSOSISISISOSIDIOSMIO"
+// - Wilhelm willy wanker, 1829
+var _wid = window_get_width(), _hei = window_get_height();
+if ((_wid != 0 && _hei != 0) &&
+    _wid != WIN_WID || _hei != WIN_HEI)
+{
+    WIN_WID = _wid;
+    WIN_HEI = _hei;
+}
+    
+if (!surface_exists(glyphSurf))
+{
+    glyphSurf = surface_create(charWid, charHei);
+    build_glyph_surface(charSelected);
+}
+
+if (!surface_exists(glyphSurfOverlay))
+    glyphSurfOverlay = surface_create(charWid, charHei);
+
+if (!surface_exists(maskSurfA))
+    maskSurfA = surface_create(charWid, charHei);
+
+if (!surface_exists(maskSurfB))
+    maskSurfB = surface_create(charWid, charHei);
+
+if (!surface_exists(fntTex))
+{
+    fntTex = surface_create(WIN_WID, WIN_HEI);
+    // build_glyph_surface(charSelected);
+}
+
+#event other_game_end
+johab_die();
+
+#event draw
+
+if (updateFontSurf)
+{
+    updateFontSurf = false;
+    
+    show_debug_message("Building characters...");
+    build_char_surfaces(fntPath);
+    show_debug_message("Building font texture...");
+    build_font_tex();
+    
+    // reset preview glyph
+    build_glyph_surface_preview(charSelected);
+}
+
+#section update glyph overlay
+
+var panelOffX = 0;
+var panelOffY = 42;
+var zoomRatio = winCropPanelSize / charWid;
+var zoomWid = charWid * zoomRatio;
+var zoomHei = charHei * zoomRatio;
+
+var lx = floor((window_mouse_get_x() - (winCropX + panelOffX)) / zoomRatio);
+var ly = floor((window_mouse_get_y() - (winCropY + panelOffY)) / zoomRatio);
+
+surface_set_target(glyphSurfOverlay);
+draw_clear_alpha(0, 0);
+
+var data = charData[| charSelected];
+
+if (lx >= 0 && lx <= charWid &&
+    ly >= 0 && ly <= charHei)
+{
+    // draw pos
+    iui_rect(lx, ly, 1, 1, c_red);
+}
+
+// draw bbox if set
+var _col = c_blue;
+var _alpha = 0.8;
+
+if (cropShow)
+{
+    var bx = min(cropX1, cropX2), by = min(cropY1, cropY2), bw = abs(cropX2 - cropX1), bh = abs(cropY2 - cropY1);
+    iui_rect_alpha(bx, by, bw, 1, _col, _alpha);
+    iui_rect_alpha(bx, by, 1, bh, _col, _alpha);
+    iui_rect_alpha(bx, by + bh, bw, 1, _col, _alpha);
+    iui_rect_alpha(bx + bw, by, 1, bh + 1, _col, _alpha);
+}
+/*
+if (cropShow)
+{
+    _col = c_blue;
+    _alpha = 0.8;
+}
+else if (data[@ CHAR.BBOX])
+{
+    bx = data[@ CHAR.X];
+    by = data[@ CHAR.Y];
+    bw = data[@ CHAR.W];
+    bh = data[@ CHAR.H];
+    
+    iui_rect_alpha(bx, by, bw, 1, c_teal, 0.8);
+    iui_rect_alpha(bx, by, 1, bh, c_teal, 0.8);
+    iui_rect_alpha(bx, by + bh, bw, 1, c_teal, 0.8);
+    iui_rect_alpha(bx + bw, by, 1, bh + 1, c_teal, 0.8);
+}
+*/
+
+surface_reset_target();
+
+#section draw glyphs!!
+draw_clear(c_teal);
+
+/*
+for (var i=0; i<charLen; i++)
+{
+    draw_sprite(charSpr, i, i * sprite_get_width(charSpr), WIN_HEI * 0.5);
+}
+
+var _texW = surface_get_width(fntTex);
+var _texH = surface_get_height(fntTex);
+var _offX = WIN_WID * 0.5 - _texW * 0.5;
+var _offY = WIN_HEI * 0.5 - _texH * 0.5;
+*/
+
+// surface
+draw_surface(fntTex, 0, 0); // draw hangul stuff
+
+var _mx = floor(mouse_x / charWid) * charWid;
+var _my = floor(mouse_y / charHei) * charHei;
+
+iui_rect_alpha(_mx, _my, charWid, charHei, $FF00FF, 0.25);
+
+#event draw_gui
+var _generalmargin = 10, _bigmargin = 42;
+var _halfmargin = _bigmargin / 1.5;
+var _winhalfw = WIN_WID >> 1, _winhalfh = WIN_HEI >> 1;
+
+iui_begin();
+
+// draw_surface(fontSurf, WIN_WID * 0.5 - fontSurfWid * 0.5, WIN_HEI * 0.5 - fontSurfHei * 0.5); // draw hangul stuff
+
+/*
+    TOOL UI TOP
+    ============
+*/
+iui_align_center();
+// topper
+iui_rect(0, 0, WIN_WID, uToolbarHei, COL.WHITE);
+iui_rect(0, uToolbarHei, WIN_WID, 32, COL.BLUE);
+
+// tab
+uCurrentTab = ui_tab(0, 0, WIN_WID, 42, iui_pack("메인", "폰트", "설정", "잡다한거"), uCurrentTab);
+
+// msg??
+iui_label(_winhalfw, uToolbarHei + 16, uTitleMsg, COL.WHITE);
+iui_align_pop();
+
+// title
+// iui_align_push(fa_right, iui_valign);
+// iui_label(WIN_WID - _generalmargin, _generalmargin, "태보머신 - ZIK@2018 @=(^0^)ㄱ#태보해주십사이언스", COL.HIGHLIGHT);
+// iui_align_pop();
+
+// Load
+var btnLoad     = iui_button(_generalmargin + 500, (uToolbarHei >> 1) - _halfmargin - _halfmargin, 120, 42, "폰트 불러오기");
+var btnReload   = iui_button(_generalmargin + 500, (uToolbarHei >> 1) - _halfmargin + _halfmargin, 120, 42, "댕댕이#포-잉");
+
+// Attrib
+iui_align_push(fa_right, fa_middle);
+iui_label(_generalmargin + 140, (uToolbarHei >> 1) - 8, "글꼴 크기 : ", uTextCol);
+iui_label(_generalmargin + 140, (uToolbarHei >> 1) + 40, "격자 크기 : ", uTextCol);
+iui_label(_generalmargin + 320, (uToolbarHei >> 1) - 8, "ASCII : ", uTextCol);
+iui_label(_generalmargin + 240, (uToolbarHei >> 1) + 40, "x", uTextCol);
+tbFntSize = iui_textbox_numberonly(_generalmargin + 150, (uToolbarHei >> 1) - 24, 80, 32, string(tbFntSize), "FONTSIZE");
+tbCellWid = iui_textbox_numberonly(_generalmargin + 150, (uToolbarHei >> 1) + 24, 80, 32, string(tbCellWid), "CELLWID");
+tbCellHei = iui_textbox_numberonly(_generalmargin + 250, (uToolbarHei >> 1) + 24, 80, 32, string(tbCellHei), "CELLHEI");
+cbAscii = iui_checkbox(_generalmargin + 330, (uToolbarHei >> 1) - 16, 16, 16, cbAscii, "ASCII");
+USE_ASCII = cbAscii;
+
+// Glyph edit?
+var _winhalf = (winCropPanelSize * 0.5);
+var _wincx = winCropX + _winhalf;
+
+iui_align_center();
+iui_rect(winCropX, winCropY, winCropPanelSize, 42, COL.HIGHLIGHT); // top title
+iui_rect(winCropX, winCropY + 42, winCropPanelSize, winCropPanelSize + 50, COL.BASE);
+iui_label(_wincx, winCropY + 21, "글자 똑떼어먹기", uTextCol);
+var btnSet = iui_button(_wincx - (_winhalf * 0.7) - 35, winCropY + winCropPanelSize + 42, 70, 50, "좋다##BTNSET");
+var btnDel = iui_button(_wincx + (_winhalf * 0.7) - 35, winCropY + winCropPanelSize + 42, 70, 50, "삭제##BTNDEL");
+var btnAll = iui_button(_wincx - 35, winCropY + winCropPanelSize + 42, 70, 50, "줄#전체적용##BTNALL");
+iui_align_pop();
+
+// Draw glyph preview / crop panel view
+var _zoomRatio = winCropTexSize / charHei;
+var _zoomWid = charWid * _zoomRatio;
+var _zoomHei = charHei * _zoomRatio;
+var _data = charData[| charSelected];
+
+iui_rect(winCropX, winCropY + 42, _zoomWid, _zoomHei, 0);
+
+// Masked draw
+if (is_array(_data) && _data[@ CHAR.BBOX])
+{
+    var _bx = _data[@ CHAR.X], _by = _data[@ CHAR.Y], _bw = _data[@ CHAR.W] + 1, _bh = _data[@ CHAR.H] + 1;
+    
+    // Base surface, Tinted red
+    draw_surface_stretched_ext(glyphSurf, winCropX, winCropY + 42 + _winhalf - (_zoomHei * 0.5), _zoomWid, _zoomHei, c_red, 0.5);
+    
+    // Begin mask building
+    surface_set_target(maskSurfA);
+    draw_clear(c_black);
+    draw_set_blend_mode(bm_subtract);
+    iui_rect(_bx, _by, _bw, _bh, c_white); // mask
+    draw_set_blend_mode(bm_normal);
+    surface_reset_target();
+    
+    // start mask drawing
+    surface_set_target(maskSurfB);
+    draw_clear_alpha(0, 0);
+    draw_surface(glyphSurf, 0, 0); // In-mask surface, Normal
+    
+    // cutout
+    draw_set_blend_mode(bm_subtract);
+    draw_surface(maskSurfA, 0, 0);
+    draw_set_blend_mode(bm_normal);
+    surface_reset_target();
+    
+    
+    // draw result
+    draw_surface_stretched(maskSurfB, winCropX, winCropY + 42 + _winhalf - (_zoomHei * 0.5), _zoomWid, _zoomHei);
+}
+else // Normal draw -- With Mask
+{
+    draw_surface_stretched_ext(glyphSurf, winCropX, winCropY + 42 + _winhalf - (_zoomHei * 0.5), _zoomWid, _zoomHei, c_red, 0.5);
+}
+
+// overlay
+draw_surface_stretched(glyphSurfOverlay, winCropX, winCropY + 42 + _winhalf - (_zoomHei * 0.5), _zoomWid, _zoomHei);
+
+// iui_rect(winCropX, winCropY + 42, _zoomWid, _zoomHei, 0);
+// draw_surface_stretched(glyphSurf, winCropX + _winhalf - (_zoomWid * 0.5), winCropY + 42 + _winhalf - (_zoomHei * 0.5), _zoomWid, _zoomHei);
+// draw_surface_stretched(glyphSurfOverlay, winCropX + _winhalf - (_zoomWid * 0.5), winCropY + 42 + _winhalf - (_zoomHei * 0.5), _zoomWid, _zoomHei);
+
+iui_align_pop();
+
+iui_label(_generalmargin + _bigmargin, _generalmargin, "FONT : " + fntName, COL.HIGHLIGHT);
+iui_end();
+
+/*
+    BUTTONS
+*/
+if (btnLoad)
+{
+    var _path = get_open_filename("폰트 파일|*.ttf", "폰트를 선택해 주세요.");
+    
+    if (_path != "")
+    {
+        charWid = real(tbCellWid);
+        charHei = real(tbCellHei);
+        
+        show_debug_message("Path : " + _path);
+        update_font_attribs();
+        load_font(_path, real(tbFntSize));
+    }
+}
+
+if (btnReload)
+{
+    if (fntPath != "")
+    {
+        charWid = real(tbCellWid);
+        charHei = real(tbCellHei);
+        
+        update_font_attribs();
+        load_font(fntPath, real(tbFntSize));
+    }
+}
+
+if (btnSet)
+{
+    var _data = charData[| charSelected];
+    
+    if (is_array(_data))
+    {
+        _data[@ CHAR.BBOX] = true;
+        _data[@ CHAR.X] = min(cropX1, cropX2);
+        _data[@ CHAR.Y] = min(cropY1, cropY2);
+        _data[@ CHAR.W] = abs(cropX2 - cropX1);
+        _data[@ CHAR.H] = abs(cropY2 - cropY1);
+        charData[| charSelected] = _data;
+    }
+    
+    updateFontSurf = true;
+}
+
+if (btnAll)
+{
+    var _y = charSelected div gridWid;
+    
+    for (var i=0; i<gridWid; i++)
+    {
+        var _off = _y * gridWid + i;
+        var _data = charData[| _off];
+        
+        if (is_array(_data))
+        {
+            _data[@ CHAR.BBOX] = true;
+            _data[@ CHAR.X] = min(cropX1, cropX2);
+            _data[@ CHAR.Y] = min(cropY1, cropY2);
+            _data[@ CHAR.W] = abs(cropX2 - cropX1);
+            _data[@ CHAR.H] = abs(cropY2 - cropY1);
+            charData[| _off] = _data;
+        }
+    }
+    
+    updateFontSurf = true;
+}
+
+if (btnDel)
+{
+    cropping = false;
+    cropShow = false;
+    cropX1 = 0;
+    cropY1 = 0;
+    cropX2 = 0;
+    cropY2 = 0;
+    
+    var _data = charData[| charSelected];
+    if (is_array(_data))
+    {
+        _data[@ CHAR.BBOX] = false;
+        charData[| charSelected] = _data;
+    }
+    
+    updateFontSurf = true;
+}
+
+// oh wtf
+if (PEPPIS)
+{
+    var _maxx = max(window_mouse_get_x(), PEP_X), _minx = min(window_mouse_get_x(), PEP_X);
+    var _maxy = max(window_mouse_get_y(), PEP_Y), _miny = min(window_mouse_get_y(), PEP_Y);
+    var _dx = _maxx - _minx, _dy = _maxy - _miny;
+    
+    draw_rectangle_colour(_minx, _miny, _maxx, _maxy, COL.HIGHLIGHT, COL.HIGHLIGHT, COL.HIGHLIGHT, COL.HIGHLIGHT, true);
+    
+    draw_set_valign(fa_bottom);
+    iui_label(_minx, _miny, "[" + string(_minx / WIN_WID) + ", " + string(_miny / WIN_HEI) + "]#[" + string(_minx) + "px, " + string(_miny) + "px]", $00DDFF);
+    
+    draw_set_halign(fa_center);
+    draw_set_valign(fa_middle);
+    iui_label(_minx + (_dx >> 1), _miny + (_dy >> 1), "[" + string(_dx / WIN_WID) + ", " + string(_dx / WIN_HEI) + "]#[" + string(_dx) + "px, " + string(_dx) + "px]", $00DDFF);
+    
+    draw_set_halign(fa_left);
+    draw_set_valign(fa_top);
+    iui_label(_maxx, _maxy, "[" + string(_maxx / WIN_WID) + ", " + string(_maxy / WIN_HEI) + "]#[" + string(_maxx) + "px, " + string(_maxy) + "px]", $00DDFF);
+}

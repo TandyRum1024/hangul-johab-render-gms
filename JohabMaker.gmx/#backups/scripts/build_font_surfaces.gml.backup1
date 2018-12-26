@@ -1,0 +1,43 @@
+// 2018-12-18 21:53:15
+///build_char()
+/*
+    Build font surfaces
+    The problem -- Surfaces in Gamemaker is hella """volatile"""
+    So I'm gonna try save them into buffer
+    
+    ========
+    "Also just a heads up it's BGRA format, but if you look at the buffer in the Debugger,
+    it's displayed in ARGB. Made debugging confusing.
+    Also, for some reason, buffer_set_surface() only works if you __don't modify the buffer__ at all.
+    I thought I got it to work once, but i can't find my post that i'd have posted if i did."
+    
+    .. Dear god yoyo games plzfix asap
+*/
+
+// number of cells in 
+var _cellNum = ds_list_size(cellSurf);
+
+
+// test stuff to check if the buffer_set_surface is still broken in GMS1..
+var _surf = surface_create(charWid, charHei);
+var _midX = charWid/2, _midY = charHei/2;
+surface_set_target(_surf);
+draw_rectangle_colour(0, 0, charWid, charHei, $00DDFF, $00DDFF, $00DDFF, $00DDFF, false);
+draw_rectangle_colour(0, 0, _midX, midY, $00DDFF, $00DDFF, $00DDFF, $00DDFF, false);
+draw_rectangle_colour(_midX, midY, charWid, charHei, $00DDFF, $00DDFF, $00DDFF, $00DDFF, false);
+surface_reset_target();
+
+// create all the surfaces yeet
+/*
+    Buffer 4 surfaces --
+    - 8-bit BGRA format (buffer_u8 would do the job but see below; No editing fellas D:)
+    - Under no circumstances should you modify the buffer; Please Modity it in surface & save it to buffer later
+    - Buffer size should be 4 * wid * hei
+*/
+for (var i=0; i<_cellNum; i++)
+{
+    var _buff = buffer_create(charWid * charHei * 4, buffer_fast, 1);
+    buffer_get_surface(_buff, _surf, 0, 0, 0); // 100% organic buffer no-bullshit
+    
+    cellSurf[| i] = _buff;
+}

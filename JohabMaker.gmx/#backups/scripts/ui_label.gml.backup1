@@ -1,0 +1,9 @@
+// 2018-12-14 23:41:20
+///ui_label(screen_x, screen_y, str, col)
+/*
+    draw rectangle in screen units [0...1]
+*/
+
+var _absx = argument0 * WIN_WID, _absy = argument1 * WIN_HEI;
+
+iui_label_transform(_absx, _absy, argument2, UI_SCALE, UI_SCALE, 0, argument3, 1);
