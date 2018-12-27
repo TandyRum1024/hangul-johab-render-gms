@@ -71,6 +71,8 @@
       <script>scripts\ui_label.gml</script>
       <script>scripts\ui_button.gml</script>
       <script>scripts\ui_tab.gml</script>
+      <script>scripts\ui_checkbox.gml</script>
+      <script>scripts\ui_textbox_numberonly.gml</script>
     </scripts>
   </scripts>
   <fonts name="fonts">

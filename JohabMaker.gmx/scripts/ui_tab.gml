@@ -33,7 +33,7 @@ iui_align_center(); // center label
 
 // backdrop
 iui_rect(tabX, tabY, tabW, tabH, COL.WHITE);
-iui_rect(tabX, tabY + tabH, tabW, 2, COL.BASE); // shadow
+iui_rect(tabX, tabY + tabH, tabW, 2, COL.GRAY); // shadow
 
 for (i = 0; i < numTabs; i++)
 {
@@ -43,7 +43,7 @@ for (i = 0; i < numTabs; i++)
     tabLabelWid = string_width(tabLabel);
     
     tabID   = IDs[i];
-    tabW = (tabLabelWid + 20);
+    tabW    = (tabLabelWid + 20);
     
     // is hover
     if (point_in_rectangle(iui_inputX, iui_inputY, tabX, tabY, (tabX + tabW), (tabY + tabH)))
@@ -69,7 +69,7 @@ for (i = 0; i < numTabs; i++)
     
     if (isCurrent)
     {
-        colBackdrop = COL.BLUE;
+        colBackdrop = COL.BASE;
         colLabel    = COL.WHITE;
     }
     else if (isHot) // Hovering
@@ -80,8 +80,16 @@ for (i = 0; i < numTabs; i++)
     
     // draw
     iui_rect(tabX, tabY, tabW, tabH, colBackdrop);
-    iui_rect(tabX, tabY + tabH, tabW, 2, COL.BASE);
-    iui_label(tabX + (tabW >> 1), tabY + (tabH >> 1), tabLabel, colLabel);
+    
+    var _cx = tabX + (tabW >> 1); // button center
+    var _cy = tabY + (tabH >> 1);
+    var _fc     = string_char_at(tabLabel, 1); // for first character underline
+    var _fcwid  = string_width(_fc);
+    var _fchei  = string_height(_fc) >> 1;
+    
+    // First character underline
+    iui_rect(_cx - (tabLabelWid >> 1), _cy + _fchei, _fcwid, 1, colLabel);
+    iui_label(_cx, _cy, tabLabel, colLabel);
     
     // for next tab
     tabX += tabW;

@@ -51,8 +51,11 @@ gridHei = 11;
 charLen = gridWid * gridHei;
 charWid = 24; // Single Cell's size/unit... default = 16px monospaced
 charHei = 24;
+
+// 폰트 텍스쳐; 중앙에 떡하니 있는 그 폰트 텍스쳐가 이겁니다
 fntTex = surface_create(gridWid * charWid, gridHei * charHei);
 
+// 글자 똑떼먹기
 glyphSurf = surface_create(charWid, charHei); // surface for display
 glyphSurfOverlay = surface_create(charWid, charHei);
 charSelected = -1; // Currently selected character
@@ -82,8 +85,8 @@ USE_ASCII = true;
 // Font picker window
 winCropX = 42;
 winCropY = uToolbarHei + 42;
-winCropPanelSize = 200;
-winCropTexSize = 200;
+winCropPanelSize = 250;
+winCropTexSize = 250;
 
 cropping = false;
 cropShow = false;
@@ -229,22 +232,25 @@ if (PEPPERONI_SECRET)
             <string>/// I/O, Camera
 iui_update_io();
 
-var moveH = keyboard_check(vk_right) - keyboard_check(vk_left);
-var moveV = keyboard_check(vk_down) - keyboard_check(vk_up);
-var moveW = keyboard_check(vk_add) - keyboard_check(vk_subtract);
-
-// camVX += 0.5 * moveH;
-// camVY += 1 * moveV;
-var mult = 2;
-if (keyboard_check(vk_shift))
-    mult = 4;
-else if (keyboard_check(vk_control))
-    mult = 1;
-
-camX += moveH * mult;
-camY += moveV * mult;
-camZ += (0.005 * moveW) * mult;
-camZ = clamp(camZ, 0.001, 2);
+if (iui_kbFocusItem == -1)
+{
+    var moveH = keyboard_check(vk_right) - keyboard_check(vk_left);
+    var moveV = keyboard_check(vk_down) - keyboard_check(vk_up);
+    var moveW = keyboard_check(vk_add) - keyboard_check(vk_subtract);
+    
+    // camVX += 0.5 * moveH;
+    // camVY += 1 * moveV;
+    var mult = 2;
+    if (keyboard_check(vk_shift))
+        mult = 4;
+    else if (keyboard_check(vk_control))
+        mult = 1;
+        
+    camX += moveH * mult;
+    camY += moveV * mult;
+    camZ += (0.005 * moveW) * mult;
+    camZ = clamp(camZ, 0.001, 2);
+}
 
 var _vwid = WIN_WID * camZ;
 var _vhei = WIN_HEI * camZ;
@@ -402,50 +408,122 @@ else if (mouse_check_button(mb_left) &amp;&amp; cropping)
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>var _generalmargin = 10, _bigmargin = 42;
+            <string>var _generalmargin = 10;
+var _smallmargin = 20, _bigmargin = 42;
 var _halfmargin = _bigmargin / 1.5;
 var _winhalfw = WIN_WID &gt;&gt; 1, _winhalfh = WIN_HEI &gt;&gt; 1;
 
 iui_begin();
 
-// draw_surface(fontSurf, WIN_WID * 0.5 - fontSurfWid * 0.5, WIN_HEI * 0.5 - fontSurfHei * 0.5); // draw hangul stuff
+iui_align_center();
 
 /*
-    TOOL UI TOP
+    TOOL UI BG
     ============
 */
-iui_align_center();
-// topper
-iui_rect(0, 0, WIN_WID, uToolbarHei, COL.WHITE);
+iui_rect(0, 0, WIN_WID, uToolbarHei, uBGCol);
+iui_rect(0, uToolbarHei, WIN_WID, 4, COL.WHITE);
+
+uCurrentTab = ui_tab(0, 0, WIN_WID, 24, iui_pack("@=(^0^)", "폰트", "설정", "잡다한거"), uCurrentTab);
+iui_align_pop();
+
+// macintosh like title swiggles
+/*
 iui_rect(0, uToolbarHei, WIN_WID, 32, COL.BLUE);
 
-// tab
-uCurrentTab = ui_tab(0, 0, WIN_WID, 42, iui_pack("메인", "폰트", "설정", "잡다한거"), uCurrentTab);
-
-// msg??
+var _titlew = (string_width(uTitleMsg) &gt;&gt; 1) + 10;
+iui_rect(0, uToolbarHei + 4, _winhalfw - _titlew, 4, COL.WHITE);
+iui_rect(0, uToolbarHei + 12, _winhalfw - _titlew, 4, COL.WHITE);
+iui_rect(0, uToolbarHei + 20, _winhalfw - _titlew, 4, COL.WHITE);
+iui_rect(0, uToolbarHei + 28, _winhalfw - _titlew, 4, COL.WHITE);
 iui_label(_winhalfw, uToolbarHei + 16, uTitleMsg, COL.WHITE);
 iui_align_pop();
+*/
 
 // title
 // iui_align_push(fa_right, iui_valign);
 // iui_label(WIN_WID - _generalmargin, _generalmargin, "태보머신 - ZIK@2018 @=(^0^)ㄱ#태보해주십사이언스", COL.HIGHLIGHT);
 // iui_align_pop();
+switch (uCurrentTab)
+{
+    default:
+    case 0:
+        /*
+            MAIN TAB
+            ============
+        */
+        var _topmargin = _bigmargin;
+        
+        // info
+        iui_label(_smallmargin, _topmargin, "FNTGEN#ZIK@2018", COL.HIGHLIGHT);
+        
+        iui_align_push(fa_center, fa_top);
+        iui_label(_winhalfw, _topmargin + _bigmargin, "방향키로 카메라 이동#+ &amp; - 로 줌 인/아웃#조작하려면 맨 위에 있는 표시줄을 클릭해보시던가요#(아님말고)", COL.WHITE);
+        iui_align_pop();
+        break;
+    
+    case 1:
+        /*
+            FONT TAB
+            ============
+        */
+        var _leftmarginA = _smallmargin;
+        var _leftmarginB = _smallmargin + 300 + (_bigmargin &lt;&lt; 1) + 100;
+        var _topmargin = _bigmargin;
+        
+        // load &amp; reload section
+        var btnLoad     = ui_button(_leftmarginA                    , _topmargin + _bigmargin, 150, 42, "LOAD FONT");
+        var btnReload   = ui_button(_leftmarginA + 150 + _bigmargin , _topmargin + _bigmargin, 150, 42, "RELOAD");
+        iui_label(_leftmarginA, _topmargin, "FONT : " + string(fntName), COL.HIGHLIGHT);
+        
+        // font attributes section
+        var _off = _leftmarginB + _bigmargin;
+        iui_align_push(fa_right, fa_top);
+        
+        iui_label(_off, _topmargin, "FONT SIZE : ", uTextCol);
+        iui_label(_off, _topmargin + _bigmargin, "CELL SIZE : ", uTextCol);
+        iui_label(_off, _topmargin + (_bigmargin &lt;&lt; 1), "EAT VEGETABLE : ", uTextCol);
+        iui_label(_off + _smallmargin + 90 + (string_width("X") &gt;&gt; 1), _topmargin + _bigmargin, "X", uTextCol);
+        
+        tbFntSize = ui_textbox_numberonly(_off + _smallmargin, _topmargin, 80, 32, string(tbFntSize), "FONTSIZE", 0);
+        tbCellWid = ui_textbox_numberonly(_off + _smallmargin, _topmargin + _bigmargin, 80, 32, string(tbCellWid), "CELLWID", 1);
+        tbCellHei = ui_textbox_numberonly(_off + _smallmargin + 100, _topmargin + _bigmargin, 80, 32, string(tbCellHei), "CELLHEI", 1);
+        cbAscii = ui_checkbox(_off + _smallmargin, _topmargin + (_bigmargin &lt;&lt; 1), 16, 16, cbAscii, "ASCII");
+        
+        USE_ASCII = cbAscii;
+        
+        iui_align_pop();
+        
+        /// Buttons
+        if (btnLoad)
+        {
+            var _path = get_open_filename("폰트 파일|*.ttf", "폰트를 선택해 주세요.");
+            
+            if (_path != "")
+            {
+                charWid = real(tbCellWid);
+                charHei = real(tbCellHei);
+                
+                show_debug_message("Path : " + _path);
+                update_font_attribs();
+                load_font(_path, real(tbFntSize));
+            }
+        }
+        
+        if (btnReload)
+        {
+            if (fntPath != "")
+            {
+                charWid = real(tbCellWid);
+                charHei = real(tbCellHei);
+                
+                update_font_attribs();
+                load_font(fntPath, real(tbFntSize));
+            }
+        }
+        break;
+}
 
-// Load
-var btnLoad     = iui_button(_generalmargin + 500, (uToolbarHei &gt;&gt; 1) - _halfmargin - _halfmargin, 120, 42, "폰트 불러오기");
-var btnReload   = iui_button(_generalmargin + 500, (uToolbarHei &gt;&gt; 1) - _halfmargin + _halfmargin, 120, 42, "댕댕이#포-잉");
-
-// Attrib
-iui_align_push(fa_right, fa_middle);
-iui_label(_generalmargin + 140, (uToolbarHei &gt;&gt; 1) - 8, "글꼴 크기 : ", uTextCol);
-iui_label(_generalmargin + 140, (uToolbarHei &gt;&gt; 1) + 40, "격자 크기 : ", uTextCol);
-iui_label(_generalmargin + 320, (uToolbarHei &gt;&gt; 1) - 8, "ASCII : ", uTextCol);
-iui_label(_generalmargin + 240, (uToolbarHei &gt;&gt; 1) + 40, "x", uTextCol);
-tbFntSize = iui_textbox_numberonly(_generalmargin + 150, (uToolbarHei &gt;&gt; 1) - 24, 80, 32, string(tbFntSize), "FONTSIZE");
-tbCellWid = iui_textbox_numberonly(_generalmargin + 150, (uToolbarHei &gt;&gt; 1) + 24, 80, 32, string(tbCellWid), "CELLWID");
-tbCellHei = iui_textbox_numberonly(_generalmargin + 250, (uToolbarHei &gt;&gt; 1) + 24, 80, 32, string(tbCellHei), "CELLHEI");
-cbAscii = iui_checkbox(_generalmargin + 330, (uToolbarHei &gt;&gt; 1) - 16, 16, 16, cbAscii, "ASCII");
-USE_ASCII = cbAscii;
 
 // Glyph edit?
 var _winhalf = (winCropPanelSize * 0.5);
@@ -455,9 +533,9 @@ iui_align_center();
 iui_rect(winCropX, winCropY, winCropPanelSize, 42, COL.HIGHLIGHT); // top title
 iui_rect(winCropX, winCropY + 42, winCropPanelSize, winCropPanelSize + 50, COL.BASE);
 iui_label(_wincx, winCropY + 21, "글자 똑떼어먹기", uTextCol);
-var btnSet = iui_button(_wincx - (_winhalf * 0.7) - 35, winCropY + winCropPanelSize + 42, 70, 50, "좋다##BTNSET");
-var btnDel = iui_button(_wincx + (_winhalf * 0.7) - 35, winCropY + winCropPanelSize + 42, 70, 50, "삭제##BTNDEL");
-var btnAll = iui_button(_wincx - 35, winCropY + winCropPanelSize + 42, 70, 50, "줄#전체적용##BTNALL");
+var btnSet = ui_button(_wincx - (_winhalf * 0.7) - 35, winCropY + winCropPanelSize + 42, 70, 50, "좋다##BTNSET");
+var btnDel = ui_button(_wincx + (_winhalf * 0.7) - 35, winCropY + winCropPanelSize + 42, 70, 50, "삭제##BTNDEL");
+var btnAll = ui_button(_wincx - 35, winCropY + winCropPanelSize + 42, 70, 50, "줄#전체적용##BTNALL");
 iui_align_pop();
 
 // Draw glyph preview / crop panel view
@@ -510,42 +588,11 @@ draw_surface_stretched(glyphSurfOverlay, winCropX, winCropY + 42 + _winhalf - (_
 // iui_rect(winCropX, winCropY + 42, _zoomWid, _zoomHei, 0);
 // draw_surface_stretched(glyphSurf, winCropX + _winhalf - (_zoomWid * 0.5), winCropY + 42 + _winhalf - (_zoomHei * 0.5), _zoomWid, _zoomHei);
 // draw_surface_stretched(glyphSurfOverlay, winCropX + _winhalf - (_zoomWid * 0.5), winCropY + 42 + _winhalf - (_zoomHei * 0.5), _zoomWid, _zoomHei);
-
-iui_align_pop();
-
-iui_label(_generalmargin + _bigmargin, _generalmargin, "FONT : " + fntName, COL.HIGHLIGHT);
 iui_end();
 
 /*
     BUTTONS
 */
-if (btnLoad)
-{
-    var _path = get_open_filename("폰트 파일|*.ttf", "폰트를 선택해 주세요.");
-    
-    if (_path != "")
-    {
-        charWid = real(tbCellWid);
-        charHei = real(tbCellHei);
-        
-        show_debug_message("Path : " + _path);
-        update_font_attribs();
-        load_font(_path, real(tbFntSize));
-    }
-}
-
-if (btnReload)
-{
-    if (fntPath != "")
-    {
-        charWid = real(tbCellWid);
-        charHei = real(tbCellHei);
-        
-        update_font_attribs();
-        load_font(fntPath, real(tbFntSize));
-    }
-}
-
 if (btnSet)
 {
     var _data = charData[| charSelected];
@@ -759,7 +806,7 @@ surface_reset_target();
           <argument>
             <kind>1</kind>
             <string>/// draw glyphs!!
-draw_clear(c_teal);
+draw_clear(COL.GRAY);
 
 /*
 for (var i=0; i&lt;charLen; i++)

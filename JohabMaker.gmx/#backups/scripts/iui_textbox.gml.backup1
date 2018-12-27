@@ -1,3 +1,4 @@
+// 2018-12-27 22:36:58
 #define iui_textbox
 ///iui_textbox(x, y, w, h, text, ID)
 /**
@@ -206,7 +207,7 @@ iui_align_pop();
 // cursor
 var cursorX = string_width(string_copy(currentText, 1, (cursorPos - showPos)));
 if (isFocus)
-    iui_rect_alpha(bx + (cursorX - 2) + 10, by + 10, 4, bh - 20, textColour, sin(iuiAnimTime * 0.1));
+    iui_rect_alpha(bx + (cursorX - 2) + 10, by + 10, 4, bh - 20, iuiColButtonLabel, sin(iuiAnimTime * 0.1));
 
 // update varmap
 iui_varmap[? IDSTR + "_showpos"]   = showPos;
