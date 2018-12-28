@@ -1,4 +1,4 @@
-// 2018-12-28 00:20:01
+// 2018-12-28 23:36:48
 #event create
 iui_init();
 iui_init_vars();
@@ -10,10 +10,6 @@ hj_init();
 WIN_WID = room_width;
 WIN_HEI = room_height;
 
-UI_SCALE = 1;
-winTex = surface_create(WIN_WID, WIN_HEI);
-
-
 // font container
 fntTemp = -1; // temp font; includes ALL the glyphs in the font.
 fntName = "NONE";
@@ -21,11 +17,16 @@ fntPath = "";
 fntSize = 16;
 
 // Glyph data
-gridWid = 28; // How much cell/characters in single row?
+gridWid = global.hangulFontRows; // How much cell/characters in single row?
 gridHei = 11;
-charLen = gridWid * gridHei;
+charLen = gridWid * gridHei; // Total numbers of cells
 charWid = 24; // Single Cell's size/unit... default = 16px monospaced
 charHei = 24;
+charSelected = -1; // Currently selected character
+charData = ds_list_create(); // List of glyph's data
+// 0 - The glyph to get sample from (ex : '갈')
+// 1 - Glyph surface
+// 2..3 - glyph offset
 
 // 폰트 텍스쳐; 중앙에 떡하니 있는 그 폰트 텍스쳐가 이겁니다
 fntTex = surface_create(gridWid * charWid, gridHei * charHei);
@@ -33,13 +34,6 @@ fntTex = surface_create(gridWid * charWid, gridHei * charHei);
 // 글자 똑떼먹기
 glyphSurf = surface_create(charWid, charHei); // surface for display
 glyphSurfOverlay = surface_create(charWid, charHei);
-charSelected = -1; // Currently selected character
-charData = ds_list_create(); // List of glyph's data
-// 0 - The glyph to get sample from (ex : '갈')
-// 1 - Glyph surface
-// 2 - Enable bounding box
-// 3~6 - The bounding box
-
 maskSurfA = surface_create(charWid, charHei); // temp surface for mask drawing
 maskSurfB = surface_create(charWid, charHei);
 
@@ -47,11 +41,8 @@ enum CHAR
 {
     SAMPLE = 0,
     SURFACE,
-    BBOX,
     X,
-    Y,
-    W,
-    H
+    Y
 }
 
 updateFontSurf = false;
