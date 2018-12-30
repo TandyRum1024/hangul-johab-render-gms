@@ -1,9 +1,8 @@
 // set vars
-gridHei = 7;
+gridHei = choRows + jungRows + jongRows + jamoRows;
 
-if (USE_ASCII)
-    gridHei = 12;
+if (FNT_ASCII)
+    gridHei += asciiRows;
 
 // rebuild
-charLen = gridWid * gridHei;
-reset_char_surfaces();
+// reset_char_surfaces();

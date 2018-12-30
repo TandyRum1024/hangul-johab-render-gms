@@ -1,175 +1,157 @@
-#define build_glyph_surface
-///build_glyph_surface(index)
+#define build_char_surface
+///build_char_surface(index)
 /*
-    Updates glyph surface from glyph index for use in font texture building
+    Updates glyph surface of glyph given the glyph index
 */
 
 // var
 var index = argument0;
+
+if (index < 0)
+    return -1;
+    
+var data = charData[| index];
+build_char_surface_to(index, data[@ CHAR.BAKED]);
+/*
+// Build character to draw
+var data = charData[| index];
+var glyphX = index % gridWid, glyphY = index div gridWid, char = "";
+
+if (data[@ CHAR.SOURCE] != "")
+    char = data[@ CHAR.SOURCE];
+else
+    char = get_default_char(index);
+
+
+var maskSurf = data[@ CHAR.MASK];
+var finalSurf = data[@ CHAR.BAKED];
+
+// Build mask .. or "hole"
+surface_set_target(maskTemp);
+draw_clear(c_black);
+draw_set_blend_mode(bm_subtract);
+draw_surface(maskSurf, 0, 0);
+draw_set_blend_mode(bm_normal);
+surface_reset_target();
+
+
+// Apply mask
+draw_set_font(fntCurrent);
+
+surface_set_target(finalSurf);
+draw_clear_alpha(0, false);
+
+// origin content
+// use RSH for integer division instead of dividing by 2
+// because fractions are basically mortal enemy to textures.. especially pixelated fonts
+iui_align_center();
+iui_label(charWid >> 1, charHei >> 1, char, c_white);
+iui_align_pop();
+
+// mask
+/*
+draw_set_blend_mode(bm_subtract);
+draw_surface(maskTemp, 0, 0);
+draw_set_blend_mode(bm_normal);
+
+
+surface_reset_target();
+
+draw_set_font(fntOWO);
+*/
+
+#define build_char_surface_to
+///build_char_surface_to(index, surface)
+/*
+    Draws mask-applied character surface to the surface you want
+    The surface must be in size of character or you'il get some teeny weeny small characters
+*/
+
+// var
+var index = argument0, surface = argument1;
     
 if (index < 0)
     return -1;
 
 // Build character to draw
 var data = charData[| index];
-var glyphX = index % global.hangulFontRows, glyphY = index div global.hangulFontRows, char = "";
+var glyphX = index % gridWid, glyphY = index div gridWid, char = "";
 
-if (data[@ CHAR.SAMPLE] != "")
-{
-    char = data[@ CHAR.SAMPLE];
-}
+if (data[@ CHAR.SOURCE] != "")
+    char = data[@ CHAR.SOURCE];
 else
-{
-    switch (glyphY)
-    {
-        case 0: // Choseong beol 1
-            char = chr($AC00 + ((glyphX * 21) + 0) * 28 + 16);
-            break;
-        
-        case 1: // Choseong beol 2
-            char = chr($AC00 + ((glyphX * 21) + 8) * 28 + 16);
-            break;
-            
-        case 2: // Jungseong
-            char = chr($AC00 + glyphX * 28 + 16);
-            break;
-        
-        case 3: // Jongseong beol 1
-            char = chr($AC00 + glyphX);
-            break;
-        
-        case 4: // Choseong beol 2
-            char = chr($AC00 + ((1 * 21) + 8) * 28 + glyphX);
-            break;
-            
-        case 5: // Compat. Jamo
-        case 6:
-            var _off = $3130 + (index - gridWid * 5);
-            
-            if (_off >= $3130 && _off <= $3163)
-                char = chr(_off);
-            break;
-            
-        default: // ASCII
-            char = chr(index - gridWid * 7);
-    }
-}
+    char = get_default_char(index);
 
 
-// clear surface
-if (surface_exists(glyphSurf))
-    surface_resize(glyphSurf, charWid, charHei);
-else
-    glyphSurf = surface_create(charWid, charHei);
-    
-surface_resize(glyphSurfOverlay, charWid, charHei);
+var maskSurf = data[@ CHAR.MASK];
 
-if (!data[@ CHAR.BBOX]) // direct
-{
-    surface_set_target(glyphSurf);
-    draw_clear_alpha(0,0);
-    
-    draw_set_font(fntTemp);
-    iui_align_center();
-    iui_label(charWid/2, charHei/2, char, c_white);
-    iui_align_pop();
-    draw_set_font(fntOWO);
-    
-    surface_reset_target();
-}
-else
-{
-    var _surf = surface_create(charWid, charHei);
-    
-    // Draw glyph to temp surface
-    surface_set_target(_surf);
-    draw_clear_alpha(0,0);
-    
-    draw_set_font(fntTemp);
-    iui_align_center();
-    iui_label(charWid/2, charHei/2, char, c_white);
-    iui_align_pop();
-    draw_set_font(fntOWO);
-    
-    surface_reset_target();
-    
-    
-    // Draw temp surface to final surface, cropped.
-    surface_set_target(glyphSurf);
-    draw_clear_alpha(0,0);
-    draw_surface_part(_surf, data[@ CHAR.X], data[@ CHAR.Y], data[@ CHAR.W]+1, data[@ CHAR.H]+1, data[@ CHAR.X], data[@ CHAR.Y]);
-    surface_reset_target();
-    
-    surface_free(_surf);
-}
+// Build mask .. or "hole"
+surface_set_target(maskTemp);
+draw_clear(c_black);
+draw_set_blend_mode(bm_subtract);
+draw_surface(maskSurf, 0, 0);
+draw_set_blend_mode(bm_normal);
+surface_reset_target();
 
-#define build_glyph_surface_preview
-///build_glyph_surface_preview(index)
+
+// Apply mask
+draw_set_font(fntCurrent);
+surface_set_target(surface);
+draw_clear_alpha(0, false);
+
+// origin content
+// use RSH for integer division instead of dividing by 2
+// because fractions are basically mortal enemy to textures.. especially pixelated fonts
+iui_align_center();
+iui_label(charWid >> 1, charHei >> 1, char, c_white);
+iui_align_pop();
+
+// mask
+draw_set_blend_mode(bm_subtract);
+draw_surface(maskTemp, 0, 0);
+draw_set_blend_mode(bm_normal);
+
+surface_reset_target();
+draw_set_font(fntOWO);
+
+#define build_char_surface_preview
+///build_char_surface_preview(index)
 /*
-    Updates glyph surface from glyph index for display
+    Updates glyph surface from glyph index for mask preview
 */
 
 // var
 var index = argument0;
-var glyphX = index % gridWid, glyphY = index div gridWid, char = "";
-if (index < 0)
-    return -1;
 
-// Build character to draw
-switch (glyphY)
-{
-    case 0: // Choseong beol 1
-        char = chr($AC00 + ((glyphX * 21) + 0) * 28 + 16);
-        break;
-    
-    case 1: // Choseong beol 2
-        char = chr($AC00 + ((glyphX * 21) + 8) * 28 + 16);
-        break;
-        
-    case 2: // Jungseong
-        char = chr($AC00 + glyphX * 28 + 16);
-        break;
-    
-    case 3: // Jongseong beol 1
-        char = chr($AC00 + glyphX);
-        break;
-    
-    case 4: // Choseong beol 2
-        char = chr($AC00 + ((1 * 21) + 8) * 28 + glyphX);
-        break;
-        
-    case 5: // Compat. Jamo
-    case 6:
-        var _off = $3130 + (index - gridWid * 5);
-        
-        if (_off >= $3130 && _off <= $3163)
-            char = chr(_off);
-        break;
-        
-    default: // ASCII
-        char = chr(index - gridWid * 7);
-}
-
-
-// clear surface
-if (surface_exists(glyphSurf))
-    surface_resize(glyphSurf, charWid, charHei);
+var data = charData[| index];
+var char = "";
+if (data[@ CHAR.SOURCE] != "")
+    char = data[@ CHAR.SOURCE];
 else
-    glyphSurf = surface_create(charWid, charHei);
-surface_resize(glyphSurfOverlay, charWid, charHei);
-
-surface_set_target(glyphSurf);
-draw_clear_alpha(0,0);
+    char = get_default_char(index);
 
 
-// Draw glyph to surface
-draw_set_font(fntTemp);
+// resize surf & build surf
+if (surface_exists(maskTemp))
+    surface_resize(maskTemp, charWid, charHei);
+else
+    maskTemp = surface_create(charWid, charHei);
+build_char_surface_to(index, maskTemp);
+
+
+// draw
+surface_set_target(maskPreview);
+draw_clear_alpha(0, 0);
+
 iui_align_center();
-iui_label(charWid/2, charHei/2, char, c_white);
-iui_align_pop();
+draw_set_font(fntCurrent);
+iui_label_alpha(charWid >> 1, charHei >> 1, char, c_blue, 0.5); // original glyph with tint
 draw_set_font(fntOWO);
+iui_align_pop();
+draw_surface(maskTemp, 0, 0); // mask applied one
 
 surface_reset_target();
+
 #define build_glyph_old
 ///build_char_surfaces()
 /*
@@ -189,14 +171,14 @@ surface_reset_target();
 // #args font
 
 // set vars
-gridHei = 7;
+// gridHei = 7;
 
-if (USE_ASCII)
-    gridHei = 12;
+// if (USE_ASCII)
+//     gridHei = 12;
 
 // rebuild
-charLen = gridWid * gridHei;
-reset_char_surfaces();
+// charLen = gridWid * gridHei;
+// reset_char_surfaces();
 
 /*
     BUILD LIST OF SURFACES

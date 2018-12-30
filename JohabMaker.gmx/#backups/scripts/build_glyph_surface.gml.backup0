@@ -1,6 +1,6 @@
-// 2018-12-21 03:46:58
-#define build_glyph_surface
-///build_glyph_surface(index)
+// 2018-12-30 20:32:09
+#define build_char_surface
+///build_char_surface(index)
 /*
     Updates glyph surface from glyph index for use in font texture building
 */

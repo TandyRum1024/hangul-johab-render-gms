@@ -1,4 +1,4 @@
-// 2018-12-22 00:59:16
+// 2018-12-31 02:45:01
 ///load_font(fontDir, size)
 /*
     Exec this when you change the font
@@ -6,21 +6,25 @@
 
 fntPath = argument0;
 
-if (font_exists(fntTemp))
-    font_delete(fntTemp);
+if (font_exists(fntCurrent))
+    font_delete(fntCurrent);
 
 // REMEMBER : font_add with .ttf will add """ALL""" the glyphs in the font
-fntTemp = font_add(fntPath, argument1, false, false, 666, 666); // weird flex but ok
-fntName = font_get_fontname(fntTemp);
+fntCurrent = font_add(fntPath, argument1, false, false, 666, 666); // weird flex but ok
+fntName = font_get_fontname(fntCurrent);
 fntSize = argument1;
 
 // reset_char_surfaces();
 // build_glyph_surface_preview(-1);
+show_debug_message("resetting all character data...");
+reset_char_data_all();
 
 // Resize surfaces
-surface_resize(glyphSurf, charWid, charHei);
-surface_resize(glyphSurfOverlay, charWid, charHei);
-surface_resize(maskSurfA, charWid, charHei);
-surface_resize(maskSurfB, charWid, charHei);
+surface_resize(glyphTex, charWid, charHei);
+surface_resize(maskOverlay, charWid, charHei);
+surface_resize(maskPreview, charWid, charHei);
+surface_resize(maskTemp, charWid, charHei);
 
+show_debug_message("building character surface...");
+build_char_surface_all();
 updateFontSurf = true;

@@ -56,16 +56,17 @@
       <script>scripts\iui_style.gml</script>
     </scripts>
     <script>scripts\hj_init.gml</script>
-    <script>scripts\update_font_tex_old.gml</script>
-    <script>scripts\build_char_surfaces.gml</script>
-    <script>scripts\build_font_tex.gml</script>
     <script>scripts\ui_vars.gml</script>
-    <script>scripts\reset_char_surfaces.gml</script>
-    <script>scripts\johab_die.gml</script>
-    <script>scripts\hangul_range.gml</script>
-    <script>scripts\build_glyph_surface.gml</script>
-    <script>scripts\load_font.gml</script>
+    <script>scripts\reset_char_data.gml</script>
+    <script>scripts\build_char_surface_all.gml</script>
+    <script>scripts\build_char_surface.gml</script>
+    <script>scripts\build_font_tex.gml</script>
     <script>scripts\update_font_attribs.gml</script>
+    <script>scripts\get_default_char.gml</script>
+    <script>scripts\load_font.gml</script>
+    <script>scripts\update_font_tex_old.gml</script>
+    <script>scripts\hangul_range.gml</script>
+    <script>scripts\johab_die.gml</script>
     <scripts name="CUSTOM_UI">
       <script>scripts\ui_rect.gml</script>
       <script>scripts\ui_label.gml</script>

@@ -436,8 +436,8 @@
     <option_savekey>true</option_savekey>
     <option_scale>-1</option_scale>
     <option_scaleprogress>true</option_scaleprogress>
-    <option_sci_UseSCI>0</option_sci_UseSCI>
-    <option_sci_serverLocation></option_sci_serverLocation>
+    <option_sci_UseSCI>-1</option_sci_UseSCI>
+    <option_sci_serverLocation>https://github.com/TandyRum1024/asshole</option_sci_serverLocation>
     <option_screenkey>True</option_screenkey>
     <option_screenshotkey>true</option_screenshotkey>
     <option_shortcircuit>True</option_shortcircuit>
@@ -458,7 +458,7 @@
     <option_textureGroup1_targets>9223372036854775807</option_textureGroup1_targets>
     <option_textureGroup_count>2</option_textureGroup_count>
     <option_textureGroups0>Default</option_textureGroups0>
-    <option_textureGroups1>Fonts</option_textureGroups1>
+    <option_textureGroups1>UI</option_textureGroups1>
     <option_tizen_app_id>http://yourdomain/JohabMaker</option_tizen_app_id>
     <option_tizen_build_version>0</option_tizen_build_version>
     <option_tizen_display_name>JohabMaker</option_tizen_display_name>
