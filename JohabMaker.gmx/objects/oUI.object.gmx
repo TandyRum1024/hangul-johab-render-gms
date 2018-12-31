@@ -101,8 +101,8 @@ maskTemp = surface_create(charWid, charHei); // temp surface for mask building
     ==================
 */
 // Font picker window
-winCropX = 42;
-winCropY = uToolbarHei + 42;
+winCropX = 0;
+winCropY = uToolbarHei;
 winCropPanelSize = 250;
 winCropTexSize = 250;
 
@@ -303,7 +303,7 @@ if (mouse_check_button_pressed(mb_left))
             _my &gt;= 0 &amp;&amp; _my &lt;= gridHei)
         {
             charSelected = _mx + _my * gridWid;
-            build_char_surface_preview(charSelected);
+            updatePreview = true;
             
             cropX1 = 0;
             cropY1 = 0;
@@ -499,7 +499,8 @@ var _wincx = winCropX + _winhalf;
 
 iui_align_center();
 iui_rect(winCropX, winCropY, winCropPanelSize, 42, COL.HIGHLIGHT); // top title
-iui_rect(winCropX, winCropY + 42, winCropPanelSize, winCropPanelSize + 50, COL.BASE);
+// iui_rect(winCropX, winCropY + 42, winCropPanelSize, winCropPanelSize + 50, COL.BASE);
+iui_rect(winCropX, winCropY + 42, winCropPanelSize, WIN_HEI - (winCropY + 42), COL.BASE);
 iui_label(_wincx, winCropY + 21, "글자 똑떼어먹기", uTextCol);
 var btnSet = ui_button(_wincx - (_winhalf * 0.7) - 35, winCropY + winCropPanelSize + 42, 70, 50, "좋다##BTNSET");
 var btnDel = ui_button(_wincx + (_winhalf * 0.7) - 35, winCropY + winCropPanelSize + 42, 70, 50, "삭제##BTNDEL");
@@ -534,18 +535,6 @@ if (btnSet)
 {
     var _data = charData[| charSelected];
     
-    /*
-    
-    if (is_array(_data))
-    {
-        _data[@ CHAR.BBOX] = true;
-        _data[@ CHAR.X] = min(cropX1, cropX2);
-        _data[@ CHAR.Y] = min(cropY1, cropY2);
-        _data[@ CHAR.W] = abs(cropX2 - cropX1);
-        _data[@ CHAR.H] = abs(cropY2 - cropY1);
-        charData[| charSelected] = _data;
-    }
-    */
     if (is_array(_data) &amp;&amp; surface_exists(_data[@ CHAR.MASK]))
     {
         surface_set_target(_data[@ CHAR.MASK]);
@@ -557,6 +546,7 @@ if (btnSet)
         
         build_char_surface(charSelected);
         updateFontSurf = true;
+        updatePreview = true;
     }
 }
 
@@ -628,40 +618,6 @@ if (PEPPIS)
       </action>
     </event>
     <event eventtype="8" enumb="0">
-      <action>
-        <libid>1</libid>
-        <id>603</id>
-        <kind>7</kind>
-        <userelative>0</userelative>
-        <isquestion>0</isquestion>
-        <useapplyto>-1</useapplyto>
-        <exetype>2</exetype>
-        <functionname></functionname>
-        <codestring></codestring>
-        <whoName>self</whoName>
-        <relative>0</relative>
-        <isnot>0</isnot>
-        <arguments>
-          <argument>
-            <kind>1</kind>
-            <string>
-if (updateFontSurf)
-{
-    updateFontSurf = false;
-    
-    // show_debug_message("Building characters...");
-    // build_char_surface_all();
-    show_debug_message("Building font texture...");
-    build_font_tex();
-    
-    // reset preview glyph
-    build_char_surface_preview(charSelected);
-}
-
-</string>
-          </argument>
-        </arguments>
-      </action>
       <action>
         <libid>1</libid>
         <id>603</id>
@@ -777,6 +733,45 @@ var _mx = floor(mouse_x / charWid) * charWid;
 var _my = floor(mouse_y / charHei) * charHei;
 
 iui_rect_alpha(_mx, _my, charWid, charHei, $FF00FF, 0.25);
+</string>
+          </argument>
+        </arguments>
+      </action>
+      <action>
+        <libid>1</libid>
+        <id>603</id>
+        <kind>7</kind>
+        <userelative>0</userelative>
+        <isquestion>0</isquestion>
+        <useapplyto>-1</useapplyto>
+        <exetype>2</exetype>
+        <functionname></functionname>
+        <codestring></codestring>
+        <whoName>self</whoName>
+        <relative>0</relative>
+        <isnot>0</isnot>
+        <arguments>
+          <argument>
+            <kind>1</kind>
+            <string>
+if (updateFontSurf)
+{
+    updateFontSurf = false;
+    
+    // show_debug_message("Building characters...");
+    // build_char_surface_all();
+    show_debug_message("Building font texture...");
+    build_font_tex();
+    
+    // reset preview glyph
+    build_char_surface_preview(charSelected);
+}
+
+if (updatePreview)
+{
+    updatePreview = false;
+    build_char_surface_preview(charSelected);
+}
 </string>
           </argument>
         </arguments>

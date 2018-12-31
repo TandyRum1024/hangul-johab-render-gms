@@ -97,7 +97,7 @@ surface_reset_target();
 // Apply mask
 draw_set_font(fntCurrent);
 surface_set_target(surface);
-draw_clear_alpha(0, false);
+draw_clear_alpha(0, 0);
 
 // origin content
 // use RSH for integer division instead of dividing by 2
@@ -132,11 +132,11 @@ else
 
 
 // resize surf & build surf
-if (surface_exists(maskTemp))
-    surface_resize(maskTemp, charWid, charHei);
+if (surface_exists(glyphTex))
+    surface_resize(glyphTex, charWid, charHei);
 else
-    maskTemp = surface_create(charWid, charHei);
-build_char_surface_to(index, maskTemp);
+    glyphTex = surface_create(charWid, charHei);
+build_char_surface_to(index, glyphTex);
 
 
 // draw
@@ -148,7 +148,8 @@ draw_set_font(fntCurrent);
 iui_label_alpha(charWid >> 1, charHei >> 1, char, c_blue, 0.5); // original glyph with tint
 draw_set_font(fntOWO);
 iui_align_pop();
-draw_surface(maskTemp, 0, 0); // mask applied one
+
+draw_surface(glyphTex, 0, 0); // mask applied one
 
 surface_reset_target();
 
