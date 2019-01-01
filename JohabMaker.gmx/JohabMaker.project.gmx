@@ -15,6 +15,7 @@
     <sprite>sprites\spr_uiwhitepixel1</sprite>
     <sprite>sprites\spr_uicheck</sprite>
     <sprite>sprites\spr_icons</sprite>
+    <sprite>sprites\spr_mouse</sprite>
   </sprites>
   <backgrounds name="background"/>
   <paths name="paths"/>
@@ -57,6 +58,7 @@
     </scripts>
     <script>scripts\hj_init.gml</script>
     <script>scripts\ui_vars.gml</script>
+    <script>scripts\ui_update.gml</script>
     <script>scripts\reset_char_data.gml</script>
     <script>scripts\build_char_surface_all.gml</script>
     <script>scripts\build_char_surface.gml</script>

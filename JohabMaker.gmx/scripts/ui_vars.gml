@@ -25,6 +25,20 @@ uToolbarHei = 170;
 uCurrentTab = 0;
 uTitleMsg = "강아지는 멍멍";
 
+// Tooltip
+uiTooltipMsg = "DANK LOL";
+uiTooltipShow = false;
+
+// Cursor
+/*
+    0 - Nrml
+    1 - Add
+    2 - Del
+    3 - Rect
+*/
+uiCursor = 0;
+uiCursorInCrop = false;
+
 // Style
 // Button
 iuiButtonShadow = true;

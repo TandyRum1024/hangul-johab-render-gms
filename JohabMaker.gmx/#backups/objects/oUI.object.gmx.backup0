@@ -1,4 +1,4 @@
-// 2018-12-31 03:12:52
+// 2019-01-02 01:35:04
 #event create
 iui_init();
 iui_init_vars();
@@ -76,8 +76,8 @@ maskTemp = surface_create(charWid, charHei); // temp surface for mask building
     ==================
 */
 // Font picker window
-winCropX = 42;
-winCropY = uToolbarHei + 42;
+winCropX = 0;
+winCropY = uToolbarHei;
 winCropPanelSize = 250;
 winCropTexSize = 250;
 
@@ -105,19 +105,19 @@ camVY = 0;
 camX = (gridWid * charWid) >> 1;
 camY = (gridHei * charHei) >> 1;
 camZ = 1;
-
-// Reset camera
 view_wport[0] = WIN_WID;
 view_hport[0] = WIN_HEI;
 
 draw_set_font(fntOWO);
-
 // build_char_surfaces();
 reset_char_data_all();
 build_font_tex();
 
+window_set_cursor(cr_none);
+
 #event step I/O, Camera
 iui_update_io();
+ui_update();
 
 if (iui_kbFocusItem == -1)
 {
@@ -147,7 +147,7 @@ view_yview[0] = camY - (_vhei * 0.5);
 view_wview[0] = _vwid;
 view_hview[0] = _vhei;
 
-#section glyph selecting & cropping
+#section glyph selecting & cropping & mouse logic
 
 // zoom ratio of panel size and cell size
 var zoomRatio = winCropPanelSize / charHei;
@@ -188,7 +188,7 @@ if (mouse_check_button_pressed(mb_left))
             _my >= 0 && _my <= gridHei)
         {
             charSelected = _mx + _my * gridWid;
-            build_char_surface_preview(charSelected);
+            updatePreview = true;
             
             cropX1 = 0;
             cropY1 = 0;
@@ -225,6 +225,17 @@ else if (mouse_check_button(mb_left) && cropping)
     cropY2 = ly;
 }
 
+// Mouse logic
+if (lx >= 0 && lx < charWid &&
+    ly >= 0 && ly < charHei)
+{
+    uiCursorInCrop = true;
+}
+else
+{
+    uiCursorInCrop = false;
+}
+
 #event step_begin Surface heartbeat & window size
 
 // "AAGAGAAAGAAAAGAGGGGAAAGAGAAAGAAGASOAOSSSOASSSOSSOSSSOSSSSOSISISISOSIDIOSMIO"
@@ -256,22 +267,7 @@ if (!surface_exists(fntTex))
 #event other_game_end
 johab_die();
 
-#event draw
-
-if (updateFontSurf)
-{
-    updateFontSurf = false;
-    
-    // show_debug_message("Building characters...");
-    // build_char_surface_all();
-    show_debug_message("Building font texture...");
-    build_font_tex();
-    
-    // reset preview glyph
-    build_char_surface_preview(charSelected);
-}
-
-#section update glyph overlay
+#event draw update glyph overlay
 
 var zoomRatio = winCropPanelSize / charHei;
 var zoomWid = charWid * zoomRatio;
@@ -350,8 +346,32 @@ var _mx = floor(mouse_x / charWid) * charWid;
 var _my = floor(mouse_y / charHei) * charHei;
 
 iui_rect_alpha(_mx, _my, charWid, charHei, $FF00FF, 0.25);
+#section
+
+if (updateFontSurf)
+{
+    updateFontSurf = false;
+    
+    // show_debug_message("Building characters...");
+    // build_char_surface_all();
+    show_debug_message("Building font texture...");
+    build_font_tex();
+    
+    // reset preview glyph
+    build_char_surface_preview(charSelected);
+}
+
+if (updatePreview)
+{
+    updatePreview = false;
+    build_char_surface_preview(charSelected);
+}
 
 #event draw_gui
+iui_inputX = window_mouse_get_x();
+iui_inputY = window_mouse_get_y();
+iui_inputDown = mouse_check_button(mb_left);
+
 var _generalmargin = 10;
 var _smallmargin = 20, _bigmargin = 42;
 var _halfmargin = _bigmargin / 1.5;
@@ -457,28 +477,53 @@ switch (uCurrentTab)
         break;
 }
 
-
 /*
     GLYPH EDITING
     ============
 */
+var _data = charData[| charSelected];
 var _winhalf = (winCropPanelSize * 0.5);
 var _wincx = winCropX + _winhalf;
 
 iui_align_center();
 iui_rect(winCropX, winCropY, winCropPanelSize, 42, COL.HIGHLIGHT); // top title
-iui_rect(winCropX, winCropY + 42, winCropPanelSize, winCropPanelSize + 50, COL.BASE);
-iui_label(_wincx, winCropY + 21, "글자 똑떼어먹기", uTextCol);
-var btnSet = ui_button(_wincx - (_winhalf * 0.7) - 35, winCropY + winCropPanelSize + 42, 70, 50, "좋다##BTNSET");
-var btnDel = ui_button(_wincx + (_winhalf * 0.7) - 35, winCropY + winCropPanelSize + 42, 70, 50, "삭제##BTNDEL");
-var btnAll = ui_button(_wincx - 35, winCropY + winCropPanelSize + 42, 70, 50, "줄#전체적용##BTNALL");
+iui_rect(winCropX, winCropY + 42, winCropPanelSize, WIN_HEI - (winCropY + 42), COL.BASE);
+iui_label(_wincx, winCropY + 21, "스파게티 미트볼 박사님", uTextCol);
+
+// inputs
+iuiButtonShadow = false;
+var _btnwid = winCropPanelSize / 3;
+var _btnhei = 50;
+var _btnhalf = _btnwid >> 1;
+var btnSet = ui_button_icon(winCropX, winCropY + winCropPanelSize + 42, _btnwid, _btnhei, "마스크 적용##BTNSET", 2, c_black);
+var btnDel = ui_button_icon(winCropX + winCropPanelSize - _btnwid, winCropY + winCropPanelSize + 42, _btnwid, _btnhei, "현재 적용중인 마스크 삭제##BTNDEL", 4, c_black);
+var btnAll = ui_button_icon(_wincx - _btnhalf, winCropY + winCropPanelSize + 42, _btnwid, _btnhei, "같은 줄 모두 적용##BTNALL", 3, c_black);
+
+var _attribtopmargin = winCropY + winCropPanelSize + _btnhei + (_bigmargin << 1);
+iui_label(_wincx, _attribtopmargin, "마우스로 마쓰크를#수정할 수 있읍니다.#============#SHIFT 단추로 누적 모드#ALT 단추로 빼기 모드", uTextCol);
+/*
+iui_label(_wincx, _attribtopmargin, "-=[쌤플 글자 (빈칸=기본값)]=-", uTextCol);
+iui_label(_wincx, _attribtopmargin + _halfmargin * 2, "-=[글자 오프쎗]=-", uTextCol);
+
+if (_data != undefined)
+{
+    var _offmarginy = _attribtopmargin + _halfmargin * 2 + _smallmargin;
+    iui_label(winCropX + _smallmargin, _offmarginy, "X : ", uTextCol);
+    iui_label(_wincx + _smallmargin, _offmarginy, "Y : ", uTextCol);
+    _data[@ CHAR.X] = ui_textbox_numberonly(winCropX + _smallmargin + _bigmargin, _offmarginy, 80, 32, string(_data[@ CHAR.X]), "CHAR_OFF_X", 0);
+    _data[@ CHAR.Y] = ui_textbox_numberonly(_wincx + _smallmargin + _bigmargin, _offmarginy, 80, 32, string(_data[@ CHAR.Y]), "CHAR_OFF_Y", 0);
+    
+    _data[@ CHAR.SOURCE] = ui_textbox_numberonly(_wincx - 40, _attribtopmargin + _smallmargin, 80, 32, string(_data[@ CHAR.SOURCE]), "CHAR_SRC", 0);
+}
+*/
+
+iuiButtonShadow = true;
 iui_align_pop();
 
 // Draw glyph preview / crop panel view
 var _zoomRatio = winCropTexSize / charHei;
 var _zoomWid = charWid * _zoomRatio;
 var _zoomHei = charHei * _zoomRatio;
-var _data = charData[| charSelected];
 
 var panelOffX = winCropX + (winCropPanelSize >> 1) - (_zoomWid >> 1);
 var panelOffY = winCropY + 42;
@@ -502,18 +547,6 @@ if (btnSet)
 {
     var _data = charData[| charSelected];
     
-    /*
-    
-    if (is_array(_data))
-    {
-        _data[@ CHAR.BBOX] = true;
-        _data[@ CHAR.X] = min(cropX1, cropX2);
-        _data[@ CHAR.Y] = min(cropY1, cropY2);
-        _data[@ CHAR.W] = abs(cropX2 - cropX1);
-        _data[@ CHAR.H] = abs(cropY2 - cropY1);
-        charData[| charSelected] = _data;
-    }
-    */
     if (is_array(_data) && surface_exists(_data[@ CHAR.MASK]))
     {
         surface_set_target(_data[@ CHAR.MASK]);
@@ -525,6 +558,7 @@ if (btnSet)
         
         build_char_surface(charSelected);
         updateFontSurf = true;
+        updatePreview = true;
     }
 }
 
@@ -590,3 +624,34 @@ if (PEPPIS)
     draw_set_valign(fa_top);
     iui_label(_maxx, _maxy, "[" + string(_maxx / WIN_WID) + ", " + string(_maxy / WIN_HEI) + "]#[" + string(_maxx) + "px, " + string(_maxy) + "px]", $00DDFF);
 }
+
+#section tooltip and cursor
+// Tooltip
+if (uiTooltipShow)
+{
+    var _labelwid = string_width(uiTooltipMsg) + 20;
+    var _labelhei = string_height(uiTooltipMsg) + 20;
+    
+    iui_align_center();
+    iui_rect(iui_inputX + 10, iui_inputY + 10, _labelwid, _labelhei, 0); // shadow
+    iui_rect(iui_inputX - 1, iui_inputY - 1, _labelwid + 2, _labelhei + 2, COL.BASE);
+    iui_rect(iui_inputX, iui_inputY, _labelwid, _labelhei, COL.WHITE);
+    iui_label(iui_inputX + (_labelwid >> 1), iui_inputY + (_labelhei >> 1), uiTooltipMsg, COL.BASE);
+    iui_align_pop();
+}
+
+// Cursor logic
+if (uiCursorInCrop)
+{
+    if (iui_keyMod & (1 << eKEYMOD.SHIFT))
+        uiCursor = 1;
+    else if (iui_keyMod & (1 << eKEYMOD.ALT))
+        uiCursor = 2;
+    else
+        uiCursor = 3;
+}
+else
+{
+    uiCursor = 0;
+}
+draw_sprite(spr_mouse, uiCursor, iui_inputX, iui_inputY);

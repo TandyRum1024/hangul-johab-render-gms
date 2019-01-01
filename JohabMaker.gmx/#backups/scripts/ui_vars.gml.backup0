@@ -1,4 +1,4 @@
-// 2018-12-27 23:13:31
+// 2019-01-02 01:18:22
 
 tbFntSize = "12";
 tbCellWid = "16";
@@ -25,6 +25,20 @@ uToolbarHei = 170;
 // tool tab
 uCurrentTab = 0;
 uTitleMsg = "강아지는 멍멍";
+
+// Tooltip
+uiTooltipMsg = "DANK LOL";
+uiTooltipShow = false;
+
+// Cursor
+/*
+    0 - Nrml
+    1 - Add
+    2 - Del
+    3 - Rect
+*/
+uiCursor = 0;
+uiCursorInCrop = false;
 
 // Style
 // Button

@@ -74,9 +74,10 @@ iui_align_pop();
 return isClicky;
 
 #define ui_button_icon
-///ui_button_icon(x, y, w, h, string, icon)
+///ui_button_icon(x, y, w, h, string, icon, col)
 /**
     iui_button() with icon
+    PS : string acts like tooltip and ID in this script!!
 **/
 
 /// Setup
@@ -100,6 +101,10 @@ if (point_in_rectangle(iui_inputX, iui_inputY, boxL, boxT, boxR, boxB))
     // ... and is clicked
     if (iui_activeItem == -1 && iui_inputDown)
         iui_activeItem = ID;
+        
+    // set tooltip
+    uiTooltipMsg = LABEL;
+    uiTooltipShow = true;
 }
 
 // is 'Pressed" (AKA The user pressed and released the button)
@@ -141,16 +146,21 @@ else // Nope
     _labelcol = COL.BASE;
 }
 
-var _margin = 16;
-var _centerx = argument0 + (argument2 >> 1);
-var _centery = argument1 + (argument3 >> 1);
-
-// label
-iui_align_center();
-iui_label(_centerx, _centery + _margin, LABEL, _labelcol);
-iui_align_pop();
+// label logic
+// if (isHot)
+// {
+//     var _labelwid = string_width(LABEL) + 20;
+//     var _labelhei = string_height(LABEL) + 20;
+    
+//     iui_rect(iui_inputX - 1, iui_inputY - 1, _labelwid + 2, _labelhei + 2, COL.BASE);
+//     iui_rect(iui_inputX, iui_inputY, _labelwid, _labelhei, COL.WHITE);
+//     iui_label(iui_inputX + (_labelwid >> 1), iui_inputY + (_labelhei >> 1), LABEL, COL.BASE);
+// }
+// iui_align_center();
+// iui_label(_centerx, _centery + _margin, LABEL, _labelcol);
+// iui_align_pop();
 
 // icon
-draw_sprite(spr_icons, argument5, _centerx, _centery);
+draw_sprite_ext(spr_icons, argument5, argument0 + (argument2 >> 1), argument1 + (argument3 >> 1), 1, 1, 0, argument6, 1);
 
 return isClicky;
