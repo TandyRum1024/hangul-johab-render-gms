@@ -17,8 +17,9 @@ for (var i=0; i<_charlen; i++)
 ds_list_clear(charData);
 ds_list_destroy(charData);
 
-surface_free(glyphTex);
 surface_free(maskPreview);
 surface_free(maskOverlay);
 surface_free(maskTemp);
+surface_free(tempTexA);
+surface_free(tempTexB);
 surface_free(fntTex);

@@ -7,7 +7,7 @@
 /// Setup
 // box edges
 var boxL = argument0, boxT = argument1
-var boxR = (boxL + argument2); boxB = (boxT + argument3);
+var boxR = (boxL + argument2), boxB = (boxT + argument3);
 
 /// Get label and ID.
 var stringArray = iui_get_all(argument4);
@@ -83,7 +83,7 @@ return isClicky;
 /// Setup
 // box edges
 var boxL = argument0, boxT = argument1
-var boxR = (boxL + argument2); boxB = (boxT + argument3);
+var boxR = (boxL + argument2), boxB = (boxT + argument3);
 
 /// Get label and ID.
 var stringArray = iui_get_all(argument4);
@@ -103,8 +103,11 @@ if (point_in_rectangle(iui_inputX, iui_inputY, boxL, boxT, boxR, boxB))
         iui_activeItem = ID;
         
     // set tooltip
-    uiTooltipMsg = LABEL;
-    uiTooltipShow = true;
+    if (LABEL != "")
+    {
+        uiTooltipMsg = LABEL;
+        uiTooltipShow = true;
+    }
 }
 
 // is 'Pressed" (AKA The user pressed and released the button)

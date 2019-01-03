@@ -1,4 +1,4 @@
-// 2018-12-31 02:45:01
+// 2019-01-03 14:59:02
 ///load_font(fontDir, size)
 /*
     Exec this when you change the font
@@ -20,7 +20,6 @@ show_debug_message("resetting all character data...");
 reset_char_data_all();
 
 // Resize surfaces
-surface_resize(glyphTex, charWid, charHei);
 surface_resize(maskOverlay, charWid, charHei);
 surface_resize(maskPreview, charWid, charHei);
 surface_resize(maskTemp, charWid, charHei);

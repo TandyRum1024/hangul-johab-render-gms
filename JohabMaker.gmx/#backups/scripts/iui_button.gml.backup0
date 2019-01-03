@@ -1,5 +1,6 @@
+// 2019-01-03 13:27:50
 #define iui_button
-///iui_button(boxL, boxT)
+///iui_button(x, y, w, h, string)
 /**
     Button for clicky things
     
@@ -14,7 +15,7 @@
 
 /// Setup
 // box edges
-var boxL = argument0, boxT = argument1;
+#args boxL, boxT
 var boxR = (boxL + argument2), boxB = (boxT + argument3);
 
 /// Get label and ID.
@@ -85,7 +86,7 @@ iui_align_pop();
 return isClicky;
 
 #define iui_button_nodraw
-///iui_button_nodraw(boxL, boxT)
+///iui_button_nodraw(x, y, w, h, string)
 /**
     Same as button, But without drawing. (= invisible button)
     
@@ -96,7 +97,7 @@ return isClicky;
 **/
 
 /// Setup
-var boxL = argument0, boxT = argument1;
+#args boxL, boxT
 var boxR = (boxL + argument2), boxB = (boxT + argument3);
 
 /// Get label and ID.

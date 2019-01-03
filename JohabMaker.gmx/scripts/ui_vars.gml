@@ -3,6 +3,7 @@ tbFntSize = "12";
 tbCellWid = "16";
 tbCellHei = "16";
 cbAscii = true;
+cbExportGrid = false;
 
 // colorem boyy
 enum COL

@@ -56,10 +56,21 @@
       <script>scripts\iui_asciiShift.gml</script>
       <script>scripts\iui_style.gml</script>
     </scripts>
+    <scripts name="CUSTOM_UI">
+      <script>scripts\ui_rect.gml</script>
+      <script>scripts\ui_label.gml</script>
+      <script>scripts\ui_button.gml</script>
+      <script>scripts\ui_tab.gml</script>
+      <script>scripts\ui_checkbox.gml</script>
+      <script>scripts\ui_textbox_numberonly.gml</script>
+      <script>scripts\ui_tooltip.gml</script>
+    </scripts>
     <script>scripts\hj_init.gml</script>
     <script>scripts\ui_vars.gml</script>
     <script>scripts\ui_update.gml</script>
+    <script>scripts\set_char_mask.gml</script>
     <script>scripts\reset_char_data.gml</script>
+    <script>scripts\select_char.gml</script>
     <script>scripts\build_char_surface_all.gml</script>
     <script>scripts\build_char_surface.gml</script>
     <script>scripts\build_font_tex.gml</script>
@@ -69,14 +80,7 @@
     <script>scripts\update_font_tex_old.gml</script>
     <script>scripts\hangul_range.gml</script>
     <script>scripts\johab_die.gml</script>
-    <scripts name="CUSTOM_UI">
-      <script>scripts\ui_rect.gml</script>
-      <script>scripts\ui_label.gml</script>
-      <script>scripts\ui_button.gml</script>
-      <script>scripts\ui_tab.gml</script>
-      <script>scripts\ui_checkbox.gml</script>
-      <script>scripts\ui_textbox_numberonly.gml</script>
-    </scripts>
+    <script>scripts\export_font_tex.gml</script>
   </scripts>
   <fonts name="fonts">
     <font>fonts\fntOWO</font>

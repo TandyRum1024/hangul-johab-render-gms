@@ -1,0 +1,20 @@
+// 2019-01-03 15:05:42
+///select_char(idx)
+/*
+    Selects character for mask editing
+*/
+
+#args idx
+
+var data = charData[| idx];
+
+if (is_array(data))
+{
+    charSelected = idx;
+    
+    // Copy mask to temp surface
+    var srcMask = data[@ CHAR.MASK];
+    surface_copy(maskTemp, 0, 0, srcMask);
+}
+
+set_char_mask_to(maskTemp, 0, 0, 0, 0);

@@ -1,9 +1,10 @@
-// 2019-01-02 01:18:22
+// 2019-01-03 15:18:09
 
 tbFntSize = "12";
 tbCellWid = "16";
 tbCellHei = "16";
 cbAscii = true;
+cbExportGrid = false;
 
 // colorem boyy
 enum COL

@@ -1,4 +1,4 @@
-// 2019-01-02 01:12:38
+// 2019-01-02 01:18:22
 
 tbFntSize = "12";
 tbCellWid = "16";
@@ -38,6 +38,7 @@ uiTooltipShow = false;
     3 - Rect
 */
 uiCursor = 0;
+uiCursorInCrop = false;
 
 // Style
 // Button

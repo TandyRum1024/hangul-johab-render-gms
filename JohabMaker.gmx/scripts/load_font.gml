@@ -19,7 +19,6 @@ show_debug_message("resetting all character data...");
 reset_char_data_all();
 
 // Resize surfaces
-surface_resize(glyphTex, charWid, charHei);
 surface_resize(maskOverlay, charWid, charHei);
 surface_resize(maskPreview, charWid, charHei);
 surface_resize(maskTemp, charWid, charHei);

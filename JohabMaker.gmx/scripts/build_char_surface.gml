@@ -12,53 +12,6 @@ if (index < 0)
     
 var data = charData[| index];
 build_char_surface_to(index, data[@ CHAR.BAKED]);
-/*
-// Build character to draw
-var data = charData[| index];
-var glyphX = index % gridWid, glyphY = index div gridWid, char = "";
-
-if (data[@ CHAR.SOURCE] != "")
-    char = data[@ CHAR.SOURCE];
-else
-    char = get_default_char(index);
-
-
-var maskSurf = data[@ CHAR.MASK];
-var finalSurf = data[@ CHAR.BAKED];
-
-// Build mask .. or "hole"
-surface_set_target(maskTemp);
-draw_clear(c_black);
-draw_set_blend_mode(bm_subtract);
-draw_surface(maskSurf, 0, 0);
-draw_set_blend_mode(bm_normal);
-surface_reset_target();
-
-
-// Apply mask
-draw_set_font(fntCurrent);
-
-surface_set_target(finalSurf);
-draw_clear_alpha(0, false);
-
-// origin content
-// use RSH for integer division instead of dividing by 2
-// because fractions are basically mortal enemy to textures.. especially pixelated fonts
-iui_align_center();
-iui_label(charWid >> 1, charHei >> 1, char, c_white);
-iui_align_pop();
-
-// mask
-/*
-draw_set_blend_mode(bm_subtract);
-draw_surface(maskTemp, 0, 0);
-draw_set_blend_mode(bm_normal);
-
-
-surface_reset_target();
-
-draw_set_font(fntOWO);
-*/
 
 #define build_char_surface_to
 ///build_char_surface_to(index, surface)
@@ -86,7 +39,7 @@ else
 var maskSurf = data[@ CHAR.MASK];
 
 // Build mask .. or "hole"
-surface_set_target(maskTemp);
+surface_set_target(tempTexA);
 draw_clear(c_black);
 draw_set_blend_mode(bm_subtract);
 draw_surface(maskSurf, 0, 0);
@@ -108,7 +61,7 @@ iui_align_pop();
 
 // mask
 draw_set_blend_mode(bm_subtract);
-draw_surface(maskTemp, 0, 0);
+draw_surface(tempTexA, 0, 0);
 draw_set_blend_mode(bm_normal);
 
 surface_reset_target();
@@ -117,41 +70,72 @@ draw_set_font(fntOWO);
 #define build_char_surface_preview
 ///build_char_surface_preview(index)
 /*
-    Updates glyph surface from glyph index for mask preview
+    Builds mask preview
 */
 
 // var
 var index = argument0;
 
+iui_align_center();
+draw_set_font(fntCurrent);
+
 var data = charData[| index];
+var dataready = is_array(data);
 var char = "";
 if (data[@ CHAR.SOURCE] != "")
     char = data[@ CHAR.SOURCE];
 else
     char = get_default_char(index);
 
-
-// resize surf & build surf
-if (surface_exists(glyphTex))
-    surface_resize(glyphTex, charWid, charHei);
+// Resize surf
+if (surface_exists(tempTexA))
+    surface_resize(tempTexA, charWid, charHei);
 else
-    glyphTex = surface_create(charWid, charHei);
-build_char_surface_to(index, glyphTex);
+    tempTexA = surface_create(charWid, charHei);
+    
+if (surface_exists(tempTexB))
+    surface_resize(tempTexB, charWid, charHei);
+else
+    tempTexB = surface_create(charWid, charHei);
 
 
-// draw
-surface_set_target(maskPreview);
-draw_clear_alpha(0, 0);
-
-iui_align_center();
-draw_set_font(fntCurrent);
-iui_label_alpha(charWid >> 1, charHei >> 1, char, c_blue, 0.5); // original glyph with tint
-draw_set_font(fntOWO);
-iui_align_pop();
-
-draw_surface(glyphTex, 0, 0); // mask applied one
-
+// Make "hole" from mask surface
+surface_set_target(tempTexA);
+draw_clear(c_black);
+draw_set_blend_mode(bm_subtract);
+draw_surface(maskTemp, 0, 0);
+draw_set_blend_mode(bm_normal);
 surface_reset_target();
+
+// Build mask applied one
+surface_set_target(tempTexB);
+draw_clear_alpha(0, 0);
+iui_label(charWid >> 1, charHei >> 1, char, c_white);
+
+draw_set_blend_mode(bm_subtract);
+draw_surface(tempTexA, 0, 0);
+draw_set_blend_mode(bm_normal);
+surface_reset_target();
+
+
+// Build mask preview
+surface_set_target(maskPreview);
+
+// draw tint
+draw_clear_alpha(c_red, 0.5);
+draw_set_blend_mode(bm_subtract);
+draw_surface(maskTemp, 0, 0);
+draw_set_blend_mode(bm_normal);
+
+// Draw OG glyph
+iui_label_alpha(charWid >> 1, charHei >> 1, char, COL.HIGHLIGHT2, 0.5); // original glyph with tint
+
+// mask applied one
+draw_surface(tempTexB, 0, 0);
+surface_reset_target();
+
+iui_align_pop();
+draw_set_font(fntOWO);
 
 #define build_glyph_old
 ///build_char_surfaces()
