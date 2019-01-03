@@ -1,4 +1,4 @@
-// 2019-01-03 15:30:33
+// 2019-01-03 22:56:43
 #event create
 iui_init();
 iui_init_vars();
@@ -46,7 +46,8 @@ enum CHAR
     BAKED,
     MASK,
     X,
-    Y
+    Y,
+    OCCUPIED
 }
 // 0 - The glyph to get original texture (ex : '갈')
 // 1 - baked Glyph surface
@@ -70,6 +71,8 @@ maskPreview = surface_create(charWid, charHei); // cached mask preview surface
 maskTemp = surface_create(charWid, charHei); // temp surface for mask building before applying to character
 tempTexA = surface_create(charWid, charHei);
 tempTexB = surface_create(charWid, charHei);
+
+textureDestroyed = false; // Texture was destroyed and must load last backup?
 
 /* 
     WINDOW
@@ -116,6 +119,9 @@ reset_char_data_all();
 build_font_tex(true, c_black, 1);
 
 window_set_cursor(cr_none);
+
+var _20 = get_default_char(20);
+show_debug_message("CHAR #20 : '" + string(ord(_20)) + "' (" + _20 + ")")
 
 #event step I/O, Camera
 iui_update_io();
@@ -261,10 +267,17 @@ if ((_wid != 0 && _hei != 0) &&
     WIN_WID = _wid;
     WIN_HEI = _hei;
 }
+
+if (!surface_exists(maskTemp))
+    maskTemp = surface_create(charWid, charHei);
     
 if (!surface_exists(maskPreview))
 {
     maskPreview = surface_create(charWid, charHei);
+    
+    if (!surface_exists(maskTemp))
+        maskTemp = surface_create(charWid, charHei);
+    
     build_char_surface_preview(charSelected);
 }
 
@@ -323,8 +336,10 @@ surface_reset_target();
 draw_clear(COL.GRAY);
 
 // surface
+iui_rect(10, 10, surface_get_width(fntTex), surface_get_height(fntTex), COL.BASE); // shadow
 draw_surface(fntTex, 0, 0); // draw hangul stuff
 
+// Draw glyph pick hint
 var _mx = floor(mouse_x / charWid) * charWid;
 var _my = floor(mouse_y / charHei) * charHei;
 
@@ -508,7 +523,8 @@ var _wincx = winCropX + _winhalf;
 iui_align_center();
 iui_rect(winCropX, winCropY, winCropPanelSize, 42, COL.HIGHLIGHT); // top title
 iui_rect(winCropX, winCropY + 42, winCropPanelSize, WIN_HEI - (winCropY + 42), COL.BASE);
-iui_label(_wincx, winCropY + 21, "스파게티 미트볼 박사님", uTextCol);
+iui_label(_wincx, winCropY + 21, "글자 누끼", uTextCol);
+ui_tooltip(winCropX + winCropPanelSize - 42, winCropY, 42, 42, "마우스를 끌어 사각형을 그리면서#폰트의 누끼를 딸 수 있읍니다..#============#SHIFT 단추로 누적 모드#ALT 단추로 빼기 모드", 5, COL.BASE, false, true, COL.HIGHLIGHT2);
 
 // inputs
 iuiButtonShadow = false;
@@ -520,24 +536,24 @@ var btnDel = ui_button_icon(winCropX + winCropPanelSize - _btnwid, winCropY + wi
 var btnAll = ui_button_icon(_wincx - _btnhalf, winCropY + winCropPanelSize + 42, _btnwid, _btnhei, "같은 줄 모두 적용##BTNALL", 3, c_black);
 
 var _attribtopmargin = winCropY + winCropPanelSize + 42 + _btnhei; // + (_bigmargin << 1);
-ui_tooltip(winCropX, _attribtopmargin, winCropPanelSize, _btnhei, "마우스를 끌어 사각형을 그리면서#폰트의 누끼를 딸 수 있읍니다..#============#SHIFT 단추로 누적 모드#ALT 단추로 빼기 모드", 5, COL.HIGHLIGHT, true, false, COL.WHITE);
 
 _attribtopmargin += (_bigmargin << 1);
-/*
+
 iui_label(_wincx, _attribtopmargin, "-=[쌤플 글자 (빈칸=기본값)]=-", uTextCol);
-iui_label(_wincx, _attribtopmargin + _halfmargin * 2, "-=[글자 오프쎗]=-", uTextCol);
+iui_label(_wincx, _attribtopmargin + _halfmargin * 3, "-=[글자 상대 위치]=-", uTextCol);
 
 if (_data != undefined)
 {
-    var _offmarginy = _attribtopmargin + _halfmargin * 2 + _smallmargin;
+    var _offmarginy = _attribtopmargin + _halfmargin * 3 + _smallmargin;
     iui_label(winCropX + _smallmargin, _offmarginy, "X : ", uTextCol);
     iui_label(_wincx + _smallmargin, _offmarginy, "Y : ", uTextCol);
+    
+    _offmarginy -= 16;
     _data[@ CHAR.X] = ui_textbox_numberonly(winCropX + _smallmargin + _bigmargin, _offmarginy, 80, 32, string(_data[@ CHAR.X]), "CHAR_OFF_X", 0);
     _data[@ CHAR.Y] = ui_textbox_numberonly(_wincx + _smallmargin + _bigmargin, _offmarginy, 80, 32, string(_data[@ CHAR.Y]), "CHAR_OFF_Y", 0);
     
     _data[@ CHAR.SOURCE] = ui_textbox_numberonly(_wincx - 40, _attribtopmargin + _smallmargin, 80, 32, string(_data[@ CHAR.SOURCE]), "CHAR_SRC", 0);
 }
-*/
 
 iuiButtonShadow = true;
 iui_align_pop();
@@ -658,9 +674,9 @@ if (uiTooltipShow)
 // Cursor logic
 if (uiCursorInCrop)
 {
-    if (iui_keyMod & (1 << eKEYMOD.SHIFT))
+    if (cropmode == 1)
         uiCursor = 1;
-    else if (iui_keyMod & (1 << eKEYMOD.ALT))
+    else if (cropmode == 2)
         uiCursor = 2;
     else
         uiCursor = 3;

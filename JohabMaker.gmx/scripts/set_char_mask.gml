@@ -53,7 +53,9 @@ if (!is_array(data))
 // set mask
 var mask = data[@ CHAR.MASK];
 surface_set_target(mask);
+draw_set_blend_mode(bm_subtract);
 iui_rect_pos(x1, y1, x2 + 1, y2 + 1, c_white, 0);
+draw_set_blend_mode(bm_normal);
 surface_reset_target();
 
 #define clear_char_mask
@@ -115,7 +117,9 @@ var surf = argument0, x1 = argument1, y1 = argument2, x2 = argument3, y2 = argum
 
 // set mask
 surface_set_target(surf);
-iui_rect_pos(x1, y1, x2 + 1, y2 + 1, c_white, 0);
+draw_set_blend_mode(bm_subtract);
+iui_rect_pos(x1, y1, x2 + 1, y2 + 1, c_white, 1);
+draw_set_blend_mode(bm_normal);
 surface_reset_target();
 
 #define clear_char_mask_to

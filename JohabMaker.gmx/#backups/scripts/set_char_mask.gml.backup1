@@ -1,4 +1,4 @@
-// 2019-01-03 15:06:13
+// 2019-01-03 21:44:45
 #define set_char_mask
 ///set_char_mask(idx, x1, y1, x2, y2)
 /*
@@ -16,7 +16,7 @@ if (!is_array(data))
 var mask = data[@ CHAR.MASK];
 surface_set_target(mask);
 draw_clear_alpha(0, 0);
-iui_rect_pos(x1, y1, x2 + 1, y2 + 1, c_white, 1);
+iui_rect_pos(x1, y1, x2 + 1, y2 + 1, c_white, 1); // somehow we need to add 1 pixel margin as the rectangle isn't inclusive
 surface_reset_target();
 
 #define add_char_mask
@@ -54,7 +54,9 @@ if (!is_array(data))
 // set mask
 var mask = data[@ CHAR.MASK];
 surface_set_target(mask);
-iui_rect_pos(x1, y1, x2 + 1, y2 + 1, c_white, 0);
+draw_set_blend_mode(bm_subtract);
+iui_rect_pos(x1, y1, x2 + 1, y2 + 1, c_white, 1);
+draw_set_blend_mode(bm_normal);
 surface_reset_target();
 
 #define clear_char_mask
@@ -116,7 +118,9 @@ surface_reset_target();
 
 // set mask
 surface_set_target(surf);
-iui_rect_pos(x1, y1, x2 + 1, y2 + 1, c_white, 0);
+draw_set_blend_mode(bm_subtract);
+iui_rect_pos(x1, y1, x2 + 1, y2 + 1, c_white, 1);
+draw_set_blend_mode(bm_normal);
 surface_reset_target();
 
 #define clear_char_mask_to

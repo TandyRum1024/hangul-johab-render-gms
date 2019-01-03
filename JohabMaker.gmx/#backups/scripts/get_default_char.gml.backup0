@@ -1,4 +1,4 @@
-// 2018-12-31 02:07:50
+// 2019-01-03 23:44:28
 ///get_default_char(idx)
 /*
     returns "default" Korean character given the index
@@ -61,6 +61,8 @@ else if (glyphY < _asciioff) // Compatible Jamo
         
     if (localoff >= 0 && localoff <= $33) // check if the index is inside of the valid jamo range
         char = chr($3130 + localoff);
+    else
+        char = "";
 }
 else // ASCII
 {

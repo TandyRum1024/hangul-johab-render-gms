@@ -11,7 +11,23 @@ if (index < 0)
     return -1;
     
 var data = charData[| index];
-build_char_surface_to(index, data[@ CHAR.BAKED]);
+var surf = data[@ CHAR.BAKED];
+
+if (!surface_exists(surf))
+{
+    surf = surface_create(charWid, charHei);
+    data[@ CHAR.BAKED] = surf;
+}
+
+build_char_surface_to(index, surf);
+/*
+if (get_default_char(index) == "")
+{
+    surface_set_target(surf);
+    draw_clear(c_red);
+    surface_reset_target();
+}
+*/
 
 #define build_char_surface_to
 ///build_char_surface_to(index, surface)
@@ -37,6 +53,8 @@ else
 
 
 var maskSurf = data[@ CHAR.MASK];
+if (!surface_exists(maskSurf))
+    maskSurf = surface_create(charWid, charHei);
 
 // Build mask .. or "hole"
 surface_set_target(tempTexA);

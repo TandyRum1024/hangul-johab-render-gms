@@ -42,8 +42,21 @@ for (var i=0; i<_charlen; i++)
     var _x = (i % gridWid) * charWid;
     var _y = (i div gridWid) * charHei;
     
-    // build_char_surface(i);
-    draw_surface(_data[@ CHAR.BAKED], _x, _y);
+    if (_data[@ CHAR.OCCUPIED])
+    {
+        if (!surface_exists(_data[@ CHAR.BAKED]))
+            build_char_surface(i);
+        
+        draw_surface(_data[@ CHAR.BAKED], _x, _y);
+    }
+    else
+    {
+        iui_rect(_x, _y, charWid, charHei, c_red);
+        
+        iui_align_center();
+        iui_label(_x + (charWid >> 1), _y + (charHei >> 1), dec_to_hex(ord(get_default_char(i))), c_yellow);
+        iui_align_pop();
+    }
 }
 show_debug_message("DRAWN " + string(_charlen) + " CHARACTERS TOTAL");
 

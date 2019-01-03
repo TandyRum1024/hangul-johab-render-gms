@@ -60,6 +60,8 @@ else if (glyphY < _asciioff) // Compatible Jamo
         
     if (localoff >= 0 && localoff <= $33) // check if the index is inside of the valid jamo range
         char = chr($3130 + localoff);
+    else
+        char = "";
 }
 else // ASCII
 {

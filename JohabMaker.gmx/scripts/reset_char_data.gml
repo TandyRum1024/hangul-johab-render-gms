@@ -41,6 +41,9 @@ _arr[CHAR.BAKED] = _baked;
 _arr[CHAR.MASK] = _mask;
 _arr[CHAR.X] = 0;
 _arr[CHAR.Y] = 0;
+
+var _chr = ord(get_default_char(ind));
+_arr[CHAR.OCCUPIED] = check_hangul_range(_chr);// || (_chr <= 127);
 charData[| ind] = _arr;
 
 #define reset_char_data_all

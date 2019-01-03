@@ -1,12 +1,16 @@
-// 2019-01-03 14:57:39
+// 2019-01-03 23:03:05
 ///build_char_surface_all()
 /*
     Builds all font surfaces
 */
 
 var _charlen = gridWid * gridHei;
+var _data;
 
 for (var i=0; i<_charlen; i++)
 {
-    build_char_surface(i);
+    _data = charData[| i];
+    
+    if (_data[@ CHAR.OCCUPIED])
+        build_char_surface(i);
 }

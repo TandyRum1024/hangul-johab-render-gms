@@ -4,8 +4,12 @@
 */
 
 var _charlen = gridWid * gridHei;
+var _data;
 
 for (var i=0; i<_charlen; i++)
 {
-    build_char_surface(i);
+    _data = charData[| i];
+    
+    if (_data[@ CHAR.OCCUPIED])
+        build_char_surface(i);
 }
