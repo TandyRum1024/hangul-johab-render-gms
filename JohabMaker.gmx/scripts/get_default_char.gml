@@ -43,15 +43,22 @@ else if (glyphY < _jamooff) // Jongseong
 {
     localoff = glyphY - _jongseongoff;
     
-    switch (localoff)
+    if (glyphX == 0) // Jongseong's first cell is reserved
     {
-        case 0: // beol 1
-            char = chr($AC00 + glyphX);
-            break;
-            
-        case 1: // beol 2
-            char = chr($AC00 + (29) * 28 + glyphX);
-            break;
+        char = "";
+    }
+    else
+    {
+        switch (localoff)
+        {
+            case 0: // beol 1
+                char = chr($AC00 + glyphX);
+                break;
+                
+            case 1: // beol 2
+                char = chr($AC00 + (29) * 28 + glyphX);
+                break;
+        }
     }
 }
 else if (glyphY < _asciioff) // Compatible Jamo

@@ -100,10 +100,18 @@ draw_set_font(fntCurrent);
 var data = charData[| index];
 var dataready = is_array(data);
 var char = "";
-if (data[@ CHAR.SOURCE] != "")
+if (dataready && data[@ CHAR.SOURCE] != undefined && data[@ CHAR.SOURCE] != "")
+{
     char = data[@ CHAR.SOURCE];
+    show_debug_message("SRC " + string(typeof(char)));
+}
 else
+{
     char = get_default_char(index);
+    show_debug_message("DEF " + string(char));
+}
+
+show_debug_message("Get char : " + string(char));
 
 // Resize surf
 if (surface_exists(tempTexA))

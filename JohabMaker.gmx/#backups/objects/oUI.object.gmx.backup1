@@ -1,4 +1,4 @@
-// 2019-01-03 22:56:40
+// 2019-01-04 14:40:03
 #event create
 iui_init();
 iui_init_vars();
@@ -121,7 +121,7 @@ build_font_tex(true, c_black, 1);
 window_set_cursor(cr_none);
 
 var _20 = get_default_char(20);
-show_debug_message("CHAR #20 : '" + string(chr(_20)) + "' (" + _20 + ")")
+show_debug_message("CHAR #20 : '" + string(ord(_20)) + "' (" + _20 + ")")
 
 #event step I/O, Camera
 iui_update_io();
@@ -186,7 +186,7 @@ if (winCropLocalX >= 0 && winCropLocalX < charWid &&
         cropY2 = winCropLocalY;
     }
 }
-else
+else if (winCropLocalX >= charWid)
 {
     uiCursorInCrop = false;
     
@@ -353,7 +353,7 @@ if (updateFontSurf)
     // show_debug_message("Building characters...");
     // build_char_surface_all();
     show_debug_message("Building font texture...");
-    build_font_tex(true, c_black, 1);
+    build_font_tex();
     
     // reset preview glyph
     build_char_surface_preview(charSelected);
@@ -423,15 +423,15 @@ switch (uCurrentTab)
         // load & reload section
         var btnLoad = ui_button(_leftmarginA, _topmargin + _bigmargin, 150, 42, "LOAD FONT");
         var btnReload = ui_button(_leftmarginA + 150 + _bigmargin , _topmargin + _bigmargin, 150, 42, "RELOAD");
-        iui_label(_leftmarginA, _topmargin, "FONT : " + string(fntName), COL.HIGHLIGHT);
+        iui_label(_leftmarginA, _topmargin, "폰트 : " + string(fntName), COL.HIGHLIGHT);
         
         // font attributes section
         var _off = _leftmarginB + _bigmargin;
         iui_align_push(fa_right, fa_top);
         
-        iui_label(_off, _topmargin, "FONT SIZE : ", uTextCol);
-        iui_label(_off, _topmargin + _bigmargin, "CELL SIZE : ", uTextCol);
-        iui_label(_off, _topmargin + (_bigmargin << 1), "EAT VEGETABLE : ", uTextCol);
+        iui_label(_off, _topmargin, "폰트 크기 : ", uTextCol);
+        iui_label(_off, _topmargin + _bigmargin, "격자 크기 : ", uTextCol);
+        iui_label(_off, _topmargin + (_bigmargin << 1), "ASCII 사용 : ", uTextCol);
         iui_label(_off + _smallmargin + 90 + (string_width("X") >> 1), _topmargin + _bigmargin, "X", uTextCol);
         
         tbFntSize = ui_textbox_numberonly(_off + _smallmargin, _topmargin, 80, 32, string(tbFntSize), "FONTSIZE", 0);
@@ -442,8 +442,8 @@ switch (uCurrentTab)
         
         iui_align_pop();
         
-        iui_label(_rightmargin, _topmargin, "GRID SIZE : [" + string(gridWid) + ", " + string(gridHei) + "]", uTextCol);
-        iui_label(_rightmargin, _topmargin + _bigmargin, "TEX. SIZE : [" + string(gridWid * charWid) + ", " + string(gridHei * charHei) + "]", uTextCol);
+        iui_label(_rightmargin, _topmargin, "격자 최종 크기 : [" + string(gridWid) + ", " + string(gridHei) + "]", uTextCol);
+        iui_label(_rightmargin, _topmargin + _bigmargin, "텍스쳐 사이즈 : [" + string(gridWid * charWid) + ", " + string(gridHei * charHei) + "]", uTextCol);
         
         /// Buttons
         if (btnLoad)
@@ -501,7 +501,7 @@ switch (uCurrentTab)
         /// Buttons
         if (btnExport)
         {
-            var _path = get_save_filename("PNG 폰트 이미지|*.png", "파일 이름을 입력해주세요!");
+            var _path = get_save_filename("PNG 폰트 이미지|*.png", "font" + string(charWid) + "x" + string(charWid));
             
             if (_path != "")
             {
@@ -552,7 +552,7 @@ if (_data != undefined)
     _data[@ CHAR.X] = ui_textbox_numberonly(winCropX + _smallmargin + _bigmargin, _offmarginy, 80, 32, string(_data[@ CHAR.X]), "CHAR_OFF_X", 0);
     _data[@ CHAR.Y] = ui_textbox_numberonly(_wincx + _smallmargin + _bigmargin, _offmarginy, 80, 32, string(_data[@ CHAR.Y]), "CHAR_OFF_Y", 0);
     
-    _data[@ CHAR.SOURCE] = ui_textbox_numberonly(_wincx - 40, _attribtopmargin + _smallmargin, 80, 32, string(_data[@ CHAR.SOURCE]), "CHAR_SRC", 0);
+    // _data[@ CHAR.SOURCE] = ui_textbox_numberonly(_wincx - 40, _attribtopmargin + _smallmargin, 80, 32, string(_data[@ CHAR.SOURCE]), "CHAR_SRC", 0);
 }
 
 iuiButtonShadow = true;
@@ -607,7 +607,7 @@ if (btnAll)
         var _off = _y * gridWid + i;
         var _data = charData[| _off];
         
-        if (is_array(_data))
+        if (is_array(_data) && _data[@ CHAR.OCCUPIED])
         {
             surface_copy(_data[@ CHAR.MASK], 0, 0, _mask);
             
