@@ -46,7 +46,7 @@ for (i = 0; i < numTabs; i++)
     tabW    = (tabLabelWid + 20);
     
     // is hover
-    if (point_in_rectangle(iui_inputX, iui_inputY, tabX, tabY, (tabX + tabW), (tabY + tabH)))
+    if (uiActive && point_in_rectangle(iui_inputX, iui_inputY, tabX, tabY, (tabX + tabW), (tabY + tabH)))
     {
         iui_hotItem = tabID;
         isHot = true;

@@ -79,7 +79,6 @@ enum CHAR
 // 2 - Glyph mask
 // 3..4 - glyph offset x and y
 
-
 /* 
     TEXTURES
     ==================
@@ -145,8 +144,7 @@ build_font_tex(true, c_black, 1);
 
 window_set_cursor(cr_none);
 
-var _20 = get_default_char(20);
-show_debug_message("CHAR #20 : '" + string(ord(_20)) + "' (" + _20 + ")")
+kia_init();
 </string>
           </argument>
         </arguments>
@@ -256,6 +254,14 @@ view_yview[0] = camY - (_vhei * 0.5);
 view_wview[0] = _vwid;
 view_hview[0] = _vhei;
 
+// Escape modal menu
+if (uiModal &amp;&amp; keyboard_check_pressed(vk_escape))
+{
+    uiModal = false;
+    iui_activeItem = -1;
+    iui_hotItem = -1;
+}
+
 </string>
           </argument>
         </arguments>
@@ -290,41 +296,44 @@ winCropLocalX = floor((iui_inputX - (winCropX + panelOffX)) / zoomRatio);
 winCropLocalY = floor((iui_inputY - (winCropY + panelOffY)) / zoomRatio);
 
 // Mouse logic
-if (winCropLocalX &gt;= 0 &amp;&amp; winCropLocalX &lt; charWid &amp;&amp;
-    winCropLocalY &gt;= 0 &amp;&amp; winCropLocalY &lt; charHei)
+if (!uiModal)
 {
-    uiCursorInCrop = true;
-    
-    // mask editing
-    if (mouse_check_button_pressed(mb_left))
+    if (winCropLocalX &gt;= 0 &amp;&amp; winCropLocalX &lt; charWid &amp;&amp;
+        winCropLocalY &gt;= 0 &amp;&amp; winCropLocalY &lt; charHei)
     {
-        cropping = true;
-        cropShow = true;
+        uiCursorInCrop = true;
         
-        cropX1 = winCropLocalX;
-        cropY1 = winCropLocalY;
-        cropX2 = winCropLocalX;
-        cropY2 = winCropLocalY;
-    }
-}
-else if (winCropLocalX &gt;= charWid) // We don't want the users able to click through the left panel
-{
-    uiCursorInCrop = false;
-    
-    // glyph selecting
-    if (mouse_check_button_pressed(mb_left))
-    {
-        cropping = false;
-        cropShow = false;
-        
-        var _mx = floor(mouse_x / charWid);
-        var _my = floor(mouse_y / charHei);
-        
-        if (_mx &gt;= 0 &amp;&amp; _mx &lt;= gridWid &amp;&amp;
-            _my &gt;= 0 &amp;&amp; _my &lt;= gridHei)
+        // mask editing
+        if (mouse_check_button_pressed(mb_left))
         {
-            select_char(_mx + _my * gridWid);
-            updatePreview = true;
+            cropping = true;
+            cropShow = true;
+            
+            cropX1 = winCropLocalX;
+            cropY1 = winCropLocalY;
+            cropX2 = winCropLocalX;
+            cropY2 = winCropLocalY;
+        }
+    }
+    else
+    {
+        uiCursorInCrop = false;
+        
+        // glyph selecting
+        if (mouse_check_button_pressed(mb_left) &amp;&amp; winCropLocalX &gt;= charWid) // We don't want the users able to click through the left panel
+        {
+            cropping = false; 
+            cropShow = false;
+            
+            var _mx = floor(mouse_x / charWid);
+            var _my = floor(mouse_y / charHei);
+            
+            if (_mx &gt;= 0 &amp;&amp; _mx &lt;= gridWid &amp;&amp;
+                _my &gt;= 0 &amp;&amp; _my &lt;= gridHei)
+            {
+                select_char(_mx + _my * gridWid);
+                updatePreview = true;
+            }
         }
     }
 }
@@ -442,7 +451,9 @@ if (cropping)
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>iui_inputX = window_mouse_get_x();
+            <string>uiActive = !uiModal;
+
+iui_inputX = window_mouse_get_x();
 iui_inputY = window_mouse_get_y();
 iui_inputDown = mouse_check_button(mb_left);
 
@@ -461,7 +472,7 @@ iui_align_center();
 */
 iui_rect(0, 0, WIN_WID, uToolbarHei, uBGCol);
 iui_rect(0, uToolbarHei, WIN_WID, 4, COL.WHITE);
-uCurrentTab = ui_tab(0, 0, WIN_WID, 24, iui_pack("@=(^0^)", "폰트", "내보내기", "설정", "잡다한거"), uCurrentTab);
+uCurrentTab = ui_tab(0, 0, WIN_WID, 24, iui_pack("@=(^0^)", "메인", "폰트 설정"), uCurrentTab);
 iui_align_pop();
 
 /*
@@ -488,20 +499,46 @@ switch (uCurrentTab)
     
     case 1:
         /*
+            MAIN TAB
+            ============
+            preview &amp; export &amp; reload
+        */
+        var _leftmarginA = _smallmargin;
+        var _topmargin = _bigmargin;
+        
+        
+        /// buttons
+        var btnPreview = ui_button(_leftmarginA, _topmargin, 150, 42, "미리보기");
+        var btnExport = ui_button(_leftmarginA, _topmargin + _bigmargin + 10, 150, 42, "폰트 내보내기!");
+        var btnReload = ui_button(_leftmarginA + 150 + 10 , _topmargin, 150, 42, "다시 불러오기");
+        
+        
+        /// BUTTON FUNCS
+        if (btnPreview)
+        {
+            uiModal = true;
+            uiModalMsg = "폰트 미리보기";
+        }
+        break;
+    
+    case 2:
+        /*
             FONT TAB
             ============
+            set font &amp; font size &amp; cell size
         */
         var _leftmarginA = _smallmargin;
         var _leftmarginB = _smallmargin + 300 + (_bigmargin &lt;&lt; 1) + 100;
         var _rightmargin = WIN_WID - 300;
         var _topmargin = _bigmargin;
         
-        // load &amp; reload section
-        var btnLoad = ui_button(_leftmarginA, _topmargin + _bigmargin, 150, 42, "LOAD FONT");
-        var btnReload = ui_button(_leftmarginA + 150 + _bigmargin , _topmargin + _bigmargin, 150, 42, "RELOAD");
+        /// load &amp; reload section
+        var btnLoad = ui_button(_leftmarginA, _topmargin + _bigmargin, 150, 42, "폰트 불러오기");
+        var btnReload = ui_button(_leftmarginA + 150 + _bigmargin , _topmargin + _bigmargin, 150, 42, "다시 불러오기");
         iui_label(_leftmarginA, _topmargin, "폰트 : " + string(fntName), COL.HIGHLIGHT);
         
-        // font attributes section
+        
+        /// font attributes section
         var _off = _leftmarginB + _bigmargin;
         iui_align_push(fa_right, fa_top);
         
@@ -520,6 +557,7 @@ switch (uCurrentTab)
         
         iui_label(_rightmargin, _topmargin, "격자 최종 크기 : [" + string(gridWid) + ", " + string(gridHei) + "]", uTextCol);
         iui_label(_rightmargin, _topmargin + _bigmargin, "텍스쳐 사이즈 : [" + string(gridWid * charWid) + ", " + string(gridHei * charHei) + "]", uTextCol);
+        
         
         /// Buttons
         if (btnLoad)
@@ -550,11 +588,12 @@ switch (uCurrentTab)
         }
         break;
     
+    /*
     case 2:
         /*
             EXPORT TAB
             ============
-        */
+        
         
         var _leftmarginA = _smallmargin;
         var _leftmarginB = _smallmargin + 300 + (_bigmargin &lt;&lt; 1) + 100;
@@ -562,15 +601,16 @@ switch (uCurrentTab)
         var _topmargin = _bigmargin;
         
         // load &amp; reload section
-        var btnExport = ui_button(_leftmarginA, _topmargin + _bigmargin, 150, 42, "내보내기!");
+        var btnExport = ui_button(_leftmarginA, _topmargin + _bigmargin, 150, 42, "폰트 내보내기!");
         
         // Attribs
         var _off = _leftmarginB + _bigmargin;
         iui_align_push(fa_right, fa_top);
         
-        iui_label(_off, _topmargin + (_bigmargin &lt;&lt; 1), "격자 내보내기 : ", uTextCol);
-        iui_label(_off + _smallmargin + 90 + (string_width("X") &gt;&gt; 1), _topmargin + _bigmargin, "X", uTextCol);
-        cbExportGrid = ui_checkbox(_off + _smallmargin, _topmargin + (_bigmargin &lt;&lt; 1), 16, 16, cbExportGrid, "EXPORT_GRID");
+        iui_label(_off, _topmargin, "격자 내보내기 : ", uTextCol);
+        iui_label(_off, _topmargin + _bigmargin, "배경 내보내기 : ", uTextCol);
+        cbExportGrid = ui_checkbox(_off + _smallmargin, _topmargin, 16, 16, cbExportGrid, "EXPORT_GRID");
+        cbExportBG = ui_checkbox(_off + _smallmargin, _topmargin + _bigmargin, 16, 16, cbExportBG, "EXPORT_BG");
         
         iui_align_pop();
         
@@ -582,11 +622,13 @@ switch (uCurrentTab)
             if (_path != "")
             {
                 // export!
-                export_font_tex(_path, cbExportGrid, false, c_black);
+                export_font_tex(_path, cbExportGrid, cbExportBG, c_black);
             }
         }
         break;
+    */
 }
+
 
 /*
     GLYPH EDITING
@@ -605,13 +647,16 @@ ui_tooltip(winCropX + winCropPanelSize - 42, winCropY, 42, 42, "마우스를 끌
 // inputs
 iuiButtonShadow = false;
 var _btnwid = winCropPanelSize / 3;
-var _btnhei = 50;
-var _btnhalf = _btnwid &gt;&gt; 1;
-var btnSet = ui_button_icon(winCropX, winCropY + winCropPanelSize + 42, _btnwid, _btnhei, "마스크 적용##BTNSET", 2, c_black);
-var btnDel = ui_button_icon(winCropX + winCropPanelSize - _btnwid, winCropY + winCropPanelSize + 42, _btnwid, _btnhei, "현재 적용중인 마스크 삭제##BTNDEL", 4, c_black);
-var btnAll = ui_button_icon(_wincx - _btnhalf, winCropY + winCropPanelSize + 42, _btnwid, _btnhei, "같은 줄 모두 적용##BTNALL", 3, c_black);
+var _btnhei = 32;
+var _btnhalf = _btnwid * 0.5;
+var _btny = winCropY + winCropPanelSize + 42;
+var btnSet = ui_button_icon(winCropX, _btny, _btnwid, _btnhei, "마스크 적용##BTNSET", 2, c_black);
+var btnDel = ui_button_icon(winCropX + winCropPanelSize - _btnwid, _btny, _btnwid, _btnhei, "마스크 리셋#(다시 불러오기)##BTNDEL", 4, c_black);
+var btnAll = ui_button_icon(_wincx - _btnhalf, _btny, _btnwid, _btnhei, "선택한 글자와 같은 줄의 모든 글자에 적용##BTNALL", 3, c_black);
+var btnFull = ui_button_icon(winCropX, _btny + _btnhei, _winhalf, _btnhei, "마스크 전체 영역 설정##BTNFULL", 6, c_black);
+var btnEmpty = ui_button_icon(winCropX + _winhalf, _btny + _btnhei, _winhalf, _btnhei, "마스크 전체 영역 제외##BTNNONE", 7, c_black);
 
-var _attribtopmargin = winCropY + winCropPanelSize + 42 + _btnhei; // + (_bigmargin &lt;&lt; 1);
+var _attribtopmargin = _btny + _btnhei + _btnhei; // + (_bigmargin &lt;&lt; 1);
 
 _attribtopmargin += (_bigmargin &lt;&lt; 1);
 
@@ -627,8 +672,7 @@ if (_data != undefined)
     _offmarginy -= 16;
     _data[@ CHAR.X] = ui_textbox_numberonly(winCropX + _smallmargin + _bigmargin, _offmarginy, 80, 32, string(_data[@ CHAR.X]), "CHAR_OFF_X", 0);
     _data[@ CHAR.Y] = ui_textbox_numberonly(_wincx + _smallmargin + _bigmargin, _offmarginy, 80, 32, string(_data[@ CHAR.Y]), "CHAR_OFF_Y", 0);
-    
-    // _data[@ CHAR.SOURCE] = ui_textbox_numberonly(_wincx - 40, _attribtopmargin + _smallmargin, 80, 32, string(_data[@ CHAR.SOURCE]), "CHAR_SRC", 0);
+    _data[@ CHAR.SOURCE] = ui_textbox(_wincx - 40, _attribtopmargin + _smallmargin, 80, 32, string(_data[@ CHAR.SOURCE]), "CHAR_SRC");
 }
 
 iuiButtonShadow = true;
@@ -639,7 +683,7 @@ var _zoomRatio = winCropTexSize / charHei;
 var _zoomWid = charWid * _zoomRatio;
 var _zoomHei = charHei * _zoomRatio;
 
-var panelOffX = winCropX + (winCropPanelSize &gt;&gt; 1) - (_zoomWid &gt;&gt; 1);
+var panelOffX = winCropX + _winhalf - (_zoomWid &gt;&gt; 1);
 var panelOffY = winCropY + 42;
 
 iui_rect(panelOffX, panelOffY, _zoomWid, _zoomHei, 0);
@@ -649,9 +693,74 @@ draw_surface_stretched(maskPreview, panelOffX, panelOffY, _zoomWid, _zoomHei);
 // overlay
 draw_surface_stretched(maskOverlay, panelOffX, panelOffY, _zoomWid, _zoomHei);
 
-// iui_rect(winCropX, winCropY + 42, _zoomWid, _zoomHei, 0);
-// draw_surface_stretched(glyphSurf, winCropX + _winhalf - (_zoomWid * 0.5), winCropY + 42 + _winhalf - (_zoomHei * 0.5), _zoomWid, _zoomHei);
-// draw_surface_stretched(glyphSurfOverlay, winCropX + _winhalf - (_zoomWid * 0.5), winCropY + 42 + _winhalf - (_zoomHei * 0.5), _zoomWid, _zoomHei);
+/*
+    HIGHLIGHT / MODAL BG
+    ============
+*/
+if (uiModal)
+{
+    uiActive = true;
+    iui_end();
+    iui_begin();
+    
+    draw_sprite_tiled(spr_bgtexture, 0, 0, 0);
+    
+    // draw message &amp; backdrop
+    var _winModalW = 800, _winModalH = 600;
+    var _winModalX = _winhalfw - (_winModalW &gt;&gt; 1), _winModalY = _winhalfh - (_winModalH &gt;&gt; 1);
+    iui_rect(_winModalX + 10, _winModalY + 10, _winModalW, _winModalH, c_black);
+    iui_rect(_winModalX, _winModalY, _winModalW, _winModalH, COL.GRAY);
+    
+    iui_align_center();
+    var _modalInfo = "&lt;ESC&gt; 로 나가기";
+    var _modalBlink = merge_colour(COL.TEAL, COL.HIGHLIGHT2, (iuiAnimTime &gt;&gt; 3) &amp; 1);
+    iui_label_transform(_winhalfw, WIN_HEI - 50 + 2, _modalInfo, 2, 2, 0, c_black, 1);
+    iui_label_transform(_winhalfw, WIN_HEI - 50, _modalInfo, 2, 2, 0, _modalBlink, 1);
+    iui_align_pop();
+    
+    // draw highlight content
+    switch (uiModalState)
+    {
+        default:
+        case UI_MODAL.PREVIEW:
+            var _modalTitleY = _winModalY + 21;
+            var _modalTitleH = 42;
+            
+            // title
+            iui_rect(_winModalX, _winModalY, _winModalW, _modalTitleH, COL.WHITE);
+            iui_align_center();
+            iui_label(_winhalfw, _modalTitleY, uiModalMsg, COL.BASE);
+            iui_align_pop();
+            
+            // Content
+            iuiButtonShadow = false;
+            var _inputX = _winModalX + _bigmargin;
+            var _inputTestY = _modalTitleY + _bigmargin;
+            var _inputFontY = _modalTitleY + _bigmargin + (_winModalH &gt;&gt; 1);
+            var _inputW = _winModalW - _bigmargin * 2;
+            var _inputH = (_winModalH &gt;&gt; 1) - _bigmargin * 2;
+            
+            var btnTestInput = ui_button_icon(_inputX, _inputTestY, _inputW, _inputH, "폰트 테스트 영역...#================#멍멍 왈왈콰르릉쾅쾅 우지끈", -1, c_white);
+            var btnFontInput = ui_button_icon(_inputX, _inputFontY, _inputW, _inputH, "선택한 원본 폰트 테스트...#================#아무 글자나 입력해보아요!", -1, c_white);
+            iuiButtonShadow = true;
+            
+            // Hide button
+            iui_rect(_inputX, _inputTestY, _inputW, _inputH, c_black);
+            iui_rect(_inputX, _inputFontY, _inputW, _inputH, c_black);
+            if (btnTestInput)
+            {
+                uTestInputActive = true;
+                uFontInputActive = false;
+            }
+            if (btnFontInput)
+            {
+                uTestInputActive = true;
+                uFontInputActive = false;
+            }
+            break;
+    }
+}
+
 iui_end();
 
 /*
@@ -661,8 +770,18 @@ if (btnSet)
 {
     // Copy mask to dest
     var _data = charData[| charSelected];
+    /*
     if (is_array(_data) &amp;&amp; surface_exists(_data[@ CHAR.MASK]))
         surface_copy(_data[@ CHAR.MASK], 0, 0, maskTemp);
+    */
+    if (is_array(_data) &amp;&amp; _data[@ CHAR.OCCUPIED])
+    {
+        var _spr = _data[@ CHAR.MASK];
+        if (sprite_exists(_spr))
+            sprite_delete(_spr);
+        _spr = sprite_create_from_surface(maskTemp, 0, 0, charWid, charHei, false, false, 0, 0);
+        _data[@ CHAR.MASK] = _spr;
+    }
     
     build_char_surface(charSelected);
     updateFontSurf = true;
@@ -683,9 +802,10 @@ if (btnAll)
         var _off = _y * gridWid + i;
         var _data = charData[| _off];
         
-        if (is_array(_data) &amp;&amp; _data[@ CHAR.OCCUPIED])
+        if (is_array(_data) &amp;&amp; _data[@ CHAR.OCCUPIED] &amp;&amp; _off != charSelected)
         {
-            surface_copy(_data[@ CHAR.MASK], 0, 0, _mask);
+            // surface_copy(_data[@ CHAR.MASK], 0, 0, _mask);
+            sprite_assign(_data[@ CHAR.MASK], _mask);
             
             _data[@ CHAR.X] = _srcx;
             _data[@ CHAR.Y] = _srcy;
@@ -700,15 +820,33 @@ if (btnAll)
 
 if (btnDel)
 {
-    cropping = false;
-    cropShow = false;
-    cropX1 = 0;
-    cropY1 = 0;
-    cropX2 = 0;
-    cropY2 = 0;
+    var _data = charData[| charSelected];
     
-    reset_char_data(charSelected);
-    updateFontSurf = true;
+    if (_data != undefined &amp;&amp; _data[@ CHAR.OCCUPIED])
+    {
+        var _mask = _data[@ CHAR.MASK];
+        
+        // surface_copy(maskTemp, 0, 0, _mask);
+        surface_set_target(maskTemp);
+        draw_clear_alpha(0, 0);
+        draw_sprite(_mask, 0, 0, 0);
+        surface_reset_target();
+        updatePreview = true;
+    }
+    // build_char_surface(charSelected);
+    // updateFontSurf = true;
+}
+
+if (btnFull)
+{
+    clear_char_mask_to(maskTemp, 1);
+    updatePreview = true;
+}
+
+if (btnEmpty)
+{
+    clear_char_mask_to(maskTemp, 0);
+    updatePreview = true;
 }
 
 // oh wtf
@@ -762,7 +900,7 @@ if (uiTooltipShow)
     iui_align_center();
     iui_rect(iui_inputX + 10, iui_inputY + 10, _labelwid, _labelhei, 0); // shadow
     iui_rect(iui_inputX - 1, iui_inputY - 1, _labelwid + 2, _labelhei + 2, COL.BASE);
-    iui_rect(iui_inputX, iui_inputY, _labelwid, _labelhei, COL.WHITE);
+    iui_rect(iui_inputX, iui_inputY, _labelwid, _labelhei, $00ddff);
     iui_label(iui_inputX + (_labelwid &gt;&gt; 1), iui_inputY + (_labelhei &gt;&gt; 1), uiTooltipMsg, COL.BASE);
     iui_align_pop();
 }
@@ -894,7 +1032,8 @@ iui_rect_alpha(_mx, _my, charWid, charHei, $FF00FF, 0.25);
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>
+            <string>/// Texture update
+
 if (updateFontSurf)
 {
     updateFontSurf = false;

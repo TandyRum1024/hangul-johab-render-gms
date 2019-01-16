@@ -1,6 +1,6 @@
-// 2019-01-03 13:27:34
+// 2019-01-17 01:14:16
 #define ui_button
-///ui_button(x, y, w, h, string)
+///ui_button(x, y, w, h, string, active)
 /**
     iui_button()
 **/
@@ -8,7 +8,7 @@
 /// Setup
 // box edges
 var boxL = argument0, boxT = argument1
-var boxR = (boxL + argument2); boxB = (boxT + argument3);
+var boxR = (boxL + argument2), boxB = (boxT + argument3);
 
 /// Get label and ID.
 var stringArray = iui_get_all(argument4);
@@ -19,7 +19,7 @@ var LABEL  = stringArray[1];
 var isClicky = false;
 
 // is hover
-if (point_in_rectangle(iui_inputX, iui_inputY, boxL, boxT, boxR, boxB))
+if (uiActive && point_in_rectangle(iui_inputX, iui_inputY, boxL, boxT, boxR, boxB))
 {
     iui_hotItem = ID;
     
@@ -75,7 +75,7 @@ iui_align_pop();
 return isClicky;
 
 #define ui_button_icon
-///ui_button_icon(x, y, w, h, string, icon, col)
+///ui_button_icon(x, y, w, h, string, icon, col, active)
 /**
     iui_button() with icon
     PS : string acts like tooltip and ID in this script!!
@@ -95,13 +95,9 @@ var LABEL  = stringArray[1];
 var isClicky = false;
 
 // is hover
-if (point_in_rectangle(iui_inputX, iui_inputY, boxL, boxT, boxR, boxB))
+if (uiActive && point_in_rectangle(iui_inputX, iui_inputY, boxL, boxT, boxR, boxB))
 {
     iui_hotItem = ID;
-    
-    // ... and is clicked
-    if (iui_activeItem == -1 && iui_inputDown)
-        iui_activeItem = ID;
         
     // set tooltip
     if (LABEL != "")
@@ -112,8 +108,13 @@ if (point_in_rectangle(iui_inputX, iui_inputY, boxL, boxT, boxR, boxB))
 }
 
 // is 'Pressed" (AKA The user pressed and released the button)
-if (iui_hotItem == ID && iui_activeItem == ID && !iui_inputDown)
-    isClicky = true;
+if (iui_hotItem == ID)
+{
+    if (iui_activeItem == ID && !iui_inputDown)
+        isClicky = true;
+    if (iui_activeItem == -1 && iui_inputDown)
+        iui_activeItem = ID;
+}
 
 
 /// Button draw

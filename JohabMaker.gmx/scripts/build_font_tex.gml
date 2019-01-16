@@ -44,10 +44,13 @@ for (var i=0; i<_charlen; i++)
     
     if (_data[@ CHAR.OCCUPIED])
     {
+        /*
         if (!surface_exists(_data[@ CHAR.BAKED]))
             build_char_surface(i);
-        
         draw_surface(_data[@ CHAR.BAKED], _x, _y);
+        */
+        
+        draw_sprite(_data[@ CHAR.BAKED], 0, _x, _y);
     }
     else
     {
@@ -114,10 +117,14 @@ for (var i=0; i<_charlen; i++)
     // build_char_surface(i);
     if (_data[@ CHAR.OCCUPIED])
     {
+        /*
         if (!surface_exists(_data[@ CHAR.BAKED]))
             build_char_surface(i);
         
         draw_surface(_data[@ CHAR.BAKED], _x, _y);
+        */
+        
+        draw_sprite(_data[@ CHAR.BAKED], 0, _x, _y);
     }
     else if (drawGrid)
     {

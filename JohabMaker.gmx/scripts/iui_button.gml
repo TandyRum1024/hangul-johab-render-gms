@@ -1,5 +1,5 @@
 #define iui_button
-///iui_button(boxL, boxT)
+///iui_button(x, y, w, h, string)
 /**
     Button for clicky things
     
@@ -85,7 +85,7 @@ iui_align_pop();
 return isClicky;
 
 #define iui_button_nodraw
-///iui_button_nodraw(boxL, boxT)
+///iui_button_nodraw(x, y, w, h, string)
 /**
     Same as button, But without drawing. (= invisible button)
     

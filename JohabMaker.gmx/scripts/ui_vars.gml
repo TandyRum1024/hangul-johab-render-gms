@@ -1,9 +1,12 @@
 
+uiActive = true;
+
 tbFntSize = "12";
 tbCellWid = "16";
 tbCellHei = "16";
 cbAscii = true;
 cbExportGrid = false;
+cbExportBG = false;
 
 // colorem boyy
 enum COL
@@ -24,7 +27,6 @@ uToolbarHei = 170;
 
 // tool tab
 uCurrentTab = 0;
-uTitleMsg = "강아지는 멍멍";
 
 // Tooltip
 uiTooltipMsg = "DANK LOL";
@@ -40,6 +42,25 @@ uiTooltipShow = false;
 uiCursor = 0;
 uiCursorInCrop = false;
 
+// Highlight
+uiModal = false;
+uiModalMsg = "<ESC> 키로 나가기";
+uiModalState = 0;
+
+enum UI_MODAL
+{
+    PREVIEW = 0
+}
+
+uiModalType = "";
+
+// hangul input
+uTestInputActive = false;
+uFontInputActive = false;
+uTestInput = "";
+uFontInput = "";
+
+
 // Style
 // Button
 iuiButtonShadow = true;
@@ -51,11 +72,11 @@ iuiColCheckboxFG = COL.HIGHLIGHT2; // the checker colour
 
 // Text box
 iuiTextBoxRainbow   = true; // rainbow colour when active
-iuiColTextBoxFill   = COL.GRAY;
-iuiColTextBoxBorder = COL.GRAY;
-iuiColTextBoxText   = COL.WHITE;
+iuiColTextBoxFill   = COL.WHITE;
+iuiColTextBoxBorder = c_black;
+iuiColTextBoxText   = COL.BASE;
 iuiColTextBoxActiveFill     = COL.WHITE;
-iuiColTextBoxActiveBorder   = COL.WHITE;
+iuiColTextBoxActiveBorder   = c_black;
 iuiColTextBoxActiveText     = COL.BASE;
 iuiColTextBoxHotFill    = iuiColTextBoxFill;
 iuiColTextBoxHotBorder  = iuiColTextBoxBorder;

@@ -1,4 +1,4 @@
-// 2019-01-03 13:27:50
+// 2019-01-17 00:52:18
 #define iui_button
 ///iui_button(x, y, w, h, string)
 /**
@@ -15,7 +15,7 @@
 
 /// Setup
 // box edges
-#args boxL, boxT
+var boxL = argument0, boxT = argument1;
 var boxR = (boxL + argument2), boxB = (boxT + argument3);
 
 /// Get label and ID.
@@ -97,7 +97,7 @@ return isClicky;
 **/
 
 /// Setup
-#args boxL, boxT
+var boxL = argument0, boxT = argument1;
 var boxR = (boxL + argument2), boxB = (boxT + argument3);
 
 /// Get label and ID.

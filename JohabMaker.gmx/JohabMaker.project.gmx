@@ -6,6 +6,7 @@
   <NewExtensions>
     <extension index="0">extensions\ImNotGUI</extension>
     <extension index="1">extensions\johabBoy</extension>
+    <extension index="2">extensions\ime_get</extension>
   </NewExtensions>
   <sounds name="sound"/>
   <sprites name="sprites">
@@ -16,6 +17,7 @@
     <sprite>sprites\spr_uicheck</sprite>
     <sprite>sprites\spr_icons</sprite>
     <sprite>sprites\spr_mouse</sprite>
+    <sprite>sprites\spr_bgtexture</sprite>
   </sprites>
   <backgrounds name="background"/>
   <paths name="paths"/>
@@ -62,8 +64,18 @@
       <script>scripts\ui_button.gml</script>
       <script>scripts\ui_tab.gml</script>
       <script>scripts\ui_checkbox.gml</script>
-      <script>scripts\ui_textbox_numberonly.gml</script>
+      <script>scripts\ui_textbox.gml</script>
       <script>scripts\ui_tooltip.gml</script>
+    </scripts>
+    <scripts name="Korean Input Advice 1.2.1">
+      <script>scripts\kia_init.gml</script>
+      <script>scripts\kia_input.gml</script>
+      <script>scripts\kia_recursive.gml</script>
+      <script>scripts\kia_remove.gml</script>
+      <script>scripts\kia_first.gml</script>
+      <script>scripts\kia_second.gml</script>
+      <script>scripts\kia_third.gml</script>
+      <script>scripts\kia_hex_to_dec.gml</script>
     </scripts>
     <script>scripts\hj_init.gml</script>
     <script>scripts\ui_vars.gml</script>

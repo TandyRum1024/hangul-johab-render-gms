@@ -1,4 +1,4 @@
-// 2018-12-27 22:22:45
+// 2019-01-17 01:18:38
 ///ui_tab(x, y, total_width, h, array_of_string, tab_index)
 /**
     iui_tab but custom skin
@@ -47,7 +47,7 @@ for (i = 0; i < numTabs; i++)
     tabW    = (tabLabelWid + 20);
     
     // is hover
-    if (point_in_rectangle(iui_inputX, iui_inputY, tabX, tabY, (tabX + tabW), (tabY + tabH)))
+    if (uiActive && point_in_rectangle(iui_inputX, iui_inputY, tabX, tabY, (tabX + tabW), (tabY + tabH)))
     {
         iui_hotItem = tabID;
         isHot = true;

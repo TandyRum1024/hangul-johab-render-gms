@@ -14,8 +14,18 @@ if (is_array(data))
     // Copy mask to temp surface
     if (data[@ CHAR.OCCUPIED])
     {
+        /*
         var srcMask = data[@ CHAR.MASK];
         surface_copy(maskTemp, 0, 0, srcMask);
+        */
+        
+        var mask = data[@ CHAR.MASK];
+        
+        // surface_copy(maskTemp, 0, 0, _mask);
+        surface_set_target(maskTemp);
+        draw_clear_alpha(0, 0);
+        draw_sprite(mask, 0, 0, 0);
+        surface_reset_target();
     }
     else
     {

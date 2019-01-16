@@ -26,9 +26,10 @@ else
     _mask = _data[@ CHAR.MASK];
 }
 
-// reset surface data
+// reset sprite data
 if (_arr[CHAR.OCCUPIED])
 {
+    /*
     if (!surface_exists(_baked))
         _baked = surface_create(charWid, charHei);
     surface_set_target(_baked);
@@ -40,6 +41,26 @@ if (_arr[CHAR.OCCUPIED])
     surface_set_target(_mask);
     draw_clear(c_white);
     surface_reset_target();
+    */
+    if (!surface_exists(tempTexA))
+        tempTexA = surface_create(charWid, charHei);
+    else
+        surface_resize(tempTexA, charWid, charHei);
+    
+    surface_set_target(tempTexA);
+    draw_clear_alpha(0, 0);
+    surface_reset_target();
+    
+    if (sprite_exists(_baked))
+        sprite_delete(_baked);
+    _baked = sprite_create_from_surface(tempTexA, 0, 0, charWid, charHei, false, false, 0, 0);
+    
+    surface_set_target(tempTexA);
+    draw_clear(c_white);
+    surface_reset_target();
+    if (sprite_exists(_mask))
+        sprite_delete(_mask);
+    _mask = sprite_create_from_surface(tempTexA, 0, 0, charWid, charHei, false, false, 0, 0);
 }
 
 // Build char data
@@ -65,8 +86,10 @@ for (var i=0; i<_charlen; i++)
     if (!is_array(_data))
         continue;
     
-    if (surface_exists(_data[@ CHAR.BAKED])) surface_free(_data[@ CHAR.BAKED]);
-    if (surface_exists(_data[@ CHAR.MASK])) surface_free(_data[@ CHAR.MASK]);
+    // if (surface_exists(_data[@ CHAR.BAKED])) surface_free(_data[@ CHAR.BAKED]);
+    // if (surface_exists(_data[@ CHAR.MASK])) surface_free(_data[@ CHAR.MASK]);
+    if (sprite_exists(_data[@ CHAR.BAKED])) sprite_delete(_data[@ CHAR.BAKED]);
+    if (sprite_exists(_data[@ CHAR.MASK])) sprite_delete(_data[@ CHAR.MASK]);
 }
 ds_list_clear(charData);
 

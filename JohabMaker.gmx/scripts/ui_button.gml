@@ -18,7 +18,7 @@ var LABEL  = stringArray[1];
 var isClicky = false;
 
 // is hover
-if (point_in_rectangle(iui_inputX, iui_inputY, boxL, boxT, boxR, boxB))
+if (uiActive && point_in_rectangle(iui_inputX, iui_inputY, boxL, boxT, boxR, boxB))
 {
     iui_hotItem = ID;
     
@@ -94,13 +94,9 @@ var LABEL  = stringArray[1];
 var isClicky = false;
 
 // is hover
-if (point_in_rectangle(iui_inputX, iui_inputY, boxL, boxT, boxR, boxB))
+if (uiActive && point_in_rectangle(iui_inputX, iui_inputY, boxL, boxT, boxR, boxB))
 {
     iui_hotItem = ID;
-    
-    // ... and is clicked
-    if (iui_activeItem == -1 && iui_inputDown)
-        iui_activeItem = ID;
         
     // set tooltip
     if (LABEL != "")
@@ -111,8 +107,13 @@ if (point_in_rectangle(iui_inputX, iui_inputY, boxL, boxT, boxR, boxB))
 }
 
 // is 'Pressed" (AKA The user pressed and released the button)
-if (iui_hotItem == ID && iui_activeItem == ID && !iui_inputDown)
-    isClicky = true;
+if (iui_hotItem == ID)
+{
+    if (iui_activeItem == ID && !iui_inputDown)
+        isClicky = true;
+    if (iui_activeItem == -1 && iui_inputDown)
+        iui_activeItem = ID;
+}
 
 
 /// Button draw

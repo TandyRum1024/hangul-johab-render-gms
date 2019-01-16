@@ -37,7 +37,10 @@ if (glyphY < _jungseongoff) // Choseong
 }
 else if (glyphY < _jongseongoff) // Jungseong
 {
-    char = chr($AC00 + glyphX * 28 + 16);
+    if (glyphX <= 20)
+        char = chr($AC00 + glyphX * 28 + 16);
+    else
+        char = "";
 }
 else if (glyphY < _jamooff) // Jongseong
 {

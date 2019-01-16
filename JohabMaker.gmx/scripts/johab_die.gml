@@ -11,8 +11,10 @@ for (var i=0; i<_charlen; i++)
     if (!is_array(_data))
         continue;
     
-    if (surface_exists(_data[@ CHAR.BAKED])) surface_free(_data[@ CHAR.BAKED]);
-    if (surface_exists(_data[@ CHAR.MASK])) surface_free(_data[@ CHAR.MASK]);
+    // if (surface_exists(_data[@ CHAR.BAKED])) surface_free(_data[@ CHAR.BAKED]);
+    // if (surface_exists(_data[@ CHAR.MASK])) surface_free(_data[@ CHAR.MASK]);
+    if (sprite_exists(_data[@ CHAR.BAKED])) sprite_delete(_data[@ CHAR.BAKED]);
+    if (sprite_exists(_data[@ CHAR.MASK])) sprite_delete(_data[@ CHAR.MASK]);
 }
 ds_list_clear(charData);
 ds_list_destroy(charData);

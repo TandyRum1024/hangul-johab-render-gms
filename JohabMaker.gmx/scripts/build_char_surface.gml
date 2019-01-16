@@ -11,15 +11,25 @@ if (index < 0)
     return -1;
     
 var data = charData[| index];
-var surf = data[@ CHAR.BAKED];
+var spr = data[@ CHAR.BAKED];
+// var surf = data[@ CHAR.BAKED];
 
-if (!surface_exists(surf))
-{
-    surf = surface_create(charWid, charHei);
-    data[@ CHAR.BAKED] = surf;
-}
+// if (!surface_exists(surf))
+// {
+//     surf = surface_create(charWid, charHei);
+//     data[@ CHAR.BAKED] = surf;
+// }
+if (!surface_exists(tempTexB))
+    tempTexB = surface_create(charWid, charHei);
+else
+    surface_resize(tempTexB, charWid, charHei);
 
-build_char_surface_to(index, surf);
+build_char_surface_to(index, tempTexB);
+
+if (sprite_exists(spr))
+    sprite_delete(spr);
+spr = sprite_create_from_surface(tempTexB, 0, 0, charWid, charHei, false, false, 0, 0);
+data[@ CHAR.BAKED] = spr;
 /*
 if (get_default_char(index) == "")
 {
@@ -53,14 +63,15 @@ else
 
 
 var maskSurf = data[@ CHAR.MASK];
-if (!surface_exists(maskSurf))
-    maskSurf = surface_create(charWid, charHei);
+// if (!surface_exists(maskSurf))
+//     maskSurf = surface_create(charWid, charHei);
 
 // Build mask .. or "hole"
 surface_set_target(tempTexA);
 draw_clear(c_black);
 draw_set_blend_mode(bm_subtract);
-draw_surface(maskSurf, 0, 0);
+// draw_surface(maskSurf, 0, 0);
+draw_sprite(maskSurf, 0, 0, 0);
 draw_set_blend_mode(bm_normal);
 surface_reset_target();
 
