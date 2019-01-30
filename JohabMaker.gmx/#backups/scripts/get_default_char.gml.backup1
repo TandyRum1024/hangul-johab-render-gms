@@ -1,10 +1,10 @@
-// 2019-01-04 14:16:03
+// 2019-01-29 23:09:23
 ///get_default_char(idx)
 /*
     returns "default" Korean character given the index
 */
 
-#args idx
+var idx = argument0;
 var glyphX = idx % gridWid;
 var glyphY = idx div gridWid;
 var char = "";
@@ -25,20 +25,44 @@ if (glyphY < _jungseongoff) // Choseong
 {
     localoff = glyphY;
     
-    switch (localoff)
+    if (glyphX <= 18)
     {
-        case 0: // beol 1
-            char = chr($AC00 + ((glyphX * 21) + 0) * 28 + 16);
-            break;
-            
-        case 1: // beol 2
-            char = chr($AC00 + ((glyphX * 21) + 8) * 28 + 16);
-            break;
+        switch (localoff)
+        {
+            case 0: // beol 1
+                char = chr($AC00 + ((glyphX * 21) + 0) * 28 + 16);
+                break;
+                
+            case 1: // beol 2
+                char = chr($AC00 + ((glyphX * 21) + 8) * 28 + 16);
+                break;
+                
+            case 2: // beol 3
+                char = chr($AC00 + ((glyphX * 21) + 0) * 28);
+                break;
+                
+            case 3: // beol 4
+                char = chr($AC00 + ((glyphX * 21) + 8) * 28);
+                break;
+        }
     }
 }
 else if (glyphY < _jongseongoff) // Jungseong
 {
-    char = chr($AC00 + glyphX * 28 + 16);
+    localoff = glyphY - _jungseongoff;
+    
+    if (glyphX <= 20)
+    {
+        switch (localoff)
+        {
+            case 0: // yes jongseong 
+                char = chr($AC00 + glyphX * 28 + 16);
+            case 1: // no jongseong
+                char = chr($AC00 + glyphX * 28);
+        }
+    }
+    else
+        char = "";
 }
 else if (glyphY < _jamooff) // Jongseong
 {

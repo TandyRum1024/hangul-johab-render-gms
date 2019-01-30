@@ -17,6 +17,7 @@ fntSize = argument1;
 // build_glyph_surface_preview(-1);
 show_debug_message("resetting all character data...");
 reset_char_data_all();
+clear_atlas();
 
 // Resize surfaces
 surface_resize(maskOverlay, charWid, charHei);

@@ -50,18 +50,19 @@ for (var i=0; i<_charlen; i++)
         draw_surface(_data[@ CHAR.BAKED], _x, _y);
         */
         
-        draw_sprite(_data[@ CHAR.BAKED], 0, _x, _y);
+        // draw_sprite(_data[@ CHAR.BAKED], 0, _x, _y);
+        get_atlas_glyph(bakedAtlas, i, -1); // store baked sprite into the glyphTemp surface
+        draw_surface(glyphTemp, _x, _y);
     }
     else
     {
         iui_rect(_x, _y, charWid, charHei, $FF00FF);
-        
         // iui_align_center();
         // iui_label(_x + (charWid >> 1), _y + (charHei >> 1), dec_to_hex(ord(get_default_char(i))), c_yellow);
         // iui_align_pop();
     }
 }
-show_debug_message("DRAWN " + string(_charlen) + " CHARACTERS TOTAL");
+// show_debug_message("DRAWN " + string(_charlen) + " CHARACTERS TOTAL");
 
 surface_reset_target();
 
@@ -124,7 +125,9 @@ for (var i=0; i<_charlen; i++)
         draw_surface(_data[@ CHAR.BAKED], _x, _y);
         */
         
-        draw_sprite(_data[@ CHAR.BAKED], 0, _x, _y);
+        // draw_sprite(_data[@ CHAR.BAKED], 0, _x, _y);
+        get_atlas_glyph(bakedAtlas, i, -1); // store baked sprite into the glyphTemp surface
+        draw_surface(glyphTemp, _x, _y);
     }
     else if (drawGrid)
     {

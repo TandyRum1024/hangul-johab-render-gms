@@ -7,6 +7,7 @@
     <extension index="0">extensions\ImNotGUI</extension>
     <extension index="1">extensions\johabBoy</extension>
     <extension index="2">extensions\ime_get</extension>
+    <extension index="3">extensions\Custom Sprite Framework</extension>
   </NewExtensions>
   <sounds name="sound"/>
   <sprites name="sprites">
@@ -22,6 +23,10 @@
   <backgrounds name="background"/>
   <paths name="paths"/>
   <scripts name="scripts">
+    <scripts name="JOHAB_RENDER">
+      <script>scripts\hj_init_old.gml</script>
+      <script>scripts\hj_init.gml</script>
+    </scripts>
     <scripts name="IMNOTGUI">
       <scripts name="DRAW">
         <scripts name="VTX">
@@ -77,7 +82,79 @@
       <script>scripts\kia_third.gml</script>
       <script>scripts\kia_hex_to_dec.gml</script>
     </scripts>
-    <script>scripts\hj_init.gml</script>
+    <scripts name="image_framework_V2.9">
+      <scripts name="draw">
+        <script>scripts\draw_image.gml</script>
+        <script>scripts\draw_image_ext.gml</script>
+        <script>scripts\draw_image_general.gml</script>
+        <script>scripts\draw_image_part.gml</script>
+        <script>scripts\draw_image_part_ext.gml</script>
+        <script>scripts\draw_image_pos.gml</script>
+        <script>scripts\draw_image_pos_ext.gml</script>
+        <script>scripts\draw_image_pos_general.gml</script>
+        <script>scripts\draw_image_stretched.gml</script>
+        <script>scripts\draw_image_stretched_ext.gml</script>
+        <script>scripts\draw_image_tiled.gml</script>
+        <script>scripts\draw_image_tiled_area.gml</script>
+        <script>scripts\draw_image_tiled_area_ext.gml</script>
+        <script>scripts\draw_image_tiled_ext.gml</script>
+      </scripts>
+      <scripts name="Stream">
+        <script>scripts\image_stream_start.gml</script>
+        <script>scripts\image_stream_finish.gml</script>
+        <script>scripts\image_stream_add.gml</script>
+        <script>scripts\image_stream_add_files.gml</script>
+        <script>scripts\image_stream_add_sheet.gml</script>
+        <script>scripts\image_stream_add_3d.gml</script>
+        <script>scripts\image_stream_progress.gml</script>
+        <script>scripts\image_stream_receive.gml</script>
+        <script>scripts\image_stream_is_active.gml</script>
+        <script>scripts\image_stream_is_received.gml</script>
+        <script>scripts\image_stream_stop.gml</script>
+      </scripts>
+      <scripts name="Cache">
+        <script>scripts\image_cache_create.gml</script>
+        <script>scripts\image_cache_save.gml</script>
+        <script>scripts\image_cache_load.gml</script>
+        <script>scripts\image_cache_delete.gml</script>
+        <script>scripts\image_cache_unpack.gml</script>
+      </scripts>
+      <scripts name="Group">
+        <script>scripts\image_group_clear.gml</script>
+        <script>scripts\image_group_create.gml</script>
+        <script>scripts\image_group_destroy.gml</script>
+        <script>scripts\image_group_find_image.gml</script>
+        <script>scripts\image_group_exists.gml</script>
+        <script>scripts\image_group_flush.gml</script>
+        <script>scripts\image_group_prefetch.gml</script>
+      </scripts>
+      <scripts name="Get">
+        <scripts name="Set">
+          <script>scripts\image_get_filename.gml</script>
+          <script>scripts\image_get_number.gml</script>
+          <script>scripts\image_get_identifier.gml</script>
+          <script>scripts\image_get_width.gml</script>
+          <script>scripts\image_get_height.gml</script>
+          <script>scripts\image_get_xoffset.gml</script>
+          <script>scripts\image_get_yoffset.gml</script>
+          <script>scripts\image_get_uvs.gml</script>
+          <script>scripts\image_set_offset.gml</script>
+          <script>scripts\image_get_texturepage.gml</script>
+          <script>scripts\image_get_texture.gml</script>
+          <script>scripts\image_set_bbox.gml</script>
+          <script>scripts\image_get_bbox_left.gml</script>
+          <script>scripts\image_get_bbox_top.gml</script>
+          <script>scripts\image_get_bbox_right.gml</script>
+          <script>scripts\image_get_bbox_bottom.gml</script>
+        </scripts>
+      </scripts>
+      <script>scripts\image_system_init.gml</script>
+      <script>scripts\image_system_cleanup.gml</script>
+      <script>scripts\image_exists.gml</script>
+      <script>scripts\image_save.gml</script>
+      <script>scripts\image_save_strip.gml</script>
+      <script>scripts\image_save_sheet.gml</script>
+    </scripts>
     <script>scripts\ui_vars.gml</script>
     <script>scripts\ui_update.gml</script>
     <script>scripts\set_char_mask.gml</script>
@@ -86,6 +163,7 @@
     <script>scripts\build_char_surface_all.gml</script>
     <script>scripts\build_char_surface.gml</script>
     <script>scripts\build_font_tex.gml</script>
+    <script>scripts\build_sprite_from_tex.gml</script>
     <script>scripts\update_font_attribs.gml</script>
     <script>scripts\get_default_char.gml</script>
     <script>scripts\load_font.gml</script>
@@ -96,6 +174,12 @@
     <script>scripts\backup_char_surfaces.gml</script>
     <script>scripts\check_hangul_range.gml</script>
     <script>scripts\dec_to_hex.gml</script>
+    <script>scripts\edit_atlas_glyph.gml</script>
+    <script>scripts\get_atlas_glyph.gml</script>
+    <script>scripts\clear_atlas.gml</script>
+    <script>scripts\build_char_surface_old.gml</script>
+    <script>scripts\save_project.gml</script>
+    <script>scripts\load_project.gml</script>
   </scripts>
   <fonts name="fonts">
     <font>fonts\fntOWO</font>

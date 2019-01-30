@@ -3,13 +3,41 @@
     Builds all font surfaces
 */
 
-var _charlen = gridWid * gridHei;
-var _data;
+var _data, _atlaswid, _atlashei;
 
-for (var i=0; i<_charlen; i++)
+// prep temp surface
+if (!surface_exists(glyphTemp))
+    glyphTemp = surface_create(charWid, charHei);
+else
+    surface_resize(glyphTemp, charWid, charHei);
+    
+_atlaswid = sprite_get_width(bakedAtlas);
+_atlashei = sprite_get_height(bakedAtlas);
+if (!surface_exists(atlasTemp))
+    atlasTemp = surface_create(_atlaswid, _atlashei);
+else
+    surface_resize(atlasTemp, _atlaswid, _atlashei);
+
+// update temp atlas
+surface_set_target(atlasTemp);
+draw_clear_alpha(0, 0);
+for (var i=0; i<charLen; i++)
 {
     _data = charData[| i];
     
     if (_data[@ CHAR.OCCUPIED])
-        build_char_surface(i);
+    {
+        // show_debug_message("BUILDING : " + string(i));
+        var _u = charWid * (i % gridWid);
+        var _v = charHei * (i div gridWid);
+        build_char_surface_to(i, glyphTemp);
+        draw_surface(glyphTemp, _u, _v);
+        // bakedAtlas = edit_atlas_glyph(bakedAtlas, index, glyphTemp);
+    }
 }
+surface_reset_target();
+
+// assign
+if (sprite_exists(bakedAtlas))
+    sprite_delete(bakedAtlas);
+bakedAtlas = sprite_create_from_surface(atlasTemp, 0, 0, _atlaswid, _atlashei, false, false, 0, 0);

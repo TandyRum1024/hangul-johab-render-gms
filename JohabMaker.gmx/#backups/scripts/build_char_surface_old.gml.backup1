@@ -1,0 +1,26 @@
+// 2019-01-29 18:46:34
+///build_char_surfaces()
+/*
+    Build font surfaces
+    The problem -- Surfaces in Gamemaker is hella """volatile"""
+    So I'm gonna try save them into buffer
+    
+    ========
+    "Also just a heads up it's BGRA format, but if you look at the buffer in the Debugger,
+    it's displayed in ARGB. Made debugging confusing.
+    Also, for some reason, buffer_set_surface() only works if you __don't modify the buffer__ at all.
+    I thought I got it to work once, but i can't find my post that i'd have posted if i did."
+    
+    .. Dear god yoyo games plzfix asap
+*/
+
+
+// set vars
+// gridHei = 7;
+
+// if (USE_ASCII)
+//     gridHei = 12;
+
+// rebuild
+// charLen = gridWid * gridHei;
+// reset_char_surfaces();

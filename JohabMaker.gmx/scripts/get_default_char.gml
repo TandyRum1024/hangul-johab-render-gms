@@ -24,21 +24,45 @@ if (glyphY < _jungseongoff) // Choseong
 {
     localoff = glyphY;
     
-    switch (localoff)
+    if (glyphX <= 18)
     {
-        case 0: // beol 1
-            char = chr($AC00 + ((glyphX * 21) + 0) * 28 + 16);
-            break;
-            
-        case 1: // beol 2
-            char = chr($AC00 + ((glyphX * 21) + 8) * 28 + 16);
-            break;
+        switch (localoff)
+        {
+            case 0: // beol 1
+                char = chr($AC00 + ((glyphX * 21) + 0) * 28 + 16);
+                break;
+                
+            case 1: // beol 2
+                char = chr($AC00 + ((glyphX * 21) + 8) * 28 + 16);
+                break;
+                
+            case 2: // beol 3
+                char = chr($AC00 + ((glyphX * 21) + 0) * 28);
+                break;
+                
+            case 3: // beol 4
+                char = chr($AC00 + ((glyphX * 21) + 8) * 28);
+                break;
+        }
     }
 }
 else if (glyphY < _jongseongoff) // Jungseong
 {
+    localoff = glyphY - _jungseongoff;
+    
     if (glyphX <= 20)
-        char = chr($AC00 + glyphX * 28 + 16);
+    {
+        switch (localoff)
+        {
+            case 0: // yes jongseong 
+                char = chr($AC00 + glyphX * 28 + 16);
+                break;
+                
+            case 1: // no jongseong
+                char = chr($AC00 + glyphX * 28);
+                break;
+        }
+    }
     else
         char = "";
 }

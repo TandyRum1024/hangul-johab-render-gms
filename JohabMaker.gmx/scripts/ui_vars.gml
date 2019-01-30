@@ -45,20 +45,26 @@ uiCursorInCrop = false;
 // Highlight
 uiModal = false;
 uiModalMsg = "<ESC> 키로 나가기";
-uiModalState = 0;
+uiModalState = UI_MODAL.PREVIEW;
+uiModalInfo = false;
 
 enum UI_MODAL
 {
-    PREVIEW = 0
+    PREVIEW = 0,
+    EXPORT,
+    DEBUG,
+    LOADING
 }
 
-uiModalType = "";
-
 // hangul input
+uInputKor = false;
+uInputBackCtr = 0;
+uInputBackHolding = false;
 uTestInputActive = false;
 uFontInputActive = false;
-uTestInput = "";
-uFontInput = "";
+var _testStr = "가나다라#곰놈돔롬#ABCD";//"다람쥐 헌 쳇바퀴 타고파#A lazy dog jumps over the quick brown fox#1234567890#ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ#똠방각하#맨도롱 또똣하다";
+uTestInput = _testStr;
+uFontInput = _testStr;
 
 
 // Style
