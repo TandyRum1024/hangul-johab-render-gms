@@ -1,4 +1,4 @@
-// 2019-01-29 23:09:23
+// 2019-02-04 01:50:07
 ///get_default_char(idx)
 /*
     returns "default" Korean character given the index
@@ -42,7 +42,7 @@ if (glyphY < _jungseongoff) // Choseong
                 break;
                 
             case 3: // beol 4
-                char = chr($AC00 + ((glyphX * 21) + 8) * 28);
+                char = chr($AC00 + ((glyphX * 21) + 0) * 28);
                 break;
         }
     }
@@ -57,8 +57,11 @@ else if (glyphY < _jongseongoff) // Jungseong
         {
             case 0: // yes jongseong 
                 char = chr($AC00 + glyphX * 28 + 16);
+                break;
+                
             case 1: // no jongseong
                 char = chr($AC00 + glyphX * 28);
+                break;
         }
     }
     else

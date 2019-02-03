@@ -1,4 +1,4 @@
-// 2019-01-29 19:13:48
+// 2019-02-03 23:07:41
 #define reset_char_data
 ///reset_char_data(ind)
 /*
@@ -9,67 +9,16 @@ var ind = argument0;
 
 // reset char data
 var _data = charData[| ind];
-var _baked, _mask;
 var _arr = -1;
 
 // Check if the font is viable for drawing
 var _chr = ord(get_default_char(ind));
 _arr[CHAR.OCCUPIED] = (check_hangul_range(_chr) || (_chr <= 127)) && chr(_chr) != "";
 
-if (is_undefined(_data) || !is_array(_data)) // No data?
-{
-    _baked = -1;
-    _mask = -1;
-}
-else
-{
-    _baked = _data[@ CHAR.BAKED];
-    _mask = _data[@ CHAR.MASK];
-}
-
-// reset sprite data
-if (_arr[CHAR.OCCUPIED])
-{
-    /*
-    if (!surface_exists(_baked))
-        _baked = surface_create(charWid, charHei);
-    surface_set_target(_baked);
-    draw_clear_alpha(0, 0);
-    surface_reset_target();
-    
-    if (!surface_exists(_mask))
-        _mask = surface_create(charWid, charHei);
-    surface_set_target(_mask);
-    draw_clear(c_white);
-    surface_reset_target();
-    */
-    /*
-    if (!surface_exists(tempTexA))
-        tempTexA = surface_create(charWid, charHei);
-    else
-        surface_resize(tempTexA, charWid, charHei);
-    
-    surface_set_target(tempTexA);
-    draw_clear_alpha(0, 0);
-    surface_reset_target();
-    
-    if (sprite_exists(_baked))
-        sprite_delete(_baked);
-    _baked = sprite_create_from_surface(tempTexA, 0, 0, charWid, charHei, false, false, 0, 0);
-    
-    surface_set_target(tempTexA);
-    draw_clear(c_white);
-    surface_reset_target();
-    if (sprite_exists(_mask))
-        sprite_delete(_mask);
-    _mask = sprite_create_from_surface(tempTexA, 0, 0, charWid, charHei, false, false, 0, 0);
-    */
-}
-
-// Build char data
+// Build remaining char data
 _arr[CHAR.SOURCE] = "";
-_arr[CHAR.BAKED] = _baked;
-_arr[CHAR.MASK] = _mask;
+// _arr[CHAR.BAKED] = _baked; -- unused, those uses atlas sprite instead.
+// _arr[CHAR.MASK] = _mask;
 _arr[CHAR.X] = 0;
 _arr[CHAR.Y] = 0;
 charData[| ind] = _arr;
@@ -82,6 +31,9 @@ charData[| ind] = _arr;
 
 // reset char data
 var _charlen = ds_list_size(charData);
+/*
+// unused, those uses atlas sprite instead. see clear_atlas()
+// free all baked & mask surfaces assigned to a glyph
 for (var i=0; i<_charlen; i++)
 {
     var _data = charData[| i];
@@ -94,14 +46,15 @@ for (var i=0; i<_charlen; i++)
     // if (sprite_exists(_data[@ CHAR.BAKED])) sprite_delete(_data[@ CHAR.BAKED]);
     // if (sprite_exists(_data[@ CHAR.MASK])) sprite_delete(_data[@ CHAR.MASK]);
 }
+*/
 ds_list_clear(charData);
 
 // update char data
 update_font_attribs();
 charLen = gridWid * gridHei;
 
-// Build char data
-for (var i=0; i<_charlen; i++)
+// reset char data
+for (var i=0; i<charLen; i++)
 {
     reset_char_data(i);
 }

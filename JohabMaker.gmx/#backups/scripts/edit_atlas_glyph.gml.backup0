@@ -1,4 +1,4 @@
-// 2019-01-29 22:52:56
+// 2019-02-03 22:38:58
 ///edit_atlas_baked(sprite, glyphindex, surface)
 /*
     Edits the part of baked sprite atlas with given surface
@@ -8,7 +8,7 @@
 var _atlas = argument0, _idx = argument1, _surf = argument2;
 var _atlaswid, _atlashei;
 
-// check sprite
+// check atlas sprite exits
 if (sprite_exists(_atlas))
 {
     _atlaswid = sprite_get_width(_atlas);
@@ -20,29 +20,32 @@ else
     _atlashei = charHei;
 }
 
-// check surface
+// check surface exits
 if (!surface_exists(atlasTemp))
     atlasTemp = surface_create(_atlaswid, _atlashei);
 else
     surface_resize(atlasTemp, _atlaswid, _atlashei);
 
+// Edit temp atlas texture
 surface_set_target(atlasTemp);
-// get surface
-draw_clear_alpha(0, 0);
+
+// Clearing temp atlas texture & Copying previous atlas texture
+draw_clear_alpha(0, 0); // clear
 if (sprite_exists(_atlas))
-    draw_sprite(_atlas, 0, 0, 0);
+    draw_sprite(_atlas, 0, 0, 0); // copy
+    
+// Editing surface
+var _u = charWid * (_idx % gridWid); // Get UV positions for editing area
+var _v = charHei * (_idx div gridWid); // - basically we're rebuilding [X, Y] positions from index
 
-
-// Edit surface
-var _u = charWid * (_idx % gridWid);
-var _v = charHei * (_idx div gridWid);
-// Clear area & draw
-draw_set_blend_mode(bm_subtract);
+draw_set_blend_mode(bm_subtract); // use blend mode to "clear" the editing area
 iui_rect_alpha(_u, _v, charWid, charHei, c_black, 1);
 draw_set_blend_mode(bm_normal);
-draw_surface(_surf, _u, _v);
-//
+
+draw_surface(_surf, _u, _v); // and copy our surface into desired area
+
 surface_reset_target();
+//
 
 // Assign sprite
 if (sprite_exists(_atlas))

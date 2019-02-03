@@ -1,4 +1,4 @@
-// 2019-01-30 21:55:44
+// 2019-02-03 23:39:20
 ///load_project(fname)
 /*
     Loads project
@@ -8,19 +8,42 @@ var _dir = argument0;
 var _filebuffer = buffer_load(_dir);
 var _maskbuffer, _bakedbuffer;
 
-// READ HEADER
+/*
+    HEADER
+*/
 buffer_seek(_filebuffer, buffer_seek_start, 0);
 var _magic = buffer_read(_filebuffer, buffer_string);
+var _version = buffer_read(_filebuffer, buffer_u16);
 
 // FAILSAFE
 show_debug_message("MAGIC WORD : " + _magic);
 if (_magic != "JORT")
 {
+    // throw up
+    uiModal = true;
+    uiModalMsg = "로딩 에러 : 올바르지 못한 프로젝트 파일입니다!#(ERR_YOU_FORGOT_THE_MAGIC_WORD)#==========================#<ESC>키로 확인";
+    uiModalState = UI_MODAL.ERROR;
+    uiModalInfo = false;
+    
     show_debug_message("LOAD] INVALID FILE : WRONG MAGIC WORD!!");
     return false;
 }
+if (_version < 42)
+{
+    // throw up
+    uiModal = true;
+    uiModalMsg = "로딩 에러 : 프로젝트 파일을 읽는데 문제가 생겼습니다#(ERR_WRONG_VERSION)#==========================#<ESC>키로 확인";
+    uiModalState = UI_MODAL.ERROR;
+    uiModalInfo = false;
+    
+    show_debug_message("LOAD] INVALID FILE : WRONG VERSION!!");
+    return false;
+}
 
-// READ PROJECT INFO
+
+/*
+    PROJECT INFO
+*/
 /*
     buffer_write(_filebuffer, buffer_u16, gridWid); // grid size
     buffer_write(_filebuffer, buffer_u16, gridHei);
@@ -46,7 +69,10 @@ asciiRows = buffer_read(_filebuffer, buffer_u8);
 FNT_ASCII = buffer_read(_filebuffer, buffer_bool); // use ascii
 cbAscii = FNT_ASCII;
 
-// READ SIZES AND OFFSETS
+
+/*
+    SIZES & OFFSET INFO
+*/
 var _masksize = buffer_read(_filebuffer, buffer_u32); // sizes
 var _bakedsize = buffer_read(_filebuffer, buffer_u32);
 
@@ -55,7 +81,8 @@ var _atlashei = buffer_read(_filebuffer, buffer_u32);
 
 var _maskoff = buffer_read(_filebuffer, buffer_u32); // offsets
 var _bakedoff = buffer_read(_filebuffer, buffer_u32);
-show_debug_message("OFFSET : ["+string(_maskoff)+","+string(_bakedoff)+"]");
+var _glyphoff = buffer_read(_filebuffer, buffer_u32);
+// show_debug_message("OFFSET : ["+string(_maskoff)+","+string(_bakedoff)+"]");
 
 // fuck you sandboxing
 var _path = buffer_read(_filebuffer, buffer_string); // font path
@@ -75,9 +102,9 @@ for (var i=_strlen; i>=1; i--)
     }
 }
 
-show_debug_message("FULL : ["+_path+"]");
-show_debug_message("PATH : ["+_fontpath+"]");
-show_debug_message("NAME : ["+_fontname+"]");
+// show_debug_message("FULL : ["+_path+"]");
+// show_debug_message("PATH : ["+_fontpath+"]");
+// show_debug_message("NAME : ["+_fontname+"]");
 
 _path = "";
 while (_path == "")
@@ -87,7 +114,11 @@ while (_path == "")
 fntPath = _path;
 load_font(fntPath, fntSize);
 
-// BUILD BUFFERS & READ SURFACES
+
+/*
+    ATLAS INFO
+    (building buffers & loading atlas texture)
+*/
 _maskbuffer = buffer_create(1, buffer_grow, 1); // surface buffers!
 _bakedbuffer = buffer_create(1, buffer_grow, 1);
 
@@ -114,11 +145,10 @@ for (var i=0; i<_masksize; i+=4)
     var _r = buffer_read(_maskbuffer, buffer_u8);
     var _a = buffer_read(_maskbuffer, buffer_u8);
     
-    
-    // draw... argh
+    // draw
     var _u = _idx % _atlaswid;
     var _v = _idx div _atlaswid;
-    // show_debug_message("(R:"+string(_r)+" G:"+string(_g)+" B:"+string(_b)+" A:"+string(_a)+")");
+    
     iui_rect_alpha(_u, _v, 1, 1, make_colour_rgb(_r, _g, _b), _a / 255);
     _idx++;
 }
@@ -133,19 +163,18 @@ surface_save(atlasTemp, working_directory + "/debug/atlas_mask.png");
 surface_set_target(atlasTemp);
 draw_clear_alpha(0, 0);
 var _idx = 0;
-for (var i=0; i<_masksize; i+=4)
+for (var i=0; i<_bakedsize; i+=4)
 {
     // get pixel stuff
-    var _b = buffer_read(_maskbuffer, buffer_u8);
-    var _g = buffer_read(_maskbuffer, buffer_u8);
-    var _r = buffer_read(_maskbuffer, buffer_u8);
-    var _a = buffer_read(_maskbuffer, buffer_u8);
+    var _b = buffer_read(_bakedbuffer, buffer_u8);
+    var _g = buffer_read(_bakedbuffer, buffer_u8);
+    var _r = buffer_read(_bakedbuffer, buffer_u8);
+    var _a = buffer_read(_bakedbuffer, buffer_u8);
     
-    
-    // draw... argh
+    // draw
     var _u = _idx % _atlaswid;
     var _v = _idx div _atlaswid;
-    // show_debug_message("(R:"+string(_r)+" G:"+string(_g)+" B:"+string(_b)+" A:"+string(_a)+")");
+    
     iui_rect_alpha(_u, _v, 1, 1, make_colour_rgb(_r, _g, _b), _a / 255);
     _idx++;
 }
@@ -155,7 +184,34 @@ if (sprite_exists(bakedAtlas))
     sprite_delete(bakedAtlas);
 bakedAtlas = sprite_create_from_surface(atlasTemp, 0, 0, _atlaswid, _atlashei, false, false, 0, 0);
 surface_save(atlasTemp, working_directory + "/debug/atlas_baked.png");
-// DELET
+
+
+/*
+    GLYPH INFO
+*/
+reset_char_data_all(); // reset glyph infos
+buffer_seek(_filebuffer, buffer_seek_start, _glyphoff); // go to offset
+charLen = buffer_read(_filebuffer, buffer_u16); // data length
+
+var _temp = -1; // temp array
+for (var i=0; i<charLen; i++)
+{
+    // read glyph info
+    _temp = -1;
+    _temp[CHAR.OCCUPIED] = buffer_read(_filebuffer, buffer_bool);
+    _temp[CHAR.SOURCE] = buffer_read(_filebuffer, buffer_string);
+    _temp[CHAR.X] = buffer_read(_filebuffer, buffer_u16);
+    _temp[CHAR.Y] = buffer_read(_filebuffer, buffer_u16);
+    
+    // assign it to original data
+    charData[| i] = _temp;
+}
+
+
+// TIDY UP
 buffer_delete(_filebuffer);
 buffer_delete(_maskbuffer);
 buffer_delete(_bakedbuffer);
+
+updateFontSurf = true;
+updatePreview = true;

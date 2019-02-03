@@ -1,4 +1,4 @@
-// 2019-01-17 00:46:50
+// 2019-02-04 00:05:04
 #define ui_textbox
 ///ui_textbox(x, y, w, h, text, ID)
 /**
@@ -322,6 +322,20 @@ if (isFocus)
             }
         }
     }
+    else if (iui_keyPress == vk_enter) // confirm
+    {
+        if (kia_type != "")
+        {
+            currentText = string_insert(kia_type, currentText, cursorPos + 1);
+            kia_type = "";
+            
+            currentLen  = string_length(currentText);
+            trimText    = string_delete(currentText, 1, showPos);
+            mustTrim    = (string_width(trimText) > (insideWid - 8));
+            displayChars = min(currentLen - showPos, (insideWid div em_));
+            cursorPos++;
+        }
+    }
     else if (keyAxis != 0) // move cursor
     {
         // add unfinished hangul
@@ -375,9 +389,10 @@ if (isFocus)
             
             if (inHangul && idx >= 0 && idx <= 25)
             {
-                tmpChar += kia_input(idx);
+                var _in = kia_input(idx);
+                tmpChar += _in;
                 
-                if (kia_type != "")
+                if (_in != "")
                 {
                     cursorPos++;
                     if (cursorPos > (showPos + maxChars) - 1) // move er'!
@@ -604,7 +619,7 @@ if (isFocus)
 }
 
 /// lower bound
-if (real(currentText) < argument6 || currentText == "")
+if (real(currentText) < argument6)
 {
     currentText = string(argument6);
     cursorPos = 1;

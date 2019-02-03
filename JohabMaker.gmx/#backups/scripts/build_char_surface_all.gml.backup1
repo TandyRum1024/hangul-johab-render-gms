@@ -1,4 +1,4 @@
-// 2019-01-29 22:46:31
+// 2019-02-03 22:40:41
 ///build_char_surface_all()
 /*
     Builds all font surfaces
@@ -11,7 +11,7 @@ if (!surface_exists(glyphTemp))
     glyphTemp = surface_create(charWid, charHei);
 else
     surface_resize(glyphTemp, charWid, charHei);
-    
+
 _atlaswid = sprite_get_width(bakedAtlas);
 _atlashei = sprite_get_height(bakedAtlas);
 if (!surface_exists(atlasTemp))
@@ -20,7 +20,7 @@ else
     surface_resize(atlasTemp, _atlaswid, _atlashei);
 
 // update temp atlas
-// surface_set_target(atlasTemp);
+surface_set_target(atlasTemp);
 draw_clear_alpha(0, 0);
 for (var i=0; i<charLen; i++)
 {
@@ -29,16 +29,16 @@ for (var i=0; i<charLen; i++)
     if (_data[@ CHAR.OCCUPIED])
     {
         // show_debug_message("BUILDING : " + string(i));
-        var _u = charWid * (i % gridWid);
+        var _u = charWid * (i % gridWid); // UV(??) positions to write our freshly built texture into
         var _v = charHei * (i div gridWid);
-        build_char_surface_to(i, glyphTemp);
-        draw_surface(glyphTemp, _u, _v);
-        // bakedAtlas = edit_atlas_glyph(bakedAtlas, index, glyphTemp);
+        
+        build_char_surface_to(i, glyphTemp); // build glyph & save it into glyphTemp
+        draw_surface(glyphTemp, _u, _v); // and draw that onto our temp altas
     }
 }
-// surface_reset_target();
+surface_reset_target();
 
-// assign
+// assign atlas to baked atlas sprite
 if (sprite_exists(bakedAtlas))
     sprite_delete(bakedAtlas);
 bakedAtlas = sprite_create_from_surface(atlasTemp, 0, 0, _atlaswid, _atlashei, false, false, 0, 0);

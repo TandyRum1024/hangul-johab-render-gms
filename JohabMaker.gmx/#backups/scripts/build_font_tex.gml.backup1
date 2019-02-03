@@ -1,4 +1,4 @@
-// 2019-01-29 18:38:27
+// 2019-01-29 19:12:38
 #define build_font_tex
 ///build_font_tex()
 /*
@@ -126,7 +126,9 @@ for (var i=0; i<_charlen; i++)
         draw_surface(_data[@ CHAR.BAKED], _x, _y);
         */
         
-        draw_sprite(_data[@ CHAR.BAKED], 0, _x, _y);
+        // draw_sprite(_data[@ CHAR.BAKED], 0, _x, _y);
+        get_atlas_glyph(bakedAtlas, i, -1); // store baked sprite into the glyphTemp surface
+        draw_surface(glyphTemp, _x, _y);
     }
     else if (drawGrid)
     {

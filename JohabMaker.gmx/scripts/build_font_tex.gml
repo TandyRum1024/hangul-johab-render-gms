@@ -51,6 +51,10 @@ for (var i=0; i<_charlen; i++)
         */
         
         // draw_sprite(_data[@ CHAR.BAKED], 0, _x, _y);
+        // add offset
+        _x += _data[@ CHAR.X];
+        _y += _data[@ CHAR.Y];
+        
         get_atlas_glyph(bakedAtlas, i, -1); // store baked sprite into the glyphTemp surface
         draw_surface(glyphTemp, _x, _y);
     }
@@ -124,6 +128,9 @@ for (var i=0; i<_charlen; i++)
         
         draw_surface(_data[@ CHAR.BAKED], _x, _y);
         */
+        // add offset
+        _x += _data[@ CHAR.X];
+        _y += _data[@ CHAR.Y];
         
         // draw_sprite(_data[@ CHAR.BAKED], 0, _x, _y);
         get_atlas_glyph(bakedAtlas, i, -1); // store baked sprite into the glyphTemp surface

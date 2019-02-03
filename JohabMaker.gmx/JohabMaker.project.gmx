@@ -26,6 +26,7 @@
     <scripts name="JOHAB_RENDER">
       <script>scripts\hj_init_old.gml</script>
       <script>scripts\hj_init.gml</script>
+      <script>scripts\hj_draw_sheet.gml</script>
     </scripts>
     <scripts name="IMNOTGUI">
       <scripts name="DRAW">
@@ -81,79 +82,6 @@
       <script>scripts\kia_second.gml</script>
       <script>scripts\kia_third.gml</script>
       <script>scripts\kia_hex_to_dec.gml</script>
-    </scripts>
-    <scripts name="image_framework_V2.9">
-      <scripts name="draw">
-        <script>scripts\draw_image.gml</script>
-        <script>scripts\draw_image_ext.gml</script>
-        <script>scripts\draw_image_general.gml</script>
-        <script>scripts\draw_image_part.gml</script>
-        <script>scripts\draw_image_part_ext.gml</script>
-        <script>scripts\draw_image_pos.gml</script>
-        <script>scripts\draw_image_pos_ext.gml</script>
-        <script>scripts\draw_image_pos_general.gml</script>
-        <script>scripts\draw_image_stretched.gml</script>
-        <script>scripts\draw_image_stretched_ext.gml</script>
-        <script>scripts\draw_image_tiled.gml</script>
-        <script>scripts\draw_image_tiled_area.gml</script>
-        <script>scripts\draw_image_tiled_area_ext.gml</script>
-        <script>scripts\draw_image_tiled_ext.gml</script>
-      </scripts>
-      <scripts name="Stream">
-        <script>scripts\image_stream_start.gml</script>
-        <script>scripts\image_stream_finish.gml</script>
-        <script>scripts\image_stream_add.gml</script>
-        <script>scripts\image_stream_add_files.gml</script>
-        <script>scripts\image_stream_add_sheet.gml</script>
-        <script>scripts\image_stream_add_3d.gml</script>
-        <script>scripts\image_stream_progress.gml</script>
-        <script>scripts\image_stream_receive.gml</script>
-        <script>scripts\image_stream_is_active.gml</script>
-        <script>scripts\image_stream_is_received.gml</script>
-        <script>scripts\image_stream_stop.gml</script>
-      </scripts>
-      <scripts name="Cache">
-        <script>scripts\image_cache_create.gml</script>
-        <script>scripts\image_cache_save.gml</script>
-        <script>scripts\image_cache_load.gml</script>
-        <script>scripts\image_cache_delete.gml</script>
-        <script>scripts\image_cache_unpack.gml</script>
-      </scripts>
-      <scripts name="Group">
-        <script>scripts\image_group_clear.gml</script>
-        <script>scripts\image_group_create.gml</script>
-        <script>scripts\image_group_destroy.gml</script>
-        <script>scripts\image_group_find_image.gml</script>
-        <script>scripts\image_group_exists.gml</script>
-        <script>scripts\image_group_flush.gml</script>
-        <script>scripts\image_group_prefetch.gml</script>
-      </scripts>
-      <scripts name="Get">
-        <scripts name="Set">
-          <script>scripts\image_get_filename.gml</script>
-          <script>scripts\image_get_number.gml</script>
-          <script>scripts\image_get_identifier.gml</script>
-          <script>scripts\image_get_width.gml</script>
-          <script>scripts\image_get_height.gml</script>
-          <script>scripts\image_get_xoffset.gml</script>
-          <script>scripts\image_get_yoffset.gml</script>
-          <script>scripts\image_get_uvs.gml</script>
-          <script>scripts\image_set_offset.gml</script>
-          <script>scripts\image_get_texturepage.gml</script>
-          <script>scripts\image_get_texture.gml</script>
-          <script>scripts\image_set_bbox.gml</script>
-          <script>scripts\image_get_bbox_left.gml</script>
-          <script>scripts\image_get_bbox_top.gml</script>
-          <script>scripts\image_get_bbox_right.gml</script>
-          <script>scripts\image_get_bbox_bottom.gml</script>
-        </scripts>
-      </scripts>
-      <script>scripts\image_system_init.gml</script>
-      <script>scripts\image_system_cleanup.gml</script>
-      <script>scripts\image_exists.gml</script>
-      <script>scripts\image_save.gml</script>
-      <script>scripts\image_save_strip.gml</script>
-      <script>scripts\image_save_sheet.gml</script>
     </scripts>
     <script>scripts\ui_vars.gml</script>
     <script>scripts\ui_update.gml</script>

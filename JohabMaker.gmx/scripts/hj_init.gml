@@ -44,7 +44,7 @@ global.hjOffAscii = global.hjOffJamo + (global.hjBeolJamo * 28); // ASCII 오프
 global.hj_ASCII_LIMIT = 127; // ASCII 범위
 global.hj_LUT_BEOL_MID = -1; // 중성에 따른 초성 / 종성 벌 오프셋 테이블 ('감' vs '곰')
 for (var i=0; i<=7; i++)
-    global.hj_LUT_BEOL_MID[i] = 0; // 중성 [ㅏ ㅐ ㅑ ㅒ ㅓ ㅔ ㅕ ㅖ ㅣ]는 1번째 벌 쓰기
+    global.hj_LUT_BEOL_MID[i] = 0; // 중성 [ㅏ ㅐ ㅑ ㅒ ㅓ ㅔ ㅕ ㅖ ㅣ] 는 1번째 벌 쓰기
 global.hj_LUT_BEOL_MID[20] = 0;
 for (var i=8; i<20; i++)
     global.hj_LUT_BEOL_MID[i] = 28; // 중성 [ㅗ ㅠ ㅘ ㅛ ㅙ ㅚ ㅜ ㅝ ㅞ ㅟ ㅡ ㅢ]는 2번째 벌 쓰기
@@ -53,6 +53,7 @@ global.hj_LUT_BEOL_LAST = -1; // 종성 여부에 따른 초성 벌 오프셋 �
 global.hj_LUT_BEOL_LAST[0] = 28; // 종성 없으면 벌 3~4 가져다 쓰기
 for (var i=1; i<=27; i++)
     global.hj_LUT_BEOL_LAST[i] = 0; // 나머지는 그대로
+
 //
 ////////////////////////
 
@@ -116,8 +117,8 @@ for (var i=1; i<=_strlen; i++)
         
         // iui_rect(_dx, _dy, global.hjCharWidAscii, global.hjCharWidAscii, ~_strcol);
         // iui_label(_dx, _dy, _drawchr, c_black);
-        // draw_sprite_ext(_asciispr, _asciioff + _curord, _dx, _dy, 1, 1, 0, _strcol, 1);
-        draw_image_ext(_asciispr, _asciioff + _curord, _dx, _dy, 1, 1, 0, _strcol, 1);
+        // draw_image_ext(_asciispr, _asciioff + _curord, _dx, _dy, 1, 1, 0, _strcol, 1);
+        draw_sprite_ext(_asciispr, _asciioff + _curord, _dx, _dy, 1, 1, 0, _strcol, 1);
         
         // 오프셋 증가
         _offx += global.hjCharWidAscii + global.hjGlyphKerning;
@@ -137,12 +138,9 @@ for (var i=1; i<=_strlen; i++)
             var _offmid = global.hj_LUT_BEOL_LAST[_last] * global.hjSpecialLast;
             var _offfirst = _offlast + _offmid * 2;
             
-            // draw_sprite_ext(global.hjSpriteKor, _first + global.hjOffFirst + _offfirst, _dx, _dy, 1, 1, 0, _strcol, 1);
-            // draw_sprite_ext(global.hjSpriteKor, _mid + global.hjOffMiddle + _offmid, _dx, _dy, 1, 1, 0, _strcol, 1);
-            // draw_sprite_ext(global.hjSpriteKor, _last + global.hjOffLast + _offlast, _dx, _dy, 1, 1, 0, _strcol, 1);
-            draw_image_ext(global.hjSpriteKor, _first + global.hjOffFirst + _offfirst, _dx, _dy, 1, 1, 0, _strcol, 1);
-            draw_image_ext(global.hjSpriteKor, _mid + global.hjOffMiddle + _offmid, _dx, _dy, 1, 1, 0, _strcol, 1);
-            draw_image_ext(global.hjSpriteKor, _last + global.hjOffLast + _offlast, _dx, _dy, 1, 1, 0, _strcol, 1);
+            draw_sprite_ext(global.hjSpriteKor, _first + global.hjOffFirst + _offfirst, _dx, _dy, 1, 1, 0, _strcol, 1);
+            draw_sprite_ext(global.hjSpriteKor, _mid + global.hjOffMiddle + _offmid, _dx, _dy, 1, 1, 0, _strcol, 1);
+            draw_sprite_ext(global.hjSpriteKor, _last + global.hjOffLast + _offlast, _dx, _dy, 1, 1, 0, _strcol, 1);
             
             // 오프셋 증가
             _offx += global.hjCharWidKor + global.hjGlyphKerning;
@@ -150,8 +148,7 @@ for (var i=1; i<=_strlen; i++)
         else if (_curord >= $3130 && _curord <= $3163)// 호환용 자모 ([ㄱㄴㄷㄻㅄ ㅏㅒㅑㅛ] ETC...)
         {
             _kr = _curord - $3130;
-            // draw_sprite_ext(global.hjSpriteKor, global.hjOffJamo + _kr, _dx, _dy, 1, 1, 0, _strcol, 1);
-            draw_image_ext(global.hjSpriteKor, global.hjOffJamo + _kr, _dx, _dy, 1, 1, 0, _strcol, 1);
+            draw_sprite_ext(global.hjSpriteKor, global.hjOffJamo + _kr, _dx, _dy, 1, 1, 0, _strcol, 1);
             
             // 오프셋 증가
             _offx += global.hjCharWidKor + global.hjGlyphKerning;

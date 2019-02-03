@@ -1,6 +1,7 @@
 ///get_atlas_glyph(sprite, glyphindex, surface)
 /*
     Blits part from glyph atlas to given surface
+    pass -1 into surface argument to only store the result to glyphTemp variable
 */
 
 var _atlas = argument0, _idx = argument1, _surf = argument2;

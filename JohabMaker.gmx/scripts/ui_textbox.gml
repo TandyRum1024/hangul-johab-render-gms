@@ -321,6 +321,20 @@ if (isFocus)
             }
         }
     }
+    else if (iui_keyPress == vk_enter) // confirm
+    {
+        if (kia_type != "")
+        {
+            currentText = string_insert(kia_type, currentText, cursorPos + 1);
+            kia_type = "";
+            
+            currentLen  = string_length(currentText);
+            trimText    = string_delete(currentText, 1, showPos);
+            mustTrim    = (string_width(trimText) > (insideWid - 8));
+            displayChars = min(currentLen - showPos, (insideWid div em_));
+            cursorPos++;
+        }
+    }
     else if (keyAxis != 0) // move cursor
     {
         // add unfinished hangul
@@ -601,10 +615,15 @@ if (isFocus)
         if (cursorPos > (showPos + maxChars) - 1) // move er'!
             showPos++;
     }
+    else if (inputCode == 45 && cursorPos == 0) // minus
+    {
+        currentText = string_insert('-', currentText, cursorPos + 1);
+        cursorPos++;
+    }
 }
 
 /// lower bound
-if (real(currentText) < argument6 || currentText == "")
+if (real(currentText) < argument6)
 {
     currentText = string(argument6);
     cursorPos = 1;

@@ -1,4 +1,4 @@
-// 2019-01-29 19:30:22
+// 2019-01-29 19:40:46
 ///get_atlas_glyph(sprite, glyphindex, surface)
 /*
     Blits part from glyph atlas to given surface
@@ -22,7 +22,7 @@ else
 
 surface_set_target(glyphTemp);
 var _u = charWid * (_idx % gridWid);
-var _v = charHei * (_idx div gridHei);
+var _v = charHei * (_idx div gridWid);
 
 // get surface
 draw_clear_alpha(0, 0);
