@@ -20,7 +20,7 @@ if (_magic != "JORT")
 {
     // throw up
     uiModal = true;
-    uiModalMsg = "로딩 에러 : 올바르지 못한 프로젝트 파일입니다!#(ERR_YOU_FORGOT_THE_MAGIC_WORD)#==========================#<ESC>키로 확인";
+    uiModalMsg = "불러오기 에러 : 올바르지 못한 프로젝트 파일입니다!#(ERR_YOU_FORGOT_THE_MAGIC_WORD)#==========================#<ESC> 단추로 확인";
     uiModalState = UI_MODAL.MESSAGE;
     uiModalInfo = false;
     
@@ -31,7 +31,7 @@ if (_version < 42)
 {
     // throw up
     uiModal = true;
-    uiModalMsg = "로딩 에러 : 프로젝트 파일을 읽는데 문제가 생겼습니다#(ERR_WRONG_VERSION)#==========================#<ESC>키로 확인";
+    uiModalMsg = "불러오기 에러 : 프로젝트 파일을 읽는데 문제가 생겼읍니다...#(ERR_WRONG_VERSION)#==========================#<ESC> 단추로 확인";
     uiModalState = UI_MODAL.MESSAGE;
     uiModalInfo = false;
     

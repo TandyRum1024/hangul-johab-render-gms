@@ -13,11 +13,13 @@ enum COL
 {
     BASE = $151414,
     WHITE = $ecfbfc,
-    GRAY = $4f493f,
+    GRAY = $484244,
     TEAL = c_teal,
     BLUE = $88262d,
-    HIGHLIGHT = $ab960b, //$3ba6fd
-    HIGHLIGHT2 = $3ba6fd
+    HIGHLIGHT = $8be714, //$3ba6fd
+    HIGHLIGHT2 = $809a1e,
+    PISS = $00FFFF, // $00ddff,
+    RED = $451ec2
 }
 uBGCol = COL.BASE;
 uTextCol = COL.WHITE;
@@ -32,6 +34,10 @@ uCurrentTab = 0;
 uiTooltipMsg = "DANK LOL";
 uiTooltipShow = false;
 
+// message
+uiMsg = "";
+uiMsgTime = 0;
+
 // Cursor
 /*
     0 - Nrml
@@ -44,7 +50,7 @@ uiCursorInCrop = false;
 
 // Highlight
 uiModal = false;
-uiModalMsg = "<ESC> 키로 나가기";
+uiModalMsg = "<ESC> 단추로 나가기";
 uiModalState = UI_MODAL.PREVIEW;
 uiModalInfo = false;
 

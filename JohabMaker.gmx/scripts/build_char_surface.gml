@@ -134,15 +134,18 @@ surface_reset_target();
 
 // Build mask preview
 surface_set_target(maskPreview);
+draw_clear_alpha(0, 0);
 
 // draw tint
-draw_clear_alpha(c_red, 0.5);
+// draw_clear_alpha(COL.RED, 1);
+draw_sprite_tiled_ext(spr_checker1, 0, 0, 0, 1, 1, COL.RED, 0.75);
+draw_sprite_tiled_ext(spr_checker1, 1, 1, 0, 1, 1, COL.RED, 0.5);
 draw_set_blend_mode(bm_subtract);
 draw_surface(maskTemp, 0, 0);
 draw_set_blend_mode(bm_normal);
 
 // Draw OG glyph
-iui_label_alpha(charWid >> 1, charHei >> 1, char, COL.HIGHLIGHT2, 0.5); // original glyph with tint
+iui_label_alpha(charWid >> 1, charHei >> 1, char, COL.GRAY, 1.0); // original glyph with tint
 
 // mask applied one
 draw_surface(tempTexB, 0, 0);

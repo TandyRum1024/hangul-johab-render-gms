@@ -1,4 +1,4 @@
-// 2019-02-04 01:57:10
+// 2019-02-05 00:29:08
 #event create
 iui_init();
 iui_init_vars();
@@ -581,7 +581,7 @@ iui_align_center();
 */
 iui_rect(0, 0, WIN_WID, uToolbarHei, uBGCol);
 iui_rect(0, uToolbarHei, WIN_WID, 4, COL.WHITE);
-uCurrentTab = ui_tab(0, 0, WIN_WID, 24, iui_pack("@=(^0^)", "메인", "폰트 설정"), uCurrentTab);
+uCurrentTab = ui_tab(0, 0, WIN_WID, 24, iui_pack("@=(^0^)", "프로젝트", "글꼴"), uCurrentTab);
 iui_align_pop();
 
 /*
@@ -599,10 +599,10 @@ switch (uCurrentTab)
         var _topmargin = _bigmargin;
         
         // info
-        iui_label(_smallmargin, _topmargin, "FNTGEN#ZIK@2018", COL.HIGHLIGHT);
+        iui_label(_smallmargin, _topmargin, "FNTGEN#ZIK@2019", COL.HIGHLIGHT);
         
         iui_align_push(fa_center, fa_top);
-        iui_label(_winhalfw, _topmargin + _bigmargin, "방향키로 카메라 이동#+ & - 로 줌 인/아웃#조작하려면 맨 위에 있는 표시줄을 클릭해보시던가요#(아님말고)", COL.WHITE);
+        iui_label(_winhalfw, _topmargin + _bigmargin, "방향키로 화면 이동#+ & - 로 줌 인/아웃#맨 위에 있는 표시줄을 이용해 메뉴를 이동하세요", COL.WHITE);
         iui_align_pop();
         break;
     
@@ -618,7 +618,7 @@ switch (uCurrentTab)
         
         /// buttons
         var btnPreview = ui_button(_leftmarginA, _topmargin, 150, 42, "미리보기");
-        var btnExport = ui_button(_leftmarginA, _topmargin + _bigmargin + 10, 150, 42, "폰트 내보내기");
+        var btnExport = ui_button(_leftmarginA, _topmargin + _bigmargin + 10, 150, 42, "글꼴 내보내기");
         var btnSave = ui_button(_leftmarginA + 180, _topmargin, 150, 42, "프로젝트 저장");
         var btnLoad = ui_button(_leftmarginA + 180, _topmargin + _bigmargin + 10, 150, 42, "프로젝트 불러오기");
         
@@ -627,7 +627,7 @@ switch (uCurrentTab)
         if (btnPreview)
         {
             uiModal = true;
-            uiModalMsg = "폰트 미리보기";
+            uiModalMsg = "글꼴 미리보기";
             uiModalState = UI_MODAL.PREVIEW;
             
             // build font
@@ -685,7 +685,7 @@ switch (uCurrentTab)
         if (btnExport)
         {
             uiModal = true;
-            uiModalMsg = "폰트 내보내기";
+            uiModalMsg = "글꼴 내보내기";
             uiModalState = UI_MODAL.EXPORT;
             
             build_font_tex_ext(cbExportGrid, c_black, cbExportBG);
@@ -745,16 +745,16 @@ switch (uCurrentTab)
         /// load & reload section
         var btnLoad = ui_button(_leftmarginA, _topmargin + _bigmargin, 150, 42, ".TTF 불러오기");
         var btnReload = ui_button(_leftmarginA + 150 + _bigmargin , _topmargin + _bigmargin, 150, 42, ".TTF 다시 불러오기");
-        iui_label(_leftmarginA, _topmargin, "폰트 : " + string(fntName), COL.HIGHLIGHT);
+        iui_label(_leftmarginA, _topmargin, "현재 글꼴 : " + string(fntName), COL.HIGHLIGHT);
         
         
         /// font attributes section
         var _off = _leftmarginB + _bigmargin;
         iui_align_push(fa_right, fa_top);
         
-        iui_label(_off, _topmargin, "폰트 크기 : ", uTextCol);
+        iui_label(_off, _topmargin, "글꼴 크기 : ", uTextCol);
         iui_label(_off, _topmargin + _bigmargin, "격자 크기 : ", uTextCol);
-        iui_label(_off, _topmargin + (_bigmargin << 1), "ASCII 사용 : ", uTextCol);
+        iui_label(_off, _topmargin + (_bigmargin << 1), "ASCII 문자 사용 : ", uTextCol);
         iui_label(_off + _smallmargin + 90 + (string_width("X") >> 1), _topmargin + _bigmargin, "X", uTextCol);
         
         tbFntSize = ui_textbox_numberonly(_off + _smallmargin, _topmargin, 80, 32, string(tbFntSize), "FONTSIZE", 0);
@@ -772,7 +772,7 @@ switch (uCurrentTab)
         /// Buttons
         if (btnLoad)
         {
-            var _path = get_open_filename("폰트 파일|*.ttf", "폰트를 선택해 주세요.");
+            var _path = get_open_filename("글꼴 파일|*.ttf", "글꼴을 선택해 주세요.");
             
             if (_path != "")
             {
@@ -887,16 +887,14 @@ var _btnhei = 32;
 var _btnhalf = _btnwid * 0.5;
 var _btny = winCropY + winCropPanelSize + 42;
 var btnSet = ui_button_icon(winCropX, _btny, _btnwid, _btnhei, "마스크 적용##BTNSET", 2, c_black);
-var btnDel = ui_button_icon(winCropX + winCropPanelSize - _btnwid, _btny, _btnwid, _btnhei, "마스크 리셋#(다시 불러오기)##BTNDEL", 4, c_black);
+var btnDel = ui_button_icon(winCropX + winCropPanelSize - _btnwid, _btny, _btnwid, _btnhei, "마스크 재설정#(처음으로 되돌리기)##BTNDEL", 4, c_black);
 var btnAll = ui_button_icon(_wincx - _btnhalf, _btny, _btnwid, _btnhei, "선택한 글자와 같은 줄의 모든 글자에 적용##BTNALL", 3, c_black);
 var btnFull = ui_button_icon(winCropX, _btny + _btnhei, _winhalf, _btnhei, "마스크 전체 영역 설정##BTNFULL", 6, c_black);
 var btnEmpty = ui_button_icon(winCropX + _winhalf, _btny + _btnhei, _winhalf, _btnhei, "마스크 전체 영역 제외##BTNNONE", 7, c_black);
-var btnCopy = ui_button_icon(winCropX, _btny + _btnhei * 2, _winhalf, _btnhei, "마스크 복사##BTNCOPY", 8, c_black);
-var btnPaste = ui_button_icon(winCropX + _winhalf, _btny + _btnhei * 2, _winhalf, _btnhei, "마스크 붙여넣기##BTNPASTE", 9, c_black);
+var btnCopy = ui_button_icon(winCropX, _btny + _btnhei * 2, _winhalf, _btnhei, "마스크 복사#(CTRL + C)##BTNCOPY", 8, c_black);
+var btnPaste = ui_button_icon(winCropX + _winhalf, _btny + _btnhei * 2, _winhalf, _btnhei, "마스크 붙여넣기#(CTRL + V)##BTNPASTE", 9, c_black);
 
-var _attribtopmargin = _btny + _btnhei * 3; // + (_bigmargin << 1);
-
-_attribtopmargin += (_bigmargin << 1);
+var _attribtopmargin = _btny + _btnhei * 4; // + (_bigmargin << 1);
 
 iui_label(_wincx, _attribtopmargin, "-=[쌤플 글자 (빈칸=기본값)]=-", uTextCol);
 iui_label(_wincx, _attribtopmargin + _halfmargin * 3, "-=[글자 상대 위치]=-", uTextCol);
@@ -954,230 +952,6 @@ draw_surface_stretched(maskPreview, panelOffX, panelOffY, _zoomWid, _zoomHei);
 // overlay
 draw_surface_stretched(maskOverlay, panelOffX, panelOffY, _zoomWid, _zoomHei);
 
-/*
-    HIGHLIGHT / MODAL BG
-    ============
-*/
-if (uiModal)
-{
-    uiActive = true;
-    // iui_end();
-    // iui_begin();
-    
-    var _winModalW = 800, _winModalH = 600;
-    var _winModalX = _winhalfw - (_winModalW >> 1), _winModalY = _winhalfh - (_winModalH >> 1);
-    draw_sprite_tiled(spr_bgtexture, 0, 0, 0);
-    
-    // draw message & backdrop
-    if (uiModalInfo)
-    {
-        iui_rect(_winModalX + 10, _winModalY + 10, _winModalW, _winModalH, c_black);
-        iui_rect(_winModalX, _winModalY, _winModalW, _winModalH, COL.BASE);
-    
-        iui_align_center();
-        var _modalInfo = "<ESC> 로 나가기";
-        var _modalBlink = merge_colour(COL.TEAL, COL.HIGHLIGHT2, (iuiAnimTime >> 3) & 1);
-        iui_label_transform(_winhalfw, WIN_HEI - 50 + 2, _modalInfo, 2, 2, 0, c_black, 1);
-        iui_label_transform(_winhalfw, WIN_HEI - 50, _modalInfo, 2, 2, 0, _modalBlink, 1);
-        iui_align_pop();
-    }
-    
-    // draw highlight content
-    switch (uiModalState)
-    {
-        default:
-        case UI_MODAL.PREVIEW:
-            uiModalInfo = true;
-            var _modalTitleY = _winModalY + 21;
-            var _modalTitleH = 42;
-            
-            // title
-            iui_rect(_winModalX, _winModalY, _winModalW, _modalTitleH, COL.WHITE);
-            iui_align_center();
-            iui_label(_winhalfw, _modalTitleY, uiModalMsg, COL.BASE);
-            iui_align_pop();
-            
-            // Content
-            iuiButtonShadow = false;
-            var _inputX = _winModalX + _bigmargin;
-            var _inputTestY = _modalTitleY + _bigmargin + 32;
-            var _inputFontY = _modalTitleY + _bigmargin + (_winModalH >> 1);
-            var _inputW = _winModalW - _bigmargin * 2;
-            var _inputH = (_winModalH >> 1) - _bigmargin * 2;
-            
-            var btnTestInput = ui_button_icon(_inputX, _inputTestY, _inputW, _inputH, "폰트 테스트 영역...#================#아무 글자나 입력해보세요!###BTN_TESTINPUT", -1, c_white);
-            var btnFontInput = ui_button_icon(_inputX, _inputFontY, _inputW, _inputH, "선택한 원본 폰트 테스트...#================#아무 글자나 입력해보아요!###BTN_FONTINPUT", -1, c_white);
-            iuiButtonShadow = true;
-            
-            // Hide button
-            var _testbg = COL.BASE, _teststr = COL.WHITE;
-            var _fontbg = COL.BASE, _fontstr = COL.WHITE;
-            if (uTestInputActive)
-                _teststr = $00DDFF;
-            if (uFontInputActive)
-                _fontstr = $00DDFF;
-            
-            iui_label(_inputX, _inputTestY - _smallmargin, "현재 폰트 :", $00DDFF);
-            iui_rect(_inputX - 2, _inputTestY - 2, _inputW + 4, _inputH + 4, COL.WHITE);
-            iui_rect(_inputX, _inputTestY, _inputW, _inputH, _testbg);
-            
-            iui_label(_inputX, _inputFontY - _smallmargin, "원본 .TTF 폰트 :", $00DDFF);
-            iui_rect(_inputX - 2, _inputFontY - 2, _inputW + 4, _inputH + 4, COL.WHITE);
-            iui_rect(_inputX, _inputFontY, _inputW, _inputH, _fontbg);
-            
-            if (btnTestInput)
-            {
-                uTestInputActive = true;
-                uFontInputActive = false;
-            }
-            else if (btnFontInput)
-            {
-                uTestInputActive = false;
-                uFontInputActive = true;
-            }
-            else if (mouse_check_button_pressed(mb_left) && iui_hotItem == -1)
-            {
-                uTestInputActive = false;
-                uFontInputActive = false;
-                kia_type = "";
-            }
-            
-            // Draw strings & cursor
-            var _testtext = uTestInput;
-            if (uTestInputActive)
-            {
-                if (uInputKor)
-                    _testtext += "[" + kia_type + "]";
-                else if ((iuiAnimTime >> 3) & 1)
-                    _testtext += "_";
-            }
-            
-            var _fonttext = uFontInput;
-            if (uFontInputActive)
-            {
-                if (uInputKor)
-                    _fonttext += "[" + kia_type + "]";
-                else if ((iuiAnimTime >> 3) & 1)
-                    _fonttext += "_";
-            }
-            
-            //////////////////
-            hj_draw_sheet(fntSprite, -1, _inputX + 10, _inputTestY + 10, _testtext, _teststr, 1);
-            
-            draw_set_font(fntCurrent);
-            iui_label(_inputX + 10, _inputFontY + 10, _fonttext, _fontstr);
-            draw_set_font(fntOWO);
-            
-            // draw_sprite(fntSprite, 0, 10, 10);
-            // hj_draw(_inputX + 10, _inputFontY + 10, _fonttext, _fontstr, 1);
-            // iui_label(_inputX + 10, _inputTestY + 10, _testtext, _teststr);
-            break;
-        
-        case UI_MODAL.EXPORT:
-            uiModalInfo = true;
-            var _modalTitleY = _winModalY + 21;
-            var _modalTitleH = 42;
-            
-            // title
-            iui_rect(_winModalX, _winModalY, _winModalW, _modalTitleH, COL.WHITE);
-            iui_align_center();
-            iui_label(_winhalfw, _modalTitleY, uiModalMsg, COL.BASE);
-            iui_align_pop();
-        
-            // show image preview
-            var _surfHei = (_winModalH >> 1) - (_bigmargin >> 1);
-            var _surfWid = (_surfHei / surface_get_height(previewTex)) * surface_get_width(previewTex);
-            draw_surface_stretched(previewTex, _winhalfw - (_surfWid >> 1), _modalTitleY + _bigmargin, _surfWid, _surfHei);
-            iui_align_center();
-            iui_label(_winhalfw, _modalTitleY + _surfHei + _bigmargin + _smallmargin, "(표시용 크기 조절로 인해 픽셀이 뭉개질 수 있읍니다...)", $00DDFF);
-            iui_align_pop();
-            
-            // show attributes
-            var _attribY = _modalTitleY + _bigmargin * 2 + _surfHei;
-            var btnExport = ui_button(_winhalfw - 80 - 150, _attribY + 150, 150, 42, ".PNG 내보내기!");
-            var btnReload = ui_button(_winhalfw + 80, _attribY + 150, 150, 42, "미리보기");
-            
-            iui_align_push(2, 0);
-            var _checkX = _winhalfw - 80 - 16;
-            iui_label(_checkX, _attribY, "격자 내보내기 : ", COL.WHITE);
-            cbExportGrid = ui_checkbox(_checkX, _attribY, 16, 16, cbExportGrid, "CB_EXPORT_GRID");
-            
-            var _checkX = _winhalfw + 80 + string_width("배경 내보내기 : ");
-            iui_label(_checkX, _attribY, "배경 내보내기 : ", COL.WHITE);
-            cbExportBG = ui_checkbox(_checkX, _attribY, 16, 16, cbExportBG, "CB_EXPORT_BG");
-            iui_align_pop();
-            
-            if (btnExport)
-            {
-                var _path = get_save_filename("PNG 폰트 이미지|*.png", "font" + string(charWid) + "x" + string(charWid));
-                
-                if (_path != "")
-                {
-                    // export!
-                    surface_save(previewTex, _path);
-                    // export_font_tex(_path, true, true, c_black);
-                }
-            }
-            if (btnReload)
-            {
-                build_font_tex_ext(cbExportGrid, c_black, cbExportBG);
-                surface_resize(previewTex, surface_get_width(fntTex), surface_get_height(fntTex));
-                surface_copy(previewTex, 0, 0, fntTex);
-                build_font_tex();
-            }
-            break;
-        
-        case UI_MODAL.DEBUG:
-            uiModalInfo = false;
-            var _atlaswid = WIN_WID * 0.5 - 20;
-            var _bakedx = _winhalfw - 10 - _atlaswid;
-            var _maskx = _winhalfw + 10;
-            var _debugy = 250;
-            
-            var _atlashei = (_atlaswid / sprite_get_width(bakedAtlas)) * sprite_get_height(bakedAtlas);
-            iui_label_shadow(_bakedx, _debugy, "BAKED :", c_yellow, 0, 1, c_black);
-            iui_rect(_bakedx, _debugy + 20, _atlaswid, _atlashei, $FF00FF);
-            draw_sprite_stretched(bakedAtlas, 0, _bakedx, _debugy + 20, _atlaswid, _atlashei);
-            
-            _atlashei = (_atlaswid / sprite_get_width(maskAtlas)) * sprite_get_height(maskAtlas);
-            iui_label_shadow(_maskx, _debugy, "MASK :", c_yellow, 0, 1, c_black);
-            iui_rect(_maskx, _debugy + 20, _atlaswid, _atlashei, $FF00FF);
-            draw_sprite_stretched(maskAtlas, 0, _maskx, _debugy + 20, _atlaswid, _atlashei);
-            
-            draw_surface(maskTemp, _maskx, WIN_HEI - 100);
-            break;
-            
-        case UI_MODAL.LOADING:
-            iui_align_center();
-            var _statusstr = "로딩 중...";
-            var _statuswid = string_width(_statusstr) * 3 + _bigmargin;
-            var _statushei = string_height(_statusstr) * 3 + _bigmargin;
-            
-            iui_rect(_winhalfw - (_statuswid >> 1) - 2, _winhalfh - (_statushei >> 1) - 2, _statuswid + 4, _statushei + 4, c_black);
-            iui_rect(_winhalfw - (_statuswid >> 1) + 10, _winhalfh - (_statushei >> 1) + 10, _statuswid, _statushei, c_black);
-            iui_rect(_winhalfw - (_statuswid >> 1), _winhalfh - (_statushei >> 1), _statuswid, _statushei, $00DDFF);
-            // iui_label_transform(_winhalfw, _winhalfh + 6, _statusstr, 3, 3, 0, c_black, 1);
-            iui_label_transform(_winhalfw, _winhalfh, _statusstr, 3, 3, 0, COL.BASE, 1);
-            iui_align_pop();
-            break;
-            
-        case UI_MODAL.MESSAGE:
-            iui_align_center();
-            var _statusstr = uiModalMsg;
-            var _statuswid = string_width(_statusstr) * 1 + _bigmargin;
-            var _statushei = string_height(_statusstr) * 1 + _bigmargin;
-            
-            iui_rect(_winhalfw - (_statuswid >> 1) - 2, _winhalfh - (_statushei >> 1) - 2, _statuswid + 4, _statushei + 4, c_black);
-            iui_rect(_winhalfw - (_statuswid >> 1) + 10, _winhalfh - (_statushei >> 1) + 10, _statuswid, _statushei, c_black);
-            iui_rect(_winhalfw - (_statuswid >> 1), _winhalfh - (_statushei >> 1), _statuswid, _statushei, COL.WHITE);
-            // iui_label_transform(_winhalfw, _winhalfh + 6, _statusstr, 3, 3, 0, c_black, 1);
-            iui_label_transform(_winhalfw, _winhalfh, _statusstr, 1, 1, 0, COL.BASE, 1);
-            iui_align_pop();
-            break;
-    }
-}
-
-iui_end();
 
 /*
     BUTTONS
@@ -1271,15 +1045,20 @@ if (btnEmpty)
     updatePreview = true;
 }
 
-if (btnCopy)
+var _ctrl = iui_keyMod & (1 << eKEYMOD.CTRL);
+if (btnCopy || (uiActive && _ctrl && keyboard_check_pressed(ord('C'))))
 {
     if (!surface_exists(clipboardTex))
         clipboardTex = surface_create(charWid, charHei);
         
     surface_copy(clipboardTex, 0, 0, maskTemp);
+    
+    // message
+    uiMsgTime = room_speed;
+    uiMsg = "마스크를 복사하였읍니다.";
 }
 
-if (btnPaste)
+if (btnPaste || (uiActive && _ctrl && keyboard_check_pressed(ord('V'))))
 {
     if (surface_exists(clipboardTex))
     {
@@ -1289,7 +1068,257 @@ if (btnPaste)
         build_char_surface(charSelected);
         updateFontSurf = true;
         updatePreview = true;
+        
+        // message
+        uiMsgTime = room_speed;
+        uiMsg = "마스크를 붙여넣었읍니다.";
     }
+}
+
+
+/*
+    HIGHLIGHT / MODAL BG
+    ============
+*/
+if (uiModal)
+{
+    uiActive = true;
+    // iui_end();
+    // iui_begin();
+    
+    var _winModalW = 800, _winModalH = 600;
+    var _winModalX = _winhalfw - (_winModalW >> 1), _winModalY = _winhalfh - (_winModalH >> 1);
+    draw_sprite_tiled(spr_bgtexture, 0, 0, 0);
+    
+    // draw message & backdrop
+    if (uiModalInfo)
+    {
+        iui_rect(_winModalX + 10, _winModalY + 10, _winModalW, _winModalH, c_black);
+        iui_rect(_winModalX, _winModalY, _winModalW, _winModalH, COL.BASE);
+    
+        iui_align_center();
+        var _modalInfo = "<ESC> 단추로 나가기";
+        var _modalBlink = merge_colour(COL.TEAL, COL.HIGHLIGHT2, (iuiAnimTime >> 3) & 1);
+        iui_label_transform(_winhalfw, WIN_HEI - 50 + 2, _modalInfo, 2, 2, 0, c_black, 1);
+        iui_label_transform(_winhalfw, WIN_HEI - 50, _modalInfo, 2, 2, 0, _modalBlink, 1);
+        iui_align_pop();
+    }
+    
+    // draw highlight content
+    switch (uiModalState)
+    {
+        default:
+        case UI_MODAL.PREVIEW:
+            uiModalInfo = true;
+            var _modalTitleY = _winModalY + 21;
+            var _modalTitleH = 42;
+            
+            // title
+            iui_rect(_winModalX, _winModalY, _winModalW, _modalTitleH, COL.WHITE);
+            iui_align_center();
+            iui_label(_winhalfw, _modalTitleY, uiModalMsg, COL.BASE);
+            iui_align_pop();
+            
+            // Content
+            iuiButtonShadow = false;
+            var _inputX = _winModalX + _bigmargin;
+            var _inputTestY = _modalTitleY + _bigmargin + 32;
+            var _inputFontY = _modalTitleY + _bigmargin + (_winModalH >> 1);
+            var _inputW = _winModalW - _bigmargin * 2;
+            var _inputH = (_winModalH >> 1) - _bigmargin * 2;
+            
+            var btnTestInput = ui_button_icon(_inputX, _inputTestY, _inputW, _inputH, "글꼴 시험 영역...#================#아무 글자나 입력해보시오###BTN_TESTINPUT", -1, c_white);
+            var btnFontInput = ui_button_icon(_inputX, _inputFontY, _inputW, _inputH, "불러온 원본 글꼴 시험 영역...#================#아무 글자나 입력해보시오###BTN_FONTINPUT", -1, c_white);
+            iuiButtonShadow = true;
+            
+            // Hide button
+            var _testbg = COL.BASE, _teststr = COL.WHITE;
+            var _fontbg = COL.BASE, _fontstr = COL.WHITE;
+            if (uTestInputActive)
+                _teststr = COL.PISS;
+            if (uFontInputActive)
+                _fontstr = COL.PISS;
+            
+            iui_label(_inputX, _inputTestY - _smallmargin, "현재 글꼴 :", COL.PISS);
+            iui_rect(_inputX - 2, _inputTestY - 2, _inputW + 4, _inputH + 4, COL.WHITE);
+            iui_rect(_inputX, _inputTestY, _inputW, _inputH, _testbg);
+            
+            iui_label(_inputX, _inputFontY - _smallmargin, "원본 .TTF 글꼴 :", COL.PISS);
+            iui_rect(_inputX - 2, _inputFontY - 2, _inputW + 4, _inputH + 4, COL.WHITE);
+            iui_rect(_inputX, _inputFontY, _inputW, _inputH, _fontbg);
+            
+            if (btnTestInput)
+            {
+                uTestInputActive = true;
+                uFontInputActive = false;
+            }
+            else if (btnFontInput)
+            {
+                uTestInputActive = false;
+                uFontInputActive = true;
+            }
+            else if (mouse_check_button_pressed(mb_left) && iui_hotItem == -1)
+            {
+                uTestInputActive = false;
+                uFontInputActive = false;
+                kia_type = "";
+            }
+            
+            // Draw strings & cursor
+            var _testtext = uTestInput;
+            if (uTestInputActive)
+            {
+                if (uInputKor)
+                    _testtext += "[" + kia_type + "]";
+                else if ((iuiAnimTime >> 3) & 1)
+                    _testtext += "_";
+            }
+            
+            var _fonttext = uFontInput;
+            if (uFontInputActive)
+            {
+                if (uInputKor)
+                    _fonttext += "[" + kia_type + "]";
+                else if ((iuiAnimTime >> 3) & 1)
+                    _fonttext += "_";
+            }
+            
+            //////////////////
+            hj_draw_sheet(fntSprite, -1, _inputX + 10, _inputTestY + 10, _testtext, _teststr, 1);
+            
+            draw_set_font(fntCurrent);
+            iui_label(_inputX + 10, _inputFontY + 10, _fonttext, _fontstr);
+            draw_set_font(fntOWO);
+            
+            // draw_sprite(fntSprite, 0, 10, 10);
+            // hj_draw(_inputX + 10, _inputFontY + 10, _fonttext, _fontstr, 1);
+            // iui_label(_inputX + 10, _inputTestY + 10, _testtext, _teststr);
+            break;
+        
+        case UI_MODAL.EXPORT:
+            uiModalInfo = true;
+            var _modalTitleY = _winModalY + 21;
+            var _modalTitleH = 42;
+            
+            // title
+            iui_rect(_winModalX, _winModalY, _winModalW, _modalTitleH, COL.WHITE);
+            iui_align_center();
+            iui_label(_winhalfw, _modalTitleY, uiModalMsg, COL.BASE);
+            iui_align_pop();
+        
+            // show image preview
+            var _surfHei = (_winModalH >> 1) - (_bigmargin >> 1);
+            var _surfWid = (_surfHei / surface_get_height(previewTex)) * surface_get_width(previewTex);
+            draw_surface_stretched(previewTex, _winhalfw - (_surfWid >> 1), _modalTitleY + _bigmargin, _surfWid, _surfHei);
+            iui_align_center();
+            iui_label(_winhalfw, _modalTitleY + _surfHei + _bigmargin + _smallmargin, "(표시용 크기 조절로 인해 픽셀이 뭉개질 수 있읍니다...)", COL.PISS);
+            iui_align_pop();
+            
+            // show attributes
+            var _attribY = _modalTitleY + _bigmargin * 2 + _surfHei;
+            var btnExport = ui_button(_winhalfw - 80 - 150, _attribY + 150, 150, 42, ".PNG 내보내기!");
+            var btnReload = ui_button(_winhalfw + 80, _attribY + 150, 150, 42, "미리보기");
+            
+            iui_align_push(2, 0);
+            var _checkX = _winhalfw - 80 - 16;
+            iui_label(_checkX, _attribY, "격자 내보내기 : ", COL.WHITE);
+            cbExportGrid = ui_checkbox(_checkX, _attribY, 16, 16, cbExportGrid, "CB_EXPORT_GRID");
+            
+            var _checkX = _winhalfw + 80 + string_width("배경 내보내기 : ");
+            iui_label(_checkX, _attribY, "배경 내보내기 : ", COL.WHITE);
+            cbExportBG = ui_checkbox(_checkX, _attribY, 16, 16, cbExportBG, "CB_EXPORT_BG");
+            iui_align_pop();
+            
+            if (btnExport)
+            {
+                var _path = get_save_filename("PNG 폰트 이미지|*.png", "font" + string(charWid) + "x" + string(charWid));
+                
+                if (_path != "")
+                {
+                    // export!
+                    surface_save(previewTex, _path);
+                    // export_font_tex(_path, true, true, c_black);
+                }
+            }
+            if (btnReload)
+            {
+                build_font_tex_ext(cbExportGrid, c_black, cbExportBG);
+                surface_resize(previewTex, surface_get_width(fntTex), surface_get_height(fntTex));
+                surface_copy(previewTex, 0, 0, fntTex);
+                build_font_tex();
+            }
+            break;
+        
+        case UI_MODAL.DEBUG:
+            uiModalInfo = false;
+            var _atlaswid = WIN_WID * 0.5 - 20;
+            var _bakedx = _winhalfw - 10 - _atlaswid;
+            var _maskx = _winhalfw + 10;
+            var _debugy = 250;
+            
+            var _atlashei = (_atlaswid / sprite_get_width(bakedAtlas)) * sprite_get_height(bakedAtlas);
+            iui_label_shadow(_bakedx, _debugy, "BAKED :", c_yellow, 0, 1, c_black);
+            iui_rect(_bakedx, _debugy + 20, _atlaswid, _atlashei, $FF00FF);
+            draw_sprite_stretched(bakedAtlas, 0, _bakedx, _debugy + 20, _atlaswid, _atlashei);
+            
+            _atlashei = (_atlaswid / sprite_get_width(maskAtlas)) * sprite_get_height(maskAtlas);
+            iui_label_shadow(_maskx, _debugy, "MASK :", c_yellow, 0, 1, c_black);
+            iui_rect(_maskx, _debugy + 20, _atlaswid, _atlashei, $FF00FF);
+            draw_sprite_stretched(maskAtlas, 0, _maskx, _debugy + 20, _atlaswid, _atlashei);
+            
+            draw_surface(maskTemp, _maskx, WIN_HEI - 100);
+            break;
+            
+        case UI_MODAL.LOADING:
+            iui_align_center();
+            var _statusstr = "불러오는 중...";
+            var _statuswid = string_width(_statusstr) * 3 + _bigmargin;
+            var _statushei = string_height(_statusstr) * 3 + _bigmargin;
+            
+            iui_rect(_winhalfw - (_statuswid >> 1) - 2, _winhalfh - (_statushei >> 1) - 2, _statuswid + 4, _statushei + 4, c_black);
+            iui_rect(_winhalfw - (_statuswid >> 1) + 10, _winhalfh - (_statushei >> 1) + 10, _statuswid, _statushei, c_black);
+            iui_rect(_winhalfw - (_statuswid >> 1), _winhalfh - (_statushei >> 1), _statuswid, _statushei, COL.PISS);
+            // iui_label_transform(_winhalfw, _winhalfh + 6, _statusstr, 3, 3, 0, c_black, 1);
+            iui_label_transform(_winhalfw, _winhalfh, _statusstr, 3, 3, 0, c_black, 1);
+            iui_align_pop();
+            break;
+            
+        case UI_MODAL.MESSAGE:
+            iui_align_center();
+            var _statusstr = uiModalMsg;
+            var _statuswid = string_width(_statusstr) * 1 + _bigmargin;
+            var _statushei = string_height(_statusstr) * 1 + _bigmargin;
+            
+            iui_rect(_winhalfw - (_statuswid >> 1) - 2, _winhalfh - (_statushei >> 1) - 2, _statuswid + 4, _statushei + 4, c_black);
+            iui_rect(_winhalfw - (_statuswid >> 1) + 10, _winhalfh - (_statushei >> 1) + 10, _statuswid, _statushei, c_black);
+            iui_rect(_winhalfw - (_statuswid >> 1), _winhalfh - (_statushei >> 1), _statuswid, _statushei, COL.WHITE);
+            // iui_label_transform(_winhalfw, _winhalfh + 6, _statusstr, 3, 3, 0, c_black, 1);
+            iui_label_transform(_winhalfw, _winhalfh, _statusstr, 1, 1, 0, c_black, 1);
+            iui_align_pop();
+            break;
+    }
+}
+
+iui_end();
+
+
+// Message
+if (uiMsgTime > 0)
+{
+    uiMsgTime--;
+    
+    var _boxw = string_width(uiMsg) * 2 + _smallmargin;
+    var _boxh = string_height(uiMsg) * 2 + _smallmargin;
+    var _boxx = _winhalfw - (_boxw >> 1);
+    var _boxy = WIN_HEI - _bigmargin * 2 - (_boxh >> 1);
+    
+    iui_rect(_boxx - 2, _boxy - 2, _boxw + 4, _boxh + 4, c_black);
+    iui_rect(_boxx + 5, _boxy + 5, _boxw, _boxh, c_black);
+    iui_rect(_boxx, _boxy, _boxw, _boxh, COL.PISS);
+    
+    iui_align_center();
+    iui_label(_winhalfw, _boxy + (_boxh >> 1), uiMsg, c_black);
+    iui_align_pop();
 }
 
 // oh wtf
@@ -1302,15 +1331,15 @@ if (PEPPIS)
     draw_rectangle_colour(_minx, _miny, _maxx, _maxy, COL.HIGHLIGHT, COL.HIGHLIGHT, COL.HIGHLIGHT, COL.HIGHLIGHT, true);
     
     draw_set_valign(fa_bottom);
-    iui_label(_minx, _miny, "[" + string(_minx / WIN_WID) + ", " + string(_miny / WIN_HEI) + "]#[" + string(_minx) + "px, " + string(_miny) + "px]", $00DDFF);
+    iui_label(_minx, _miny, "[" + string(_minx / WIN_WID) + ", " + string(_miny / WIN_HEI) + "]#[" + string(_minx) + "px, " + string(_miny) + "px]", COL.PISS);
     
     draw_set_halign(fa_center);
     draw_set_valign(fa_middle);
-    iui_label(_minx + (_dx >> 1), _miny + (_dy >> 1), "[" + string(_dx / WIN_WID) + ", " + string(_dx / WIN_HEI) + "]#[" + string(_dx) + "px, " + string(_dx) + "px]", $00DDFF);
+    iui_label(_minx + (_dx >> 1), _miny + (_dy >> 1), "[" + string(_dx / WIN_WID) + ", " + string(_dx / WIN_HEI) + "]#[" + string(_dx) + "px, " + string(_dx) + "px]", COL.PISS);
     
     draw_set_halign(fa_left);
     draw_set_valign(fa_top);
-    iui_label(_maxx, _maxy, "[" + string(_maxx / WIN_WID) + ", " + string(_maxy / WIN_HEI) + "]#[" + string(_maxx) + "px, " + string(_maxy) + "px]", $00DDFF);
+    iui_label(_maxx, _maxy, "[" + string(_maxx / WIN_WID) + ", " + string(_maxy / WIN_HEI) + "]#[" + string(_maxx) + "px, " + string(_maxy) + "px]", COL.PISS);
 }
 
 #section tooltip and cursor
@@ -1321,10 +1350,10 @@ if (uiTooltipShow)
     var _labelhei = string_height(uiTooltipMsg) + 20;
     
     iui_align_center();
-    iui_rect(iui_inputX + 10, iui_inputY + 10, _labelwid, _labelhei, 0); // shadow
-    iui_rect(iui_inputX - 1, iui_inputY - 1, _labelwid + 2, _labelhei + 2, COL.BASE);
-    iui_rect(iui_inputX, iui_inputY, _labelwid, _labelhei, $00ddff);
-    iui_label(iui_inputX + (_labelwid >> 1), iui_inputY + (_labelhei >> 1), uiTooltipMsg, COL.BASE);
+    iui_rect(iui_inputX + 10, iui_inputY + 10, _labelwid, _labelhei, c_black); // shadow
+    iui_rect(iui_inputX - 1, iui_inputY - 1, _labelwid + 2, _labelhei + 2, c_black);
+    iui_rect(iui_inputX, iui_inputY, _labelwid, _labelhei, COL.PISS);
+    iui_label(iui_inputX + (_labelwid >> 1), iui_inputY + (_labelhei >> 1), uiTooltipMsg, c_black);
     iui_align_pop();
 }
 

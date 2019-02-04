@@ -55,13 +55,13 @@ if (isHot)
     {
         iui_rect(argument0, argument1, argument2, argument3, COL.WHITE);
         iui_rect(argument0 + _border, argument1 + _border, argument2 - (_border << 1), argument3 - (_border << 1), COL.GRAY);
-        _labelcol = COL.BASE;
+        _labelcol = COL.WHITE;
     }
 }
 else // Nope
 {
     // Default
-    iui_rect(argument0, argument1, argument2, argument3, COL.GRAY);
+    iui_rect(argument0, argument1, argument2, argument3, c_black);
     iui_rect(argument0 + _border, argument1 + _border, argument2 - (_border << 1), argument3 - (_border << 1), COL.WHITE);
     _labelcol = COL.BASE;
 }
@@ -139,13 +139,13 @@ if (isHot)
     {
         iui_rect(argument0, argument1, argument2, argument3, COL.WHITE);
         iui_rect(argument0 + _border, argument1 + _border, argument2 - (_border << 1), argument3 - (_border << 1), COL.GRAY);
-        _labelcol = COL.BASE;
+        _labelcol = COL.WHITE;
     }
 }
 else // Nope
 {
     // Default
-    iui_rect(argument0, argument1, argument2, argument3, COL.GRAY);
+    iui_rect(argument0, argument1, argument2, argument3, c_black);
     iui_rect(argument0 + _border, argument1 + _border, argument2 - (_border << 1), argument3 - (_border << 1), COL.WHITE);
     _labelcol = COL.BASE;
 }
@@ -165,6 +165,10 @@ else // Nope
 // iui_align_pop();
 
 // icon
-draw_sprite_ext(spr_icons, argument5, argument0 + (argument2 >> 1), argument1 + (argument3 >> 1), 1, 1, 0, argument6, 1);
+var _col = argument6;
+if (isHot)
+    _col = _labelcol;
+    
+draw_sprite_ext(spr_icons, argument5, argument0 + (argument2 >> 1), argument1 + (argument3 >> 1), 1, 1, 0, _col, 1);
 
 return isClicky;

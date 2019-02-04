@@ -19,6 +19,7 @@
     <sprite>sprites\spr_icons</sprite>
     <sprite>sprites\spr_mouse</sprite>
     <sprite>sprites\spr_bgtexture</sprite>
+    <sprite>sprites\spr_checker1</sprite>
   </sprites>
   <backgrounds name="background"/>
   <paths name="paths"/>
@@ -109,6 +110,9 @@
     <script>scripts\save_project.gml</script>
     <script>scripts\load_project.gml</script>
   </scripts>
+  <shaders name="shaders">
+    <shader type="GLSLES">shaders\shd_stripe.shader</shader>
+  </shaders>
   <fonts name="fonts">
     <font>fonts\fntOWO</font>
     <font>fonts\fntWHATSTHIS</font>

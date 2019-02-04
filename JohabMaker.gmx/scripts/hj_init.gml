@@ -46,7 +46,7 @@ global.hj_LUT_BEOL_MID = -1; // 중성에 따른 초성 / 종성 벌 오프셋 �
 for (var i=0; i<=7; i++)
     global.hj_LUT_BEOL_MID[i] = 0; // 중성 [ㅏ ㅐ ㅑ ㅒ ㅓ ㅔ ㅕ ㅖ ㅣ] 는 1번째 벌 쓰기
 global.hj_LUT_BEOL_MID[20] = 0;
-for (var i=8; i<20; i++)
+for (var i=8; i<=19; i++)
     global.hj_LUT_BEOL_MID[i] = 28; // 중성 [ㅗ ㅠ ㅘ ㅛ ㅙ ㅚ ㅜ ㅝ ㅞ ㅟ ㅡ ㅢ]는 2번째 벌 쓰기
 //
 global.hj_LUT_BEOL_LAST = -1; // 종성 여부에 따른 초성 벌 오프셋 테이블 ('곰' vs '가')
@@ -55,6 +55,18 @@ for (var i=1; i<=27; i++)
     global.hj_LUT_BEOL_LAST[i] = 0; // 나머지는 그대로
 
 //
+// 예외 : 중성 [ㅘ ㅙ ㅝ ㅞ ㅟ ㅢ] 는 무조건 초성 1벌
+global.hj_LUT_BEOL_SPECIAL = -1;
+for (var i=0; i<=27; i++)
+    global.hj_LUT_BEOL_SPECIAL[i] = 1;
+
+global.hj_LUT_BEOL_SPECIAL[10] = 0; // ㅘ
+global.hj_LUT_BEOL_SPECIAL[12] = 0; // ㅙ
+global.hj_LUT_BEOL_SPECIAL[13] = 0; // ㅚ
+global.hj_LUT_BEOL_SPECIAL[15] = 0; // ㅝ
+global.hj_LUT_BEOL_SPECIAL[16] = 0; // ㅞ
+global.hj_LUT_BEOL_SPECIAL[17] = 0; // ㅟ
+global.hj_LUT_BEOL_SPECIAL[19] = 0; // ㅢ
 ////////////////////////
 
 #define hj_draw
@@ -136,7 +148,7 @@ for (var i=1; i<=_strlen; i++)
             var _last = _kr % 28;
             var _offlast = global.hj_LUT_BEOL_MID[_mid] * global.hjSpecialMiddle;
             var _offmid = global.hj_LUT_BEOL_LAST[_last] * global.hjSpecialLast;
-            var _offfirst = _offlast + _offmid * 2;
+            var _offfirst = (_offlast + _offmid * 2) * global.hj_LUT_BEOL_SPECIAL[_mid];
             
             draw_sprite_ext(global.hjSpriteKor, _first + global.hjOffFirst + _offfirst, _dx, _dy, 1, 1, 0, _strcol, 1);
             draw_sprite_ext(global.hjSpriteKor, _mid + global.hjOffMiddle + _offmid, _dx, _dy, 1, 1, 0, _strcol, 1);
