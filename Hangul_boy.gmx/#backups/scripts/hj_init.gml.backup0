@@ -1,4 +1,4 @@
-// 2019-02-11 04:32:36
+// 2019-02-11 06:31:00
 #define hj_init
 /*
     한글 조합형 드로잉 MK.2
@@ -42,9 +42,12 @@ global.hjCharWidAscii = 8; // ASCII 글자 너비 & 높이 (대부분 8x16)
 global.hjCharHeiAscii = 16; // (스페이스 바 넓이, 줄 높이는 이 변수를 사용합니다)
 global.hjGlyphKerning = 0; // 글자간 간격 (글자 너비 제외)
 global.hjGlpyhLineheight = 1; // 줄 간격 (줄 높이 제외)
-global.hjGlyphJamoBeol = 0; // 초성 / 자모만을 그릴때 어느 벌을 사용할 지 정하는 변수
-global.hjOffBody = (8 * 28) + 1; // 중성 오프셋
-global.hjOffTail = global.hjOffBody + (4 * 28) - 1; // 종성 오프셋
+
+global.hjGlyphJamoHead = 0; // 초성 / 자모만을 그릴때 몇 번째 줄을 사용할 지 정하는 변수
+global.hjGlyphJamoBody = 8; // 중성 / 자모만을 그릴때 몇 번째 줄을 사용할 지 정하는 변수
+global.hjGlyphJamoTail = 15; // 종성 / 자모만을 그릴때 몇 번째 줄을 사용할 지 정하는 변수
+// global.hjOffBody = (8 * 28) + 1; // 중성 오프셋 -- 아래 테이블에 포함되었습니다(?)
+// global.hjOffTail = global.hjOffBody + (4 * 28) - 1; // 종성 오프셋
 ////////////////////////
 
 
@@ -61,15 +64,6 @@ global.hjDrawAlignV = 0;
     드로잉 할때 벌 + 오프셋으로 하지 말고
     애초에 벌 대신 (벌 + 오프셋) 으로 테이블을 제작하면 더욱 편할것같다
 */
-    // TODO : 자모를 위한 테이블도 제작
-// 중성 : 받침 없는 벌
-global.hjLUTBody = hj_gen_table(-1, "ㄱㅋ", 0);
-global.hjLUTBody = hj_gen_table(global.hjLUTBody, "ㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅌㅍㅎ", 1 * 28); // 더 간편한 인덱싱을 위해 미리 28(한 줄의 스프라이트 갯수)를 곱합니다.
-
-// 중성 : 받침 있는 벌
-global.hjLUTBodyWithTail = hj_gen_table(-1, "ㄱㅋ", 2 * 28);
-global.hjLUTBodyWithTail = hj_gen_table(global.hjLUTBodyWithTail, "ㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅌㅍㅎ", 3 * 28);
-
 // 초성 : 받침 없는 벌
 global.hjLUTHead = hj_gen_table(-1, "ㅏㅐㅑㅒㅓㅔㅕㅖㅣ", 0);
 global.hjLUTHead = hj_gen_table(global.hjLUTHead, "ㅗㅛㅡ", 1 * 28);
@@ -82,11 +76,29 @@ global.hjLUTHeadWithTail = hj_gen_table(-1, "ㅏㅐㅑㅒㅓㅔㅕㅖㅣ", 5 * 2
 global.hjLUTHeadWithTail = hj_gen_table(global.hjLUTHeadWithTail, "ㅗㅛㅜㅠㅡ", 6 * 28);
 global.hjLUTHeadWithTail = hj_gen_table(global.hjLUTHeadWithTail, "ㅘㅙㅚㅢㅝㅞㅟ", 7 * 28);
 
+// 중성 : 받침 없는 벌
+global.hjLUTBody = hj_gen_table(-1, "ㄱㅋ", 8 * 28);
+global.hjLUTBody = hj_gen_table(global.hjLUTBody, "ㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅌㅍㅎ", 9 * 28); // 더 간편한 인덱싱을 위해 미리 28(한 줄의 스프라이트 갯수)를 곱합니다.
+
+// 중성 : 받침 있는 벌
+global.hjLUTBodyWithTail = hj_gen_table(-1, "ㄱㅋ", 10 * 28);
+global.hjLUTBodyWithTail = hj_gen_table(global.hjLUTBodyWithTail, "ㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅌㅍㅎ", 11 * 28);
+
 // 종성
-global.hjLUTTail = hj_gen_table(-1, "ㅏㅑㅘ", 0);
-global.hjLUTTail = hj_gen_table(global.hjLUTTail, "ㅓㅕㅚㅝㅟㅢㅣ", 1 * 28);
-global.hjLUTTail = hj_gen_table(global.hjLUTTail, "ㅐㅒㅔㅖㅙㅞ", 2 * 28);
-global.hjLUTTail = hj_gen_table(global.hjLUTTail, "ㅗㅛㅜㅠㅡ", 3 * 28);
+global.hjLUTTail = hj_gen_table(-1, "ㅏㅑㅘ", 12 * 28);
+global.hjLUTTail = hj_gen_table(global.hjLUTTail, "ㅓㅕㅚㅝㅟㅢㅣ", 13 * 28);
+global.hjLUTTail = hj_gen_table(global.hjLUTTail, "ㅐㅒㅔㅖㅙㅞ", 14 * 28);
+global.hjLUTTail = hj_gen_table(global.hjLUTTail, "ㅗㅛㅜㅠㅡ", 15 * 28);
+
+// 자모 테이블
+global.hjLUTJamo = hj_gen_table_jamo();
+
+for (var i=0; i<array_length_1d(global.hjLUTJamo); i++)
+{
+    var _jamo = chr(i + $3131); // 현재 체크할려는 자모
+    
+    show_debug_message(_jamo + " : ["+string(global.hjLUTJamo[i])+"]");
+}
 
 /*
     이전 버전 벌식 관련

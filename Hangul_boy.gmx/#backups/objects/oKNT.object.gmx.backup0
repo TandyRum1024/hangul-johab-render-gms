@@ -1,4 +1,4 @@
-// 2019-02-11 04:38:50
+// 2019-02-11 07:04:15
 #event create
 hj_init();
 
@@ -26,20 +26,27 @@ animTimer++;
 draw_clear(COL.BLK);
 
 // panel
-var _panelStr = "가나다라마바사#다람쥐 헌 쳇바퀴에 타고파 일가족 살해#abcdefg#Oh what the hell, fried chicken.#Yo i'm about to eat!#What the hell! ding dong shit fuck.";//"가나다라마바사#한글테스트";
+var _panelStr = "ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎㄺㄵ#구오아아아아아ㅏㅏㅏㅏ앍ㄺㄲ!11!!!!1!!#다람쥐 헌 쳇바퀴에 타고파 일가족 살해#Oh what the hell, fried chicken.#Yo i'm about to eat!#What the hell! ding dong shit fuck.";//"가나다라마바사#한글테스트";
 var _strlen = string_width(_panelStr);
 var _panelMargin = 10;
-var _panelW = _strlen + _panelMargin * 2;
-var _panelH = 100;
+var _panelW = 400;
+var _panelH = 200;
 var _panelX = WIN_HALF_WID - (_panelW >> 1) - _panelMargin;
 var _panelY = WIN_HALF_HEI - (_panelH >> 1) - _panelMargin;
 
 draw_rect(_panelX + 10, _panelY + 10, _panelW, _panelH, COL.BLU);
 draw_rect(_panelX, _panelY, _panelW, _panelH, COL.CLR);
 
-hj_compat_change_font(24, 24, 16, 16, true, true);
-for (var i=0; i<10; i++)
-{
-    hj_draw_dkb(WIN_HALF_WID - (_strlen >> 1), _panelY + 10, _panelStr, COL.BLK, 1);
+// hj_compat_change_font(24, 24, 16, 16, true, true);
+hj_dkb_change_font(sprHanGinsaem, sprEngSlant, 16, 16, 8, 16);
+var _x = WIN_HALF_WID - (_strlen >> 1) - 54, _y = _panelY + 10;
+hj_draw_dkb(_x + 1, _y + 1, _panelStr, COL.RED, 1);
+hj_draw_dkb(_x, _y, _panelStr, COL.BLK, 1);
+
+hj_dkb_change_font(sprHanGungsuh, sprEngScript, 16, 16, 8, 16);
+_panelStr = "와! 샌즈!! 파파이스!! GGGGGGGG!!!!#…If you do drugs, you'll go to hell before you die#.......................Please";
+_x = WIN_HALF_WID - (_strlen >> 1) - 54;
+_y = _panelY + 10 + 128;
+hj_draw_dkb(_x + 1, _y + 1, _panelStr, COL.BLU, 1);
+hj_draw_dkb(_x, _y, _panelStr, c_red, 1);
     // hj_draw_sheet(sprHangul24, sprYayoC64, WIN_HALF_WID - (_strlen >> 1), _panelY + 10, _panelStr, COL.BLK, 1);
-}

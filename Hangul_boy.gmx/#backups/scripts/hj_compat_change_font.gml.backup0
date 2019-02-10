@@ -1,11 +1,11 @@
-// 2019-02-11 01:03:59
+// 2019-02-11 05:36:50
 ///hj_compat_change_font(hanWidth, hanHeight, asciiWidth, asciiHeight, specialMiddle, specialLast)
 /*
     [호환용/hj_draw_sheet()]
     폰트 설정을 바꿉니다.
     이 스크립트로 폰트의 크기를 조정하면 앞으로 그려지는 모든 글자 (= 도깨비8x4x4식으로 그리는것도)가
     영향을 받습니다.
-    이 스크립트로 폰트를 변경하시고 다시 도깨비8x4x4식으로 그리시려면 hj_change_font()로
+    이 스크립트로 폰트를 변경하시고 다시 도깨비8x4x4식으로 그리시려면 hj_dkb_change_font()로
     알맞은 설정을 해주는걸 잊지 마세요!!
     
     ========================================

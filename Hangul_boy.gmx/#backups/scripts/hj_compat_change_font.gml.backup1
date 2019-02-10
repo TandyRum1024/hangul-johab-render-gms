@@ -1,4 +1,4 @@
-// 2019-02-11 01:02:21
+// 2019-02-11 01:03:59
 ///hj_compat_change_font(hanWidth, hanHeight, asciiWidth, asciiHeight, specialMiddle, specialLast)
 /*
     [호환용/hj_draw_sheet()]
@@ -30,6 +30,10 @@ global.hjCharWidHan = argument0; // 한글
 global.hjCharHeiHan = argument1;
 global.hjCharWidAscii = argument2; // ASCII
 global.hjCharHeiAscii = argument3;
+
+// 설정 변경
+global.hjCompSpecialMiddle = argument4;
+global.hjCompSpecialLast = argument5;
 
 // 벌 수 & 오프셋 다시 설정
 hj_compat_calc_beol();

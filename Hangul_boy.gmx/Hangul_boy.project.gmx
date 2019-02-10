@@ -14,6 +14,8 @@
     <sprite>sprites\sprEngSlant</sprite>
     <sprite>sprites\sprHangul24</sprite>
     <sprite>sprites\sprYayoC64</sprite>
+    <sprite>sprites\sprHanGungsuh</sprite>
+    <sprite>sprites\sprEngScript</sprite>
   </sprites>
   <backgrounds name="background"/>
   <paths name="paths"/>
@@ -21,12 +23,15 @@
     <scripts name="JOHAB_RENDER">
       <scripts name="dkb884">
         <script>scripts\hj_dkb_get_beol_first.gml</script>
+        <script>scripts\hj_dkb_compile_str.gml</script>
+        <script>scripts\hj_dkb_change_font.gml</script>
       </scripts>
       <script>scripts\hj_gen_table.gml</script>
+      <script>scripts\hj_gen_table_jamo.gml</script>
       <script>scripts\hj_init.gml</script>
       <script>scripts\hj_init_old.gml</script>
-      <script>scripts\hj_draw_sheet.gml</script>
       <script>scripts\hj_draw_dkb.gml</script>
+      <script>scripts\hj_draw_sheet.gml</script>
       <script>scripts\hj_compat_change_font.gml</script>
       <script>scripts\hj_compat_calc_beol.gml</script>
     </scripts>
