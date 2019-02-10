@@ -8,15 +8,29 @@
   </NewExtensions>
   <sounds name="sound"/>
   <sprites name="sprites">
-    <sprite>sprites\hangul_joa_yo</sprite>
+    <sprite>sprites\sprAnotherFont</sprite>
+    <sprite>sprites\sprRect</sprite>
+    <sprite>sprites\sprHanGinsaem</sprite>
+    <sprite>sprites\sprEngSlant</sprite>
     <sprite>sprites\sprHangul24</sprite>
     <sprite>sprites\sprYayoC64</sprite>
-    <sprite>sprites\sprAnotherFont</sprite>
   </sprites>
   <backgrounds name="background"/>
   <paths name="paths"/>
   <scripts name="scripts">
-    <script>scripts\hj_init.gml</script>
+    <scripts name="JOHAB_RENDER">
+      <scripts name="dkb884">
+        <script>scripts\hj_dkb_get_beol_first.gml</script>
+      </scripts>
+      <script>scripts\hj_gen_table.gml</script>
+      <script>scripts\hj_init.gml</script>
+      <script>scripts\hj_init_old.gml</script>
+      <script>scripts\hj_draw_sheet.gml</script>
+      <script>scripts\hj_draw_dkb.gml</script>
+      <script>scripts\hj_compat_change_font.gml</script>
+      <script>scripts\hj_compat_calc_beol.gml</script>
+    </scripts>
+    <script>scripts\draw_rect.gml</script>
   </scripts>
   <objects name="objects">
     <object>objects\oKNT</object>

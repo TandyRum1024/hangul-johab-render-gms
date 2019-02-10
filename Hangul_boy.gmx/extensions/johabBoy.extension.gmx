@@ -32,7 +32,10 @@
   <IncludedResources>
     <Resource>Sprites\sprYayoC64</Resource>
     <Resource>Sprites\sprHangul24</Resource>
-    <Resource>Scripts\hj_init</Resource>
+    <Resource>Scripts\JOHAB_RENDER\hj_init_old.gml</Resource>
+    <Resource>Scripts\JOHAB_RENDER\hj_init.gml</Resource>
+    <Resource>Scripts\JOHAB_RENDER\hj_draw_sheet.gml</Resource>
+    <Resource>Scripts\JOHAB_RENDER\hj_draw_dkb.gml</Resource>
   </IncludedResources>
   <files/>
 </extension>

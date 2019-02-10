@@ -253,7 +253,7 @@ if (!surface_exists(previewTex) &amp;&amp; uiModal)
 iui_update_io();
 ui_update();
 
-if (iui_kbFocusItem == -1)
+if (iui_kbFocusItem == -1 &amp;&amp; !uiModal)
 {
     var moveH = keyboard_check(vk_right) - keyboard_check(vk_left);
     var moveV = keyboard_check(vk_down) - keyboard_check(vk_up);
@@ -327,7 +327,7 @@ if (uiModal &amp;&amp; keyboard_check_pressed(vk_escape))
             <kind>1</kind>
             <string>/// update keystrokes for preview
 
-if (uFontInputActive || uTestInputActive)
+if ((uFontInputActive || uTestInputActive) &amp;&amp; uiModal)
 {
     if (ime_get(kia_hex_to_dec(string(window_handle()))))
         uInputKor = !uInputKor;
@@ -459,12 +459,13 @@ if (uFontInputActive || uTestInputActive)
             <string>/// glyph selecting &amp; mouse logic &amp; cropping logic
 /// Get local X/Y inside crop window
 // zoom ratio of panel size and cell size
-var zoomRatio = winCropPanelSize / charHei;
+var zoomRatio = winCropPanelSize / max(charWid, charHei);
 var zoomWid = charWid * zoomRatio;
 var zoomHei = charHei * zoomRatio;
 // offset of clickable panel
-var panelOffX = (winCropPanelSize &gt;&gt; 1) - (zoomWid &gt;&gt; 1);
-var panelOffY = 42;
+var winhalf = winCropPanelSize &gt;&gt; 1;
+var panelOffX = winhalf - (zoomWid &gt;&gt; 1);
+var panelOffY = 42 + winhalf - (zoomHei &gt;&gt; 1);
 // local x y in cell space
 winCropLocalX = floor((iui_inputX - (winCropX + panelOffX)) / zoomRatio);
 winCropLocalY = floor((iui_inputY - (winCropY + panelOffY)) / zoomRatio);
@@ -691,7 +692,7 @@ iui_align_center();
     ============
 */
 iui_rect(0, 0, WIN_WID, uToolbarHei, uBGCol);
-iui_rect(0, uToolbarHei, WIN_WID, 4, COL.WHITE);
+iui_rect(0, uToolbarHei, WIN_WID, 2, COL.WHITE);
 uCurrentTab = ui_tab(0, 0, WIN_WID, 24, iui_pack("@=(^0^)", "프로젝트", "글꼴"), uCurrentTab);
 iui_align_pop();
 
@@ -710,10 +711,16 @@ switch (uCurrentTab)
         var _topmargin = _bigmargin;
         
         // info
-        iui_label(_smallmargin, _topmargin, "FNTGEN#ZIK@2019", COL.HIGHLIGHT);
         
+        // help
+        var _helpy = _topmargin + _bigmargin;
+        iui_label(_smallmargin, _helpy, "방향 단추로 화면 이동#+ 와 - 단추로 확대 / 축소#맨 위 표시줄을 이용하여 메뉴 창을 변경하십시오.", COL.HIGHLIGHT);
+        
+        // literally bullshit
         iui_align_push(fa_center, fa_top);
-        iui_label(_winhalfw, _topmargin + _bigmargin, "방향키로 화면 이동#+ &amp; - 로 줌 인/아웃#맨 위에 있는 표시줄을 이용해 메뉴를 이동하세요", COL.WHITE);
+        // iui_label(_winhalfw, _topmargin + _bigmargin, "방향키로 화면 이동#+ &amp; - 로 줌 인/아웃#맨 위에 있는 표시줄을 이용해 메뉴를 이동하세요", COL.WHITE);
+        iui_label(_winhalfw, _topmargin, "조합형 글꼴 도우미 | ZIK@2019", COL.HIGHLIGHT);
+        iui_label(_winhalfw, _topmargin + _bigmargin, ".TTF 화일로부터 조합형 한글 렌더링에 사용되는#비트맵 글꼴 제작을 도와주는 프로그램입니다.", COL.WHITE);
         iui_align_pop();
         break;
     
@@ -866,12 +873,14 @@ switch (uCurrentTab)
         iui_label(_off, _topmargin, "글꼴 크기 : ", uTextCol);
         iui_label(_off, _topmargin + _bigmargin, "격자 크기 : ", uTextCol);
         iui_label(_off, _topmargin + (_bigmargin &lt;&lt; 1), "ASCII 문자 사용 : ", uTextCol);
+        iui_label(_off + 300, _topmargin + (_bigmargin &lt;&lt; 1), "도깨비 한글 8x4x4벌 : ", uTextCol);
         iui_label(_off + _smallmargin + 90 + (string_width("X") &gt;&gt; 1), _topmargin + _bigmargin, "X", uTextCol);
         
         tbFntSize = ui_textbox_numberonly(_off + _smallmargin, _topmargin, 80, 32, string(tbFntSize), "FONTSIZE", 0);
         tbCellWid = ui_textbox_numberonly(_off + _smallmargin, _topmargin + _bigmargin, 80, 32, string(tbCellWid), "CELLWID", 1);
         tbCellHei = ui_textbox_numberonly(_off + _smallmargin + 100, _topmargin + _bigmargin, 80, 32, string(tbCellHei), "CELLHEI", 1);
-        cbAscii = ui_checkbox(_off + _smallmargin, _topmargin + (_bigmargin &lt;&lt; 1), 16, 16, cbAscii, "ASCII");
+        cbAscii = ui_checkbox(_off + _smallmargin + 2, _topmargin + (_bigmargin &lt;&lt; 1), 16, 16, cbAscii, "ASCII");
+        cbDok844 = ui_checkbox(_off + _smallmargin + 2 + 300, _topmargin + (_bigmargin &lt;&lt; 1), 16, 16, cbDok844, "HAN844");
         FNT_ASCII = cbAscii;
         
         iui_align_pop();
@@ -1007,20 +1016,22 @@ var btnPaste = ui_button_icon(winCropX + _winhalf, _btny + _btnhei * 2, _winhalf
 
 var _attribtopmargin = _btny + _btnhei * 4; // + (_bigmargin &lt;&lt; 1);
 
-iui_label(_wincx, _attribtopmargin, "-=[쌤플 글자 (빈칸=기본값)]=-", uTextCol);
-iui_label(_wincx, _attribtopmargin + _halfmargin * 3, "-=[글자 상대 위치]=-", uTextCol);
+iui_label(_wincx, _attribtopmargin, "-=[쌤플 글자]=-", uTextCol);
+iui_label(_wincx, _attribtopmargin + _halfmargin * 3, "-=[글자 오프셋]=-", uTextCol);
 
 if (_data != undefined)
 {
     var _offmarginy = _attribtopmargin + _halfmargin * 3 + _smallmargin;
-    iui_label(winCropX + _smallmargin, _offmarginy, "X : ", uTextCol);
-    iui_label(_wincx + _smallmargin, _offmarginy, "Y : ", uTextCol);
+    iui_label(winCropX + _bigmargin, _offmarginy, "X : ", uTextCol);
+    iui_label(winCropX + _bigmargin, _offmarginy + 42, "Y : ", uTextCol);
     
     _offmarginy -= 16;
     
     // check if the properties had changed
-    var _newoffx = ui_textbox_numberonly(winCropX + _smallmargin + _bigmargin, _offmarginy, 80, 32, charOffX, "CHAR_OFF_X", -128);
-    var _newoffy = ui_textbox_numberonly(_wincx + _smallmargin + _bigmargin, _offmarginy, 80, 32, charOffY, "CHAR_OFF_Y", -128);
+    var _newoffx = ui_textbox_numberonly(winCropX + _bigmargin, _offmarginy, 80, 32, charOffX, "CHAR_OFF_X", -128);
+    var _newoffy = ui_textbox_numberonly(winCropX + _bigmargin, _offmarginy + 42, 80, 32, charOffY, "CHAR_OFF_Y", -128);
+    
+    ui_tooltip(_wincx - 40, _attribtopmargin + _smallmargin, 80, 32, "마스크가 씌워질 원본 글자를 지정합니다.#빈 칸은 미리 지정된 글자를 사용합니다.", -1, 0, false, false, false);
     var _newsrc = ui_textbox_hangul(_wincx - 40, _attribtopmargin + _smallmargin, 80, 32, charSrc, "CHAR_SRC");
     
     if (_newoffx != charOffX ||
@@ -1049,12 +1060,12 @@ iuiButtonShadow = true;
 iui_align_pop();
 
 // Draw glyph preview / crop panel view
-var _zoomRatio = winCropTexSize / charHei;
+var _zoomRatio = winCropTexSize / max(charWid, charHei);
 var _zoomWid = charWid * _zoomRatio;
 var _zoomHei = charHei * _zoomRatio;
 
 var panelOffX = winCropX + _winhalf - (_zoomWid &gt;&gt; 1);
-var panelOffY = winCropY + 42;
+var panelOffY = 42 + winCropY + _winhalf - (_zoomHei &gt;&gt; 1);
 
 iui_rect(panelOffX, panelOffY, _zoomWid, _zoomHei, 0);
 
@@ -1527,11 +1538,12 @@ draw_sprite(spr_mouse, uiCursor, iui_inputX, iui_inputY);
             <kind>1</kind>
             <string>/// update glyph overlay
 
-var zoomRatio = winCropPanelSize / charHei;
+var zoomRatio = winCropPanelSize / max(charWid, charHei);
 var zoomWid = charWid * zoomRatio;
 var zoomHei = charHei * zoomRatio;
-var panelOffX = (winCropPanelSize &gt;&gt; 1) - (zoomWid &gt;&gt; 1);
-var panelOffY = 42;
+var winhalf = winCropPanelSize &gt;&gt; 1;
+var panelOffX = winhalf - (zoomWid &gt;&gt; 1);
+var panelOffY = 42 + winhalf - (zoomHei &gt;&gt; 1);
 
 var lx = floor((window_mouse_get_x() - (winCropX + panelOffX)) / zoomRatio);
 var ly = floor((window_mouse_get_y() - (winCropY + panelOffY)) / zoomRatio);

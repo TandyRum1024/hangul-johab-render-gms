@@ -1,69 +1,45 @@
-// 2018-11-27 19:50:19
+// 2019-02-11 04:38:50
 #event create
 hj_init();
 
-gametime = 0;
+animTimer = 0;
+WIN_WID = room_width;
+WIN_HEI = room_height;
+WIN_HALF_WID = room_width >> 1;
+WIN_HALF_HEI = room_height >> 1;
+
+enum COL
+{
+    BLK = $101018,
+    BLU = $9c7384,
+    RED = $8cb5f7,
+    CLR = $ffefff
+}
+
+show_debug_overlay(true);
 
 #event draw
-hj_set_halign(2);
+// za warudo
+animTimer++;
 
-// 폰트 1 : 기본 폰트
-// sprHangul24 : 스프라이트
-// 24 : 폰트 사이즈
-// 2 : 줄 간격 (폰트 사이즈 + 줄간격으로 계산되요. 여기선 26이 계산되겠죠)
-hj_set_font(sprHangul24, 24, 2);
-hj_draw(room_width - 10, 10, "지극히 정상적인 폰트 123 ㄱㄴㄷㄹ ABC", c_white, 1);
+// backdrop
+draw_clear(COL.BLK);
 
-// 폰트 2 : 또 다른 폰트
-// sprAnotherFont : 스프라이트
-// 12 : 폰트 사이즈
-// 2 : 줄 간격 (폰트 사이즈 + 줄간격으로 계산되요. 여기선 14가 계산되겠죠)
-hj_set_font(sprAnotherFont, 12, 2);
-hj_draw(room_width - 10, 50, "쎄련된 싸이버펑크 폰트 (작고 귀엽다) 123 ㄱㄴㄷㄹ ABC ", c_white, 1);
+// panel
+var _panelStr = "가나다라마바사#다람쥐 헌 쳇바퀴에 타고파 일가족 살해#abcdefg#Oh what the hell, fried chicken.#Yo i'm about to eat!#What the hell! ding dong shit fuck.";//"가나다라마바사#한글테스트";
+var _strlen = string_width(_panelStr);
+var _panelMargin = 10;
+var _panelW = _strlen + _panelMargin * 2;
+var _panelH = 100;
+var _panelX = WIN_HALF_WID - (_panelW >> 1) - _panelMargin;
+var _panelY = WIN_HALF_HEI - (_panelH >> 1) - _panelMargin;
 
-hj_set_halign(0);
+draw_rect(_panelX + 10, _panelY + 10, _panelW, _panelH, COL.BLU);
+draw_rect(_panelX, _panelY, _panelW, _panelH, COL.CLR);
 
-// 보너스 : 드디어 고쳤습니다!! string_copy + \n 의 문제
-var daesa = "늘어나라 여의봉\n두줄\n세줄";
-
-var _t = (gametime++) * 0.01;
-var _pos = round(abs(sin(_t)) * string_length(daesa));
-var _disp = string_copy(daesa, 1, _pos); // 원래 이 결과물을 아래에서 쓰면 \n 에서 '\' 가 마지막 글자일때 무한루프를 돌았는데 고쳤습니다.
-
-hj_set_font(sprHangul24, 24, 2);
-hj_draw(10, 10, _disp, $00DDFF, 1);
-
-
-
-hj_set_center();
-
-// hj_draw(room_width / 2, room_height / 2 - 300, "똠방각하", $E2F7FF, 1);
-hj_draw(room_width / 2, room_height / 2 - 200, chr(137) + "가나다라마바사\n약약약약약\nㄱㄱㄴㄴ ㅁㄴㅇㄹ ㅎㅅㅁ5\n다음줄은 \\n 으로, \\ 는 \\\\ 으로" + chr(133) + chr(136), $4400FF, 1);
-hj_draw(room_width / 2, room_height / 2 - 100, chr(1) + "모두들 11월 11일에 맥도날드[TM]에서\n포트나이트 버거[TM]를 주문해보자.\n점원들의 표정이 압권일거야!" + chr(134), $8BE714, 1);
-
-global.hangulExternalAscii = true;
-hj_draw(room_width / 2, room_height / 2 - 10, "[별도의 ASCII 스프라이트 폰트 사용 예:]", $E2F7FF, 1);
-hj_draw(room_width / 2, room_height / 2 + 70, "소방차는 손목 스냅으로 부수는거라고, BOY" + chr(11) + "\nABCEDFG HIJKLMNOP 1234567890\nA quick brown fox died\nYou have died of Dysentery.", $E2F7FF, 1);
-
-var steamed_hams = "Oh egads, my roast is ruined! But what if...\nI were to purchase fast food\nand disguise it as my own cooking?\nOh ho ho ho ho... delightfully devilish, Seymour!";
-hj_draw(room_width / 2, room_height / 2 + 240, steamed_hams, $00DDFF, 1);
-global.hangulExternalAscii = false;
-
-hj_set_topleft();
-
-/*
-hj_draw(room_width / 2, room_height / 2 - 60, "이것은 한글 테스트입니드아ㅏㅏㅏㅐㅐㅑㅑㅑㅠㅡㅜㅠㅜ\nㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ\n", $00DDFF, 1, 0);
-hj_draw(room_width / 2 + 2, room_height / 2 + 2, chr(132) + "댕댕이 포-잉" + chr(136), $262526, 1, 12);
-hj_draw(room_width / 2, room_height / 2, chr(132) + "댕댕이 포-잉" + chr(136), $E2F7FF, 1, 12);
-// var asciiTest = "";
-// for (var i=0; i<=128; i++)
-// {
-//     asciiTest += chr(i);
-//     if (i % 8 == 0)
-//         asciiTest += '\n';
-// }
-// hj_draw(room_width / 2, room_height / 2 - 100, asciiTest, $00DDFF, 1, 0);
-hj_draw(room_width / 2, room_height / 2 + 80, "Hello world!\nA quick brown slavic ruzki\nJumps over the old man sitting\n1234567890", $00DDFF, 1, 0);
-*/
-
-// 
+hj_compat_change_font(24, 24, 16, 16, true, true);
+for (var i=0; i<10; i++)
+{
+    hj_draw_dkb(WIN_HALF_WID - (_strlen >> 1), _panelY + 10, _panelStr, COL.BLK, 1);
+    // hj_draw_sheet(sprHangul24, sprYayoC64, WIN_HALF_WID - (_strlen >> 1), _panelY + 10, _panelStr, COL.BLK, 1);
+}

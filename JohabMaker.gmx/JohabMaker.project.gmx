@@ -28,6 +28,7 @@
       <script>scripts\hj_init_old.gml</script>
       <script>scripts\hj_init.gml</script>
       <script>scripts\hj_draw_sheet.gml</script>
+      <script>scripts\hj_draw_dkb.gml</script>
     </scripts>
     <scripts name="IMNOTGUI">
       <scripts name="DRAW">

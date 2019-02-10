@@ -1,4 +1,4 @@
-// 2019-02-05 01:47:39
+// 2019-02-05 21:34:43
 ///hj_draw_sheet(kor_font_sprite, ascii_font_sprite, x, y, str, colour, alpha)
 /*
     hj_draw() 와 같지만 통짜 스프라이트 (= 서브이미지가 없고 모든 글자가 한 이미지에 채워져있는 것)
@@ -92,12 +92,12 @@ for (var i=1; i<=_strlen; i++)
             var _last = (_kr % 28);
             var _offlast = global.hj_LUT_BEOL_MID[_mid] * global.hjSpecialMiddle;
             var _offmid = global.hj_LUT_BEOL_LAST[_last] * global.hjSpecialLast;
-            var _offfirst = (_offlast + _offmid * 2) * global.hj_LUT_BEOL_SPECIAL[_mid];
+            var _offfirst = (_offlast + _offmid * 2);// * global.hj_LUT_BEOL_SPECIAL[_mid];
             
+            // TODO: FIX MIDDLE PIECE ERROR
             iui_label(_dx, _dy - 16, string(_mid), c_red);
             
-            if (!global.hj_LUT_BEOL_SPECIAL[_mid])
-                iui_rect(_dx, _dy, global.hjCharWidKor, global.hjCharHeiKor, c_red);
+            show_debug_message("H : " + chr((_first * 21 + _mid) * 28 + _last + $AC00) + "/" + string(_mid));
             
             var _idx = _first + _offfirst + global.hjOffFirst;
             var _u = (_idx % 28) * global.hjCharWidKor;
