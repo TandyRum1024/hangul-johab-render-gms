@@ -1,4 +1,4 @@
-// 2019-02-11 06:30:24
+// 2019-02-13 06:10:56
 #define hj_init
 /*
     한글 조합형 드로잉 MK.2
@@ -28,7 +28,9 @@
 */
 
 // 캐쉬용 해시맵
-global.hjCache = ds_map_create();
+global.hjCacheData = ds_map_create(); // 글자 데이타 전용
+global.hjCacheWid = ds_map_create(); // 글자 넓이 전용
+global.hjCacheMisc = ds_map_create(); // 덜 중요한, 더 자주 초기화 되는 캐시
 
 /*
     도깨비 8x4x4벌식 관련
@@ -41,7 +43,7 @@ global.hjCharHeiHan = 16;
 global.hjCharWidAscii = 8; // ASCII 글자 너비 & 높이 (대부분 8x16)
 global.hjCharHeiAscii = 16; // (스페이스 바 넓이, 줄 높이는 이 변수를 사용합니다)
 global.hjGlyphKerning = 0; // 글자간 간격 (글자 너비 제외)
-global.hjGlpyhLineheight = 1; // 줄 간격 (줄 높이 제외)
+global.hjGlyphLineheight = 1; // 줄 간격 (줄 높이 제외)
 
 global.hjGlyphJamoHead = 0; // 초성 / 자모만을 그릴때 몇 번째 줄을 사용할 지 정하는 변수
 global.hjGlyphJamoBody = 8; // 중성 / 자모만을 그릴때 몇 번째 줄을 사용할 지 정하는 변수
@@ -92,13 +94,6 @@ global.hjLUTTail = hj_gen_table(global.hjLUTTail, "ㅗㅛㅜㅠㅡ", 15 * 28);
 
 // 자모 테이블
 global.hjLUTJamo = hj_gen_table_jamo();
-
-for (var i=0; i<array_length_1d(global.hjLUTJamo); i++)
-{
-    var _jamo = chr(i + $3130); // 현재 체크할려는 자모
-    
-    show_debug_message(_jamo + " : ["+string(global.hjLUTJamo[i])+"]");
-}
 
 /*
     이전 버전 벌식 관련

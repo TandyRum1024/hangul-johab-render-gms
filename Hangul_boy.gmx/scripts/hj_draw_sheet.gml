@@ -57,7 +57,7 @@ else
 }
 
 // 줄 높이 구하기 : ASCII 폰트 높이와 한글 폰트 높이 중 더 큰 것
-var _linehei = max(global.hjCharHeiAscii, global.hjCharHeiHan) + global.hjGlpyhLineheight;
+var _linehei = max(global.hjCharHeiAscii, global.hjCharHeiHan) + global.hjGlyphLineheight;
 
 // 글자 렌더링 루틴
 var _curchr = "", _curord = $BEEF;

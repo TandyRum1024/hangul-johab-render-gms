@@ -1,4 +1,4 @@
-// 2019-02-11 01:13:32
+// 2019-02-13 01:14:29
 ///hj_draw_sheet(kor_font_sprite, ascii_font_sprite, x, y, str, colour, alpha)
 /*
     한글을 그립니다.
@@ -58,7 +58,7 @@ else
 }
 
 // 줄 높이 구하기 : ASCII 폰트 높이와 한글 폰트 높이 중 더 큰 것
-var _linehei = max(global.hjCharHeiAscii, global.hjCharHeiHan) + global.hjGlpyhLineheight;
+var _linehei = max(global.hjCharHeiAscii, global.hjCharHeiHan) + global.hjGlyphLineheight;
 
 // 글자 렌더링 루틴
 var _curchr = "", _curord = $BEEF;

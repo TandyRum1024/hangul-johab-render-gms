@@ -1,7 +1,9 @@
 ///hj_dkb_compile_str(string)
 /*
-    스트링을 그리기 좋은 데이터로 컴파일하고, 컴파일한 결과를 반환합니다.
+    스트링을 받아서 각 글자마다 인덱스와 여러 정보를 배열에 저장한 결과를 반환합니다.
     자주 그려지는 글자에 적용하면 더 나을지도?
+    
+    잘 응용하면 글자 색 바꾸기, 폰트 바꾸기같은 효과를 주는 것도 가능할겁니다
 */
 
 var _strarray = -1, _strlen = string_length(argument0);
@@ -24,6 +26,12 @@ for (var i=0; i<_strlen; i++)
     }
     else if (_ord <= $FF) // ASCII
     {
+        if (_char == "\" && string_char_at(argument0, i + 2) == "#") // 백슬래시 + 개행문자 예외
+        {
+            _prev = _char;
+            continue;
+        }
+        
         _arr[0] = 1; // 타입 [다음줄, ASCII, 조합, 자모]
         _arr[1] = _ord; // 인덱스(들)
         _arr[2] = 0;

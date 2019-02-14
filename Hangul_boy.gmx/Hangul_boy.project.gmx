@@ -8,14 +8,12 @@
   </NewExtensions>
   <sounds name="sound"/>
   <sprites name="sprites">
-    <sprite>sprites\sprAnotherFont</sprite>
     <sprite>sprites\sprRect</sprite>
     <sprite>sprites\sprHanGinsaem</sprite>
     <sprite>sprites\sprEngSlant</sprite>
     <sprite>sprites\sprHangul24</sprite>
     <sprite>sprites\sprYayoC64</sprite>
-    <sprite>sprites\sprHanGungsuh</sprite>
-    <sprite>sprites\sprEngScript</sprite>
+    <sprite>sprites\sprHanYH</sprite>
   </sprites>
   <backgrounds name="background"/>
   <paths name="paths"/>
@@ -25,15 +23,29 @@
         <script>scripts\hj_dkb_get_beol_first.gml</script>
         <script>scripts\hj_dkb_compile_str.gml</script>
         <script>scripts\hj_dkb_change_font.gml</script>
+        <script>scripts\hj_dkb_change_font_ext.gml</script>
       </scripts>
-      <script>scripts\hj_gen_table.gml</script>
-      <script>scripts\hj_gen_table_jamo.gml</script>
+      <scripts name="internal">
+        <script>scripts\hj_init_old.gml</script>
+        <script>scripts\hj_gen_table.gml</script>
+        <script>scripts\hj_gen_table_jamo.gml</script>
+        <script>scripts\hj_string_width_line_adv.gml</script>
+        <script>scripts\hj_string_width_adv.gml</script>
+      </scripts>
       <script>scripts\hj_init.gml</script>
-      <script>scripts\hj_init_old.gml</script>
       <script>scripts\hj_draw_dkb.gml</script>
+      <script>scripts\hj_draw_dkb_ext.gml</script>
+      <script>scripts\hj_draw_dkb_raw.gml</script>
       <script>scripts\hj_draw_sheet.gml</script>
       <script>scripts\hj_compat_change_font.gml</script>
       <script>scripts\hj_compat_calc_beol.gml</script>
+      <script>scripts\hj_string_width.gml</script>
+      <script>scripts\hj_string_width_raw.gml</script>
+      <script>scripts\hj_string_width_line.gml</script>
+      <script>scripts\hj_string_width_line_raw.gml</script>
+      <script>scripts\hj_string_height.gml</script>
+      <script>scripts\hj_string_get_first_line.gml</script>
+      <script>scripts\hj_set_align.gml</script>
     </scripts>
     <script>scripts\draw_rect.gml</script>
   </scripts>

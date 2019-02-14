@@ -1,4 +1,4 @@
-// 2019-02-11 01:12:38
+// 2019-02-11 01:13:32
 ///hj_draw_sheet(kor_font_sprite, ascii_font_sprite, x, y, str, colour, alpha)
 /*
     한글을 그립니다.
@@ -71,8 +71,6 @@ for (var i=0; i<_strlen; i++)
     // 현재 위치의 글자 가져오기 & 오프셋 계산
     _curchr = _strarray[@ i];//string_char_at(_str, i);
     _curord = ord(_curchr);
-    // _dx = _offx;
-    // _dy = _offy;
     
     // ASCII (& 줄바꿈 etc)
     if (_curord <= global.hjComp_ASCII_LIMIT)

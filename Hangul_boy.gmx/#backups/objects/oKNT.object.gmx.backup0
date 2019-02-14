@@ -1,4 +1,4 @@
-// 2019-02-11 07:04:15
+// 2019-02-14 18:36:05
 #event create
 hj_init();
 
@@ -26,27 +26,39 @@ animTimer++;
 draw_clear(COL.BLK);
 
 // panel
-var _panelStr = "ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎㄺㄵ#구오아아아아아ㅏㅏㅏㅏ앍ㄺㄲ!11!!!!1!!#다람쥐 헌 쳇바퀴에 타고파 일가족 살해#Oh what the hell, fried chicken.#Yo i'm about to eat!#What the hell! ding dong shit fuck.";//"가나다라마바사#한글테스트";
-var _strlen = string_width(_panelStr);
-var _panelMargin = 10;
-var _panelW = 400;
-var _panelH = 200;
-var _panelX = WIN_HALF_WID - (_panelW >> 1) - _panelMargin;
-var _panelY = WIN_HALF_HEI - (_panelH >> 1) - _panelMargin;
+var _originStr = "키스의 고유 조건은 입술끼리 휴전 협정을 맺어야만 하고#매우 특별한 기술이 필요하다.#(예를 들어 공중 420도 회전 회오리 노줌샷, 3단나비텝 백점프, 로켓 점프 etc...)#1234567890#A quick brown fox can pull the lever to switcheroo the lane of trolley and save the 4 person,#but one person will be Gillete fusion proglide.... D:#Protip : /r/ooer";//"가나다라마바사#한글테스트";
+var _panelStr = string_copy(_originStr, 1, string_length(_originStr) * clamp(sin(animTimer * 0.005) * 0.7 + 0.5, 0, 1));
+var _strw = hj_string_width(_panelStr);
+var _panelMargin = 8;
+var _panelW = _strw + (_panelMargin << 1);
+var _panelH = 128;
+var _panelX = WIN_HALF_WID - (_panelW * 0.5);// - _panelMargin;
+var _panelY = WIN_HALF_HEI - 40 - (_panelH * 0.5);
 
 draw_rect(_panelX + 10, _panelY + 10, _panelW, _panelH, COL.BLU);
 draw_rect(_panelX, _panelY, _panelW, _panelH, COL.CLR);
 
-// hj_compat_change_font(24, 24, 16, 16, true, true);
-hj_dkb_change_font(sprHanGinsaem, sprEngSlant, 16, 16, 8, 16);
-var _x = WIN_HALF_WID - (_strlen >> 1) - 54, _y = _panelY + 10;
+hj_set_align(1, 1); // 센터 정렬
+hj_dkb_change_font(sprHanGinsaem, sprEngSlant); // 폰트 변경
+var _x = WIN_HALF_WID;
+var _y = WIN_HALF_HEI - 40; // - (_panelH >> 1) + _panelMargin;
 hj_draw_dkb(_x + 1, _y + 1, _panelStr, COL.RED, 1);
 hj_draw_dkb(_x, _y, _panelStr, COL.BLK, 1);
 
-hj_dkb_change_font(sprHanGungsuh, sprEngScript, 16, 16, 8, 16);
-_panelStr = "와! 샌즈!! 파파이스!! GGGGGGGG!!!!#…If you do drugs, you'll go to hell before you die#.......................Please";
-_x = WIN_HALF_WID - (_strlen >> 1) - 54;
-_y = _panelY + 10 + 128;
-hj_draw_dkb(_x + 1, _y + 1, _panelStr, COL.BLU, 1);
-hj_draw_dkb(_x, _y, _panelStr, c_red, 1);
-    // hj_draw_sheet(sprHangul24, sprYayoC64, WIN_HALF_WID - (_strlen >> 1), _panelY + 10, _panelStr, COL.BLK, 1);
+// 개꿀잼 폰트
+var _panelStr2 = "마약하면 뒤지기 전에 지옥으로 가요. 착한 어린이 여러분은 절대로 하지 마세요......제발요..";
+var _panelW = hj_string_width(_panelStr2) + (_panelMargin << 1);
+var _panelH = hj_string_height(_panelStr2) + (_panelMargin << 1);
+
+var _movex = WIN_HALF_WID;// + sin(animTimer * 0.02) * 400;
+var _movey = WIN_HALF_HEI + 60 + cos(animTimer * 0.03) * 10;
+var _panelX = _movex - (_panelW >> 1);
+var _panelY = _movey - (_panelH >> 1);
+
+draw_rect(_panelX + 10, _panelY + 10, _panelW, _panelH, COL.BLU);
+draw_rect(_panelX - 1, _panelY - 1, _panelW + 2, _panelH + 2, COL.CLR);
+draw_rect(_panelX, _panelY, _panelW, _panelH, COL.RED);
+
+hj_dkb_change_font(sprHanYH, sprEngSlant); // 폰트 변경
+hj_draw_dkb(_movex + 1, _movey + 1, _panelStr2, COL.BLU, 1);
+hj_draw_dkb(_movex, _movey, _panelStr2, COL.BLK, 1);
