@@ -1,4 +1,4 @@
-// 2019-02-13 07:00:09
+// 2019-02-17 04:01:37
 #define hj_init
 /*
     한글 조합형 드로잉 MK.2
@@ -36,7 +36,7 @@ global.hjCacheMisc = ds_map_create(); // 덜 중요한, 더 자주 초기화 되
     도깨비 8x4x4벌식 관련
 */
 // 폰트 관련
-global.hjSpriteHan = sprHanGinsaem; // 한글 스프라이트
+global.hjSpriteHan = sprHanH12; // 한글 스프라이트
 global.hjSpriteAscii = sprEngSlant; // ASCII 스프라이트
 global.hjCharWidHan = 16; // 한글 글자 너비 & 높이 (대부분 16x16)
 global.hjCharHeiHan = 16;

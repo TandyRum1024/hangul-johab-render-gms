@@ -35,7 +35,7 @@ global.hjCacheMisc = ds_map_create(); // 덜 중요한, 더 자주 초기화 되
     도깨비 8x4x4벌식 관련
 */
 // 폰트 관련
-global.hjSpriteHan = sprHanGinsaem; // 한글 스프라이트
+global.hjSpriteHan = sprHanH12; // 한글 스프라이트
 global.hjSpriteAscii = sprEngSlant; // ASCII 스프라이트
 global.hjCharWidHan = 16; // 한글 글자 너비 & 높이 (대부분 16x16)
 global.hjCharHeiHan = 16;

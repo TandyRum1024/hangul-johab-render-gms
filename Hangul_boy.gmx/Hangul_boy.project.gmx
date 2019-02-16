@@ -9,7 +9,7 @@
   <sounds name="sound"/>
   <sprites name="sprites">
     <sprite>sprites\sprRect</sprite>
-    <sprite>sprites\sprHanGinsaem</sprite>
+    <sprite>sprites\sprHanH12</sprite>
     <sprite>sprites\sprEngSlant</sprite>
     <sprite>sprites\sprHangul24</sprite>
     <sprite>sprites\sprYayoC64</sprite>
@@ -34,9 +34,12 @@
       </scripts>
       <script>scripts\hj_init.gml</script>
       <script>scripts\hj_draw_dkb.gml</script>
+      <script>scripts\hj_draw_dkb_transformed.gml</script>
       <script>scripts\hj_draw_dkb_ext.gml</script>
       <script>scripts\hj_draw_dkb_raw.gml</script>
       <script>scripts\hj_draw_sheet.gml</script>
+      <script>scripts\hj_draw_sheet_transformed.gml</script>
+      <script>scripts\hj_draw_sheet_ext.gml</script>
       <script>scripts\hj_compat_change_font.gml</script>
       <script>scripts\hj_compat_calc_beol.gml</script>
       <script>scripts\hj_string_width.gml</script>

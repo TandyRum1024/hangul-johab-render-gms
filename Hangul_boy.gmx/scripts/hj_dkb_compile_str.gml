@@ -7,7 +7,7 @@
 */
 
 var _strarray = -1, _strlen = string_length(argument0);
-var _char, _prev = "", _ord, _kr;
+var _char, _escape = false, _ord, _kr, _idx = 0;
 var _head, _body, _tail, _headidx, _bodyidx, _tailidx;
 var _arr = -1;
 var _type = -1;
@@ -17,25 +17,39 @@ for (var i=0; i<_strlen; i++)
     _char = string_char_at(argument0, i + 1);
     _ord = ord(_char);
     
-    if (_char == "#" && _prev != "\") // 다음줄
+    if (_char == "#" && !_escape) // 다음줄
     {
         _arr[0] = 0; // 타입 [다음줄, ASCII, 조합, 자모]
-        _arr[1] = _ord; // 인덱스(들)
+        _arr[1] = i; // 원본 스트링에서의 인덱스
+        _arr[2] = _ord; // 스프라이트 인덱스(들)
+        _arr[3] = 0;
+        _arr[4] = 0;
+    }
+    else if (_ord == $20) // 스페이스바 / 화이트스페이스
+    {
+        _arr[0] = 1;
+        _arr[1] = i;
         _arr[2] = 0;
         _arr[3] = 0;
+        _arr[4] = 0;
     }
     else if (_ord <= $FF) // ASCII
     {
-        if (_char == "\" && string_char_at(argument0, i + 2) == "#") // 백슬래시 + 개행문자 예외
+        if (_char == "\") // 백슬래시 + 개행문자 예외
         {
-            _prev = _char;
+            _escape = true;
             continue;
         }
+        else
+        {
+            _escape = false;
+        }
         
-        _arr[0] = 1; // 타입 [다음줄, ASCII, 조합, 자모]
-        _arr[1] = _ord; // 인덱스(들)
-        _arr[2] = 0;
+        _arr[0] = 2;
+        _arr[1] = i;
+        _arr[2] = _ord;
         _arr[3] = 0;
+        _arr[4] = 0;
     }
     else if (_ord >= $AC00 && _ord <= $D7AF) // 조합형 한글
     {
@@ -61,30 +75,34 @@ for (var i=0; i<_strlen; i++)
             _bodyidx += global.hjLUTBodyWithTail[@ _head];
         }
         
-        _arr[0] = 2;
-        _arr[1] = _headidx; // 인덱스(들)
-        _arr[2] = _bodyidx;
-        _arr[3] = _tailidx;
+        _arr[0] = 3;
+        _arr[1] = i;
+        _arr[2] = _headidx;
+        _arr[3] = _bodyidx;
+        _arr[4] = _tailidx;
     }
     else if (_ord >= $3131 && _ord <= $3163) // 한글 자모
     {
         _kr = _ord - $3131;
         
-        _arr[0] = 3;
-        _arr[1] = global.hjLUTJamo[@ _kr]; // 인덱스(들)
-        _arr[2] = 0;
+        // show_debug_message("JAMO : " + _char + "/" + string(global.hjLUTJamo[@ _kr]));
+        
+        _arr[0] = 4;
+        _arr[1] = i;
+        _arr[2] = global.hjLUTJamo[@ _kr];
         _arr[3] = 0;
+        _arr[4] = 0;
     }
     else // ????
     {
         _arr[0] = -1;
-        _arr[1] = 0;
-        _arr[2] = 0;
+        _arr[2] = i;
         _arr[3] = 0;
+        _arr[4] = 0;
+        _arr[5] = 0;
     }
     
-    _strarray[i] = _arr;
-    _prev = _char;
+    _strarray[_idx++] = _arr;
 }
 
 return _strarray;
