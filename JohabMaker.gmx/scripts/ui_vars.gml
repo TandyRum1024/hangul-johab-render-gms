@@ -6,8 +6,11 @@ tbCellWid = "16";
 tbCellHei = "16";
 cbAscii = true;
 cbDok844 = false; // 도깨비한글 8x4x4벌
+cbSpecialBody = true;
+cbSpecialTail = true;
 cbExportGrid = false;
 cbExportBG = false;
+
 
 // colorem boyy
 enum COL

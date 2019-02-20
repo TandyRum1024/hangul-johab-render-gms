@@ -19,35 +19,37 @@
   <paths name="paths"/>
   <scripts name="scripts">
     <scripts name="JOHAB_RENDER">
+      <scripts name="compat">
+        <script>scripts\hj_comp_change_font.gml</script>
+        <script>scripts\hj_draw_comp.gml</script>
+        <script>scripts\hj_draw_comp_transformed.gml</script>
+        <script>scripts\hj_draw_comp_ext.gml</script>
+        <script>scripts\hj_draw_comp_raw.gml</script>
+      </scripts>
       <scripts name="dkb884">
-        <script>scripts\hj_dkb_get_beol_first.gml</script>
         <script>scripts\hj_dkb_compile_str.gml</script>
         <script>scripts\hj_dkb_change_font.gml</script>
         <script>scripts\hj_dkb_change_font_ext.gml</script>
+        <script>scripts\hj_draw.gml</script>
+        <script>scripts\hj_draw_transformed.gml</script>
+        <script>scripts\hj_draw_ext.gml</script>
+        <script>scripts\hj_draw_raw.gml</script>
       </scripts>
       <scripts name="internal">
         <script>scripts\hj_init_old.gml</script>
         <script>scripts\hj_gen_table.gml</script>
         <script>scripts\hj_gen_table_jamo.gml</script>
+        <script>scripts\hj_comp_calc_beol.gml</script>
         <script>scripts\hj_string_width_line_adv.gml</script>
         <script>scripts\hj_string_width_adv.gml</script>
+        <script>scripts\hj_string_get_first_line.gml</script>
+        <script>scripts\hj_string_width_raw.gml</script>
+        <script>scripts\hj_string_width_line_raw.gml</script>
       </scripts>
       <script>scripts\hj_init.gml</script>
-      <script>scripts\hj_draw_dkb.gml</script>
-      <script>scripts\hj_draw_dkb_transformed.gml</script>
-      <script>scripts\hj_draw_dkb_ext.gml</script>
-      <script>scripts\hj_draw_dkb_raw.gml</script>
-      <script>scripts\hj_draw_sheet.gml</script>
-      <script>scripts\hj_draw_sheet_transformed.gml</script>
-      <script>scripts\hj_draw_sheet_ext.gml</script>
-      <script>scripts\hj_compat_change_font.gml</script>
-      <script>scripts\hj_compat_calc_beol.gml</script>
       <script>scripts\hj_string_width.gml</script>
-      <script>scripts\hj_string_width_raw.gml</script>
       <script>scripts\hj_string_width_line.gml</script>
-      <script>scripts\hj_string_width_line_raw.gml</script>
       <script>scripts\hj_string_height.gml</script>
-      <script>scripts\hj_string_get_first_line.gml</script>
       <script>scripts\hj_set_align.gml</script>
     </scripts>
     <script>scripts\draw_rect.gml</script>

@@ -1,4 +1,4 @@
-// 2019-02-05 23:52:09
+// 2019-02-21 00:15:26
 #event create
 iui_init();
 iui_init_vars();
@@ -20,6 +20,7 @@ fntPath = "";       // Path of currently loaded font
 fntSize = 16;       // Size of font for rendering
 FNT_ASCII = true;
 FNT_GRID = true;
+FNT_DKB = false;
 
 /* 
     GLYPH RELATED
@@ -655,6 +656,18 @@ switch (uCurrentTab)
             fntSprite = sprite_create_from_surface(fntTex, 0, 0, gridWid * charWid, gridHei * charHei, false, false, 0, 0);
             build_font_tex();
             
+            if (FNT_DKB) // dkb844 - set han & asc font & size
+            {
+                hj_change_font_ext(-1, -1, charWid, charHei, 8, 16);
+            }
+            else // previous / compat
+            {
+                global.hjCharWidAscii = charWid;
+                global.hjCharHeiAscii = charHei;
+                global.hjUseAsciiSprite = false;
+                
+                
+            }
             global.hjSpriteKor = fntSprite;
             global.hjCharWidKor = charWid;
             global.hjCharHeiKor = charHei;
@@ -688,6 +701,7 @@ switch (uCurrentTab)
                 global.hjCharWidAscii = charWid;
                 global.hjCharHeiAscii = charHei;
                 global.hjUseAsciiSprite = true;
+                TODO : CHANGE FONT
             }
         }
         if (btnExport)
@@ -771,7 +785,16 @@ switch (uCurrentTab)
         tbCellHei = ui_textbox_numberonly(_off + _smallmargin + 100, _topmargin + _bigmargin, 80, 32, string(tbCellHei), "CELLHEI", 1);
         cbAscii = ui_checkbox(_off + _smallmargin + 2, _topmargin + (_bigmargin << 1), 16, 16, cbAscii, "ASCII");
         cbDok844 = ui_checkbox(_off + _smallmargin + 2 + 300, _topmargin + (_bigmargin << 1), 16, 16, cbDok844, "HAN844");
+        cbSpecialBody = ui_checkbox(_off + _smallmargin + 2 + 400, _topmargin + _bigmargin, 16, 16, cbSpecialBody, "SPECIALBODY");
+        cbSpecialTail = ui_checkbox(_off + _smallmargin + 2 + 400, _topmargin + (_bigmargin << 1), 16, 16, cbSpecialTail, "SPECIALTAIL");
         FNT_ASCII = cbAscii;
+        
+        if (FNT_DKB != cbDok844)
+        {
+            FNT_DKB = cbDok844;
+            update_font_attribs();
+            updateFontSurf = true;
+        }
         
         iui_align_pop();
         
@@ -1196,7 +1219,10 @@ if (uiModal)
             }
             
             //////////////////
-            hj_draw_sheet(fntSprite, -1, _inputX + 10, _inputTestY + 10, _testtext, _teststr, 1);
+            if (FNT_DKB)
+                hj_draw_sheet(fntSprite, sprEngSlant, _inputX + 10, _inputTestY + 10, _testtext, _teststr, 1);
+            else
+                hj_draw_comp(fntSprite, -1, _inputX + 10, _inputTestY + 10, _testtext, _teststr, 1);
             
             draw_set_font(fntCurrent);
             iui_label(_inputX + 10, _inputFontY + 10, _fonttext, _fontstr);

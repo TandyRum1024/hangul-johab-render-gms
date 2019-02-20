@@ -1,4 +1,4 @@
-// 2019-02-05 21:41:28
+// 2019-02-05 21:41:40
 
 uiActive = true;
 
@@ -88,7 +88,7 @@ iuiButtonShadow = true;
 // Checkbox
 iuiColCheckboxBorder = COL.WHITE;
 iuiColCheckboxBG = COL.BASE;
-iuiColCheckboxFG = COL.RED; // the checker colour
+iuiColCheckboxFG = COL.HIGHLIGHT; // the checker colour
 
 // Text box
 iuiTextBoxRainbow   = true; // rainbow colour when active

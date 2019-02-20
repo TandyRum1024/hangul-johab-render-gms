@@ -1,4 +1,4 @@
-// 2019-02-17 04:39:05
+// 2019-02-18 20:29:43
 #event create
 hj_init();
 
@@ -55,7 +55,7 @@ hj_set_align(1, 1); // 센터 정렬
 
 // 폰트 바꾸기. hj_draw_sheet_*() 할때 사용하세요.
 // 폰트 스프라이트는 넘기지 않으셔도 됩니다. 드로잉 할때 인자로 넘겨주세요.
-hj_compat_change_font(24, 24, 24, 24, true, true);
+hj_comp_change_font(24, 24, 24, 24, true, true);
 
 // 박스 그리기
 var _panelX = WIN_HALF_WID - 250 - (_panelW * 0.5);
@@ -67,8 +67,8 @@ draw_rect(_panelX, _panelY, _panelW, _panelH, COL.CLR); // 본체
 // 한글 드로잉
 var _x = _panelX + (_panelW * 0.5);
 var _y = _panelY + _panelMargin;
-// hj_draw_sheet_ext(sprHangul24, -1, _x + 1, _y + 1, _panelStr, -1, _panelW - (_panelMargin << 1), COL.RED, 1);
-// hj_draw_sheet_ext(sprHangul24, -1, _x, _y, _panelStr, -1, _panelW - (_panelMargin << 1), COL.BLK, 1);
+hj_draw_comp_ext(sprHangul24, -1, _x + 1, _y + 1, _panelStr, -1, _panelW - (_panelMargin << 1), COL.RED, 1);
+hj_draw_comp_ext(sprHangul24, -1, _x, _y, _panelStr, -1, _panelW - (_panelMargin << 1), COL.BLK, 1);
 //
 
 

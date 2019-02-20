@@ -1,4 +1,4 @@
-// 2019-02-17 04:39:40
+// 2019-02-18 20:30:28
 #event create
 hj_init();
 
@@ -55,7 +55,7 @@ hj_set_align(1, 1); // 센터 정렬
 
 // 폰트 바꾸기. hj_draw_sheet_*() 할때 사용하세요.
 // 폰트 스프라이트는 넘기지 않으셔도 됩니다. 드로잉 할때 인자로 넘겨주세요.
-hj_compat_change_font(24, 24, 24, 24, true, true);
+hj_comp_change_font(24, 24, 24, 24, true, true);
 
 // 박스 그리기
 var _panelX = WIN_HALF_WID - 250 - (_panelW * 0.5);
@@ -67,8 +67,8 @@ draw_rect(_panelX, _panelY, _panelW, _panelH, COL.CLR); // 본체
 // 한글 드로잉
 var _x = _panelX + (_panelW * 0.5);
 var _y = _panelY + _panelMargin;
-hj_draw_sheet_ext(sprHangul24, -1, _x + 1, _y + 1, _panelStr, -1, _panelW - (_panelMargin << 1), COL.RED, 1);
-hj_draw_sheet_ext(sprHangul24, -1, _x, _y, _panelStr, -1, _panelW - (_panelMargin << 1), COL.BLK, 1);
+hj_draw_comp_ext(sprHangul24, -1, _x + 1, _y + 1, _panelStr, -1, _panelW - (_panelMargin << 1), COL.RED, 1);
+hj_draw_comp_ext(sprHangul24, -1, _x, _y, _panelStr, -1, _panelW - (_panelMargin << 1), COL.BLK, 1);
 //
 
 
@@ -87,8 +87,8 @@ draw_rect(_panelX, _panelY, _panelW, _panelH, COL.CLR); // 본체
 // 한글 드로잉
 _x = _panelX + (_panelW * 0.5);
 _y = _panelY + _panelMargin;
-hj_draw_dkb_ext(_x + 1, _y + 1, _panelStr, -1, _panelW - (_panelMargin << 1), COL.RED, 1);
-hj_draw_dkb_ext(_x, _y, _panelStr, -1, _panelW - (_panelMargin << 1), COL.BLK, 1);
+hj_draw_ext(_x + 1, _y + 1, _panelStr, -1, _panelW - (_panelMargin << 1), COL.RED, 1);
+hj_draw_ext(_x, _y, _panelStr, -1, _panelW - (_panelMargin << 1), COL.BLK, 1);
 //
 
 
@@ -103,15 +103,15 @@ var _squishy = 1 - _squishcoeff;
 var _colour = merge_colour(COL.CLR, COL.RED, ((randTimer >> 2) & 1) * clamp(randTimer - 25, 0, 1));
 
 // 이전 버전식 드로잉 데모
-hj_compat_change_font(24, 24, 24, 24, true, true); // 폰트 변경
+hj_comp_change_font(24, 24, 24, 24, true, true); // 폰트 변경
 
 // 흔들거리는 글자
-hj_draw_sheet_transformed(sprHangul24, -1, _movex + 1, _movey - 50 + 1, randStr, 1, 1, _angle, COL.BLK, 1); // 글자 그림자
-hj_draw_sheet_transformed(sprHangul24, -1, _movex, _movey - 50, randStr, 1, 1, _angle, _colour, 1); // 본체
+hj_draw_comp_transformed(sprHangul24, -1, _movex + 1, _movey - 50 + 1, randStr, 1, 1, _angle, COL.BLK, 1); // 글자 그림자
+hj_draw_comp_transformed(sprHangul24, -1, _movex, _movey - 50, randStr, 1, 1, _angle, _colour, 1); // 본체
 
 // 쫄깃한 글자
-hj_draw_sheet_transformed(sprHangul24, -1, _movex + 1, _movey + 50 + 1, "뽀-쟉#또오오오용ㅇ요용용ㅇ잉", _squishx, _squishy, 0, COL.BLK, 1); // 글자 그림자
-hj_draw_sheet_transformed(sprHangul24, -1, _movex, _movey + 50, "뽀-쟉#또오오오용ㅇ요용용ㅇ잉", _squishx, _squishy, 0, _colour, 1); // 본체
+hj_draw_comp_transformed(sprHangul24, -1, _movex + 1, _movey + 50 + 1, "뽀-쟉#또오오오용ㅇ요용용ㅇ잉", _squishx, _squishy, 0, COL.BLK, 1); // 글자 그림자
+hj_draw_comp_transformed(sprHangul24, -1, _movex, _movey + 50, "뽀-쟉#또오오오용ㅇ요용용ㅇ잉", _squishx, _squishy, 0, _colour, 1); // 본체
 //
 
 
@@ -123,10 +123,10 @@ _movex = WIN_HALF_WID + 200;
 hj_dkb_change_font_ext(sprHanH12, sprEngSlant, 16, 16, 8, 16); // 폰트 변경
 
 // 흔들거리는 글자
-hj_draw_dkb_transformed(_movex + 1, _movey - 50 + 1, randStr, 2, 2, _angle, COL.BLK, 1); // 글자 그림자
-hj_draw_dkb_transformed(_movex, _movey - 50, randStr, 2, 2, _angle, _colour, 1); // 본체
+hj_draw_transformed(_movex + 1, _movey - 50 + 1, randStr, 2, 2, _angle, COL.BLK, 1); // 글자 그림자
+hj_draw_transformed(_movex, _movey - 50, randStr, 2, 2, _angle, _colour, 1); // 본체
 
 // 쫄깃한 글자
-hj_draw_dkb_transformed(_movex + 1, _movey + 50 + 1, "뽀-쟉#또오오오용ㅇ요용용ㅇ잉", _squishx, _squishy, 0, COL.BLK, 1); // 글자 그림자
-hj_draw_dkb_transformed(_movex, _movey + 50, "뽀-쟉#또오오오용ㅇ요용용ㅇ잉", _squishx, _squishy, 0, _colour, 1); // 본체
+hj_draw_transformed(_movex + 1, _movey + 50 + 1, "뽀-쟉#또오오오용ㅇ요용용ㅇ잉", _squishx, _squishy, 0, COL.BLK, 1); // 글자 그림자
+hj_draw_transformed(_movex, _movey + 50, "뽀-쟉#또오오오용ㅇ요용용ㅇ잉", _squishx, _squishy, 0, _colour, 1); // 본체
 //

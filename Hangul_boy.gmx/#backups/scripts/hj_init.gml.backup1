@@ -1,4 +1,4 @@
-// 2019-02-13 07:00:09
+// 2019-02-17 19:58:07
 #define hj_init
 /*
     한글 조합형 드로잉 MK.2
@@ -12,14 +12,14 @@
     이전 버전은 모두 통짜로 스프라이트를 사용하였는데 이번에는 서브이미지를 최대한 활용하기로 했습니다.
     =======================
     도깨비한글 8x4x4벌식:
-    - hj_draw_dkb()
+    - hj_draw_*() & hj_dkb_*()
     - 초성 8벌, 중성 4벌, 종성 4벌 (16줄)
     - 벌수가 많은만큼 글자가 더 자연스럽습니다. 대신 손수 제작하기가 드럽게 어렵습니다.
     - 대신 자모를 그릴때 부자연스럽습니다 (예를들어 'ㄵ' 가 종성버전을 사용한다던지..)
     - ASCII 스프라이트 별도.
     
     이전 버전 벌식:
-    - hj_draw_sheet()
+    - hj_draw_comp_*()
     - 초성 [4벌 or 2벌], 중성 [2벌 or 1벌], 종성 [2벌 or 1벌], 자모 2줄, ASCII 5줄 (최대 15줄)
     - 글자가 부자연스럽습니다. (예를들어 초성은 중성 'ㅚ' 와 'ㅏ' 모양을 고려해야한다던지..)
     - 제작이 위 방식보단 쉽습니다.
@@ -36,7 +36,7 @@ global.hjCacheMisc = ds_map_create(); // 덜 중요한, 더 자주 초기화 되
     도깨비 8x4x4벌식 관련
 */
 // 폰트 관련
-global.hjSpriteHan = sprHanGinsaem; // 한글 스프라이트
+global.hjSpriteHan = sprHanH12; // 한글 스프라이트
 global.hjSpriteAscii = sprEngSlant; // ASCII 스프라이트
 global.hjCharWidHan = 16; // 한글 글자 너비 & 높이 (대부분 16x16)
 global.hjCharHeiHan = 16;

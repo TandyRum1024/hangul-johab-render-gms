@@ -1,140 +1,142 @@
-///hj_draw_sheet(kor_font_sprite, ascii_font_sprite, x, y, str, colour, alpha)
+///hj_draw_sheet(hansprite, asciisprite, x, y, str, colour, alpha)
 /*
-    hj_draw() 와 같지만 통짜 스프라이트 (= 서브이미지가 없고 모든 글자가 한 이미지에 채워져있는 것)
-    를 사용합니다. (이전 버젼과 같이요.)
+    (실험용, 도깨비한글 8x4x4벌식) 한글 문자열을 컴파일한 뒤 드로우 합니다.
+    컴파일 된 데이터는 global.hjCache 해시맵 변수에 캐쉬됩니다.
     
-    kor_font_sprite & ascii_font_sprite - 폰트 스프라이트
-    (ascii_font_sprite 에 -1를 넣으면 kor_font_sprite으로 ASCII 문자까지 커버합니다.)
-    (global.hjUseAsciiSprite 와 같은 효과)
+    hj_draw_comp_*()와 같이 스프라이트를 인자로 받아 통째로 사용합니다.
+    대신 글자의 높낮이는 글로벌 변수에서 가져오기 떄문에 16x16(한글) & 8x16(ASCII) 이외의 크기의 폰트를 사용하시려면
+    hj_change_font_ext() 로 폰트의 크기도 바꾸어주세요.
+    
+    문자열을 컴파일하지 않고 스트링에서 바로 드로잉할려면 hj_draw_raw() 를 사용해주세요!
+    
+    ==================================
+    hansprite, asciisprite : 폰트 스파리이트
+    x, y : 글자 그리는 좌표
+    str : 그릴 문자열
+    colour : 글자 색
+    alpha : 글자 알파 (투명도)
 */
 
 // 변수
-var _korspr = argument0;
-var _asciispr = argument0;
-var _str = argument4;
-var _strx = argument2, _stry = argument3; // 글자 위치
-var _offx = 0, _offy = 0; // 글자 위치에 더해지는 오프셋 변수 (줄바꿈 & 정렬... ETC에 사용)
-var _originx = 0, _originy = 0; // 오프셋 원본 위치
+var _hanspr = argument0, _asciispr = argument1;
+var _strx = argument2, _stry = argument3, _str = argument4;
 var _strcol = argument5, _stralpha = argument6;
-var _strlen = string_length(_str);
-var _asciioff = 0;
-
-// var _rowfirst = global.hjOffFirst / 28;
-// var _rowmiddle = global.hjOffMiddle / 28;
-// var _rowlast = global.hjOffLast / 28;
-// var _rowjamo = global.hjOffJamo / 28;
-// var _rowascii = global.hjOffAscii / 28;
+var _offx = _strx, _offy = _stry; // 최종 글자 위치 변수 (줄바꿈 & 정렬... ETC에 사용)
+var _strlen;
+var _linehei = max(global.hjCharHeiAscii, global.hjCharHeiKor) + global.hjGlyphLineheight;
 
 // 글자 렌더링 준비
-if (argument1 != -1)
+// string_char_at() 이 드럽게 느려서 배열로 바꿔줍니다. 배열로 바꿔주는 김에 초/중/종성 인덱스도 같이 캐시해줍니다.
+// https://forum.yoyogames.com/index.php?threads/draw_wrapped_colored_text-optimization-the-mother-of-all-textboxes.35901/
+var _strarray = global.hjCacheData[? _str];
+if (_strarray == undefined)
 {
-    _asciioff = global.hjOffAscii;
-    _asciispr = argument1;
+    _strarray = hj_dkb_compile_str(_str);
+    global.hjCacheData[? _str] = _strarray;
 }
+_strlen = array_length_1d(_strarray);
+
+var _linestr = hj_string_get_first_line(_str); // 첫 줄 가져오기
+_str = string_delete(_str, 1, string_length(_linestr)); // 첫 줄을 제외한 글자 가져오기
+
+// 글자 너비 & 높이
+// _strhei 는 argument2(원본 문자열) 에서 계산합니다.
+// 보시다시피 위에서 _str를 수정해버렸으니깐요
+var _strwid = hj_string_width_line(_linestr), _strhei = hj_string_height(argument2);
+
+// 수평 정렬
+_offx -= (_strwid >> 1) * global.hjDrawAlignH;
+    
+// 수직 정렬
+_offy -= (_strhei >> 1) * global.hjDrawAlignV;
 
 // 글자 렌더링 루틴
-var _curchr = "", _curord = $BEEF;
-var _escape = false; // 바로 전 글자가 \ (backslash) 인가요? (줄바꿈 무시 기능에 사용)
-var _dx, _dy;
-for (var i=1; i<=_strlen; i++)
+// 미리 처리된 글자를 _strarray 배열에서 하나씩 빼먹으며 그 데이타로 글자를 드로우합니다.
+var _data = -1, _widdata = -1;
+var _type, _idx1, _idx2, _idx3, _u, _v;
+var _hanw = global.hjCharWidHan + global.hjGlyphKerning;
+var _asciiw = global.hjCharWidAscii + global.hjGlyphKerning;
+for (var i=0; i<_strlen; i++)
 {
     // 현재 위치의 글자 가져오기 & 오프셋 계산
-    _curchr = string_char_at(_str, i);
-    _curord = ord(_curchr);
-    _dx = _strx + _offx;
-    _dy = _stry + _offy;
-    
-    // ASCII (& 줄바꿈 etc)
-    if (_curord >= 0 && _curord <= global.hj_ASCII_LIMIT)
+    _data = _strarray[@ i];
+    _type = _data[@ 0];
+    _idx1 = _data[@ 2];
+    _idx2 = _data[@ 3];
+    _idx3 = _data[@ 4];
+
+    switch (_type)
     {
-        var _drawchr = _curchr;
-        
-        // 줄바꿈
-        if (_curchr == "#" && !_escape)
-        {
-            _offx = _originx;
-            _offy += global.hjGlpyhLineheight + global.hjCharHeiKor;
-            continue; // 쌩까기
-        }
-        // 이스케이프 시퀀스
-        if (_curchr == "\")
-        {
-            _escape = true;
-            continue;
-        }
-        else
-        {
-            _escape = false;
-        }
-        
-        // iui_rect(_dx, _dy, global.hjCharWidAscii, global.hjCharWidAscii, ~_strcol);
-        // iui_label(_dx, _dy, _drawchr, c_black);
-        
-        var _idx = _curord + global.hjOffAscii;
-        var _u = (_idx % 28) * global.hjCharWidAscii;
-        var _v = (_idx div 28) * global.hjCharHeiAscii;
-        draw_sprite_general(_asciispr, 0, _u, _v, global.hjCharWidAscii, global.hjCharHeiAscii, _dx, _dy, 1, 1, 0, _strcol, _strcol, _strcol, _strcol, 1);
-        
-        // 오프셋 증가
-        _offx += global.hjCharWidAscii + global.hjGlyphKerning;
-    }
-    else // 한글
-    {
-        var _kr;
-        if (_curord >= $AC00 && _curord <= $D7AF) // 조합
-        {
-            _kr = _curord - $AC00;
+        case 0: // 다음 줄
+            _linestr = hj_string_get_first_line(_str);
+            _str = string_delete(_str, 1, string_length(_linestr));
             
-            // 초/중/종성 구하기 & 벌 (오프셋) 구하기
-            var _first = (_kr div 588);
-            var _mid = ((_kr % 588) div 28);
-            var _last = (_kr % 28);
-            var _offlast = global.hj_LUT_BEOL_MID[_mid] * global.hjSpecialMiddle;
-            var _offmid = global.hj_LUT_BEOL_LAST[_last] * global.hjSpecialLast;
-            var _offfirst = _offlast + _offmid * 2;
+            // 다음 줄 넓이 구하기
+            // _strwid = hj_string_width_line(_linestr);
+            // 캐시 안되어있으면 계산 & 캐시
+            _widdata = global.hjCacheWid[? _linestr];
+            if (_widdata == undefined)
+            {
+                _widdata = hj_string_width_line_adv(_linestr);
+                global.hjCacheWid[? _linestr] = _widdata;
+            }
             
-            var _idx = _first + _offfirst + global.hjOffFirst;
-            var _u = (_idx % 28) * global.hjCharWidKor;
-            var _v = (_idx div 28) * global.hjCharHeiKor;
-            draw_sprite_general(global.hjSpriteKor, 0, _u, _v, global.hjCharWidKor, global.hjCharHeiKor, _dx, _dy, 1, 1, 0, _strcol, _strcol, _strcol, _strcol, 1);
+            // 뤼얼 바보같은 생각 : 최종 계산 결과를 또 다시 캐시하면??
+            // 결과 : 50+ FPS 증가 (??????????????????????)
+            _strwid = global.hjCacheMisc[? _linestr];
+            if (_strwid == undefined)
+            {
+                _strwid = _widdata[@ 0] * (global.hjCharWidAscii + global.hjGlyphKerning)
+                        + _widdata[@ 1] * (global.hjCharWidHan + global.hjGlyphKerning);
+                global.hjCacheMisc[? _linestr] = _strwid;
+            }
             
-            var _idx = _mid + _offmid + global.hjOffMiddle;
-            var _u = (_idx % 28) * global.hjCharWidKor;
-            var _v = (_idx div 28) * global.hjCharHeiKor;
-            draw_sprite_general(global.hjSpriteKor, 0, _u, _v, global.hjCharWidKor, global.hjCharHeiKor, _dx, _dy, 1, 1, 0, _strcol, _strcol, _strcol, _strcol, 1);
+            // 오프셋 값 변경
+            _offx = _strx;
+            _offy += _linehei;
             
-            var _idx = _last + _offlast + global.hjOffLast;
-            var _u = (_idx % 28) * global.hjCharWidKor;
-            var _v = (_idx div 28) * global.hjCharHeiKor;
-            draw_sprite_general(global.hjSpriteKor, 0, _u, _v, global.hjCharWidKor, global.hjCharHeiKor, _dx, _dy, 1, 1, 0, _strcol, _strcol, _strcol, _strcol, 1);
-            // draw_sprite_ext(global.hjSpriteKor, _first + global.hjOffFirst + _offfirst, _dx, _dy, 1, 1, 0, _strcol, 1);
-            // draw_sprite_ext(global.hjSpriteKor, _mid + global.hjOffMiddle + _offmid, _dx, _dy, 1, 1, 0, _strcol, 1);
-            // draw_sprite_ext(global.hjSpriteKor, _last + global.hjOffLast + _offlast, _dx, _dy, 1, 1, 0, _strcol, 1);
+            // 수평 정렬
+            _offx -= (_strwid >> 1) * global.hjDrawAlignH;
+            break;
+        case 1: // 스페이스바 / 화이트스페이스
+            // 오프셋 증가
+            _offx += _asciiw;
+            break;
+        default:
+        case 2: // ASCII
+            _u = (_idx1 % 32) * global.hjCharWidAscii;
+            _v = (_idx1 div 32) * global.hjCharHeiAscii;
+            
+            // draw_sprite_ext(global.hjSpriteAscii, _idx1, _offx, _offy, 1, 1, 0, _strcol, 1);
+            draw_sprite_part_ext(_asciispr, 0, _u, _v, global.hjCharWidAscii, global.hjCharHeiAscii, _offx, _offy, 1, 1, _strcol, 1);
             
             // 오프셋 증가
-            _offx += global.hjCharWidKor + global.hjGlyphKerning;
-        }
-        else if (_curord >= $3130 && _curord <= $3163)// 호환용 자모 ([ㄱㄴㄷㄻㅄ ㅏㅒㅑㅛ] ETC...)
-        {
-            _kr = _curord - $3130 + global.hjOffJamo;
+            _offx += _asciiw;//global.hjCharWidAscii + global.hjGlyphKerning;
+            break;
+        case 3: // 조합형 한글
+            _u = (_idx1 % 28) * global.hjCharWidHan;
+            _v = (_idx1 div 28) * global.hjCharHeiHan;
+            draw_sprite_part_ext(_hanspr, 0, _u, _v, global.hjCharWidHan, global.hjCharHeiHan, _offx, _offy, 1, 1, _strcol, 1);
             
-            // draw_sprite_ext(global.hjSpriteKor, global.hjOffJamo + _kr, _dx, _dy, 1, 1, 0, _strcol, 1);
-            var _u = (_kr % 28) * global.hjCharWidKor;
-            var _v = (_kr div 28) * global.hjCharHeiKor;
-            draw_sprite_general(global.hjSpriteKor, 0, _u, _v, global.hjCharWidKor, global.hjCharHeiKor, _dx, _dy, 1, 1, 0, _strcol, _strcol, _strcol, _strcol, 1);
+            _u = (_idx2 % 28) * global.hjCharWidHan;
+            _v = (_idx2 div 28) * global.hjCharHeiHan;
+            draw_sprite_part_ext(_hanspr, 0, _u, _v, global.hjCharWidHan, global.hjCharHeiHan, _offx, _offy, 1, 1, _strcol, 1);
             
-            // 오프셋 증가
-            _offx += global.hjCharWidKor + global.hjGlyphKerning;
-        }
-        else // 며느리도 모르는 외계어
-        {
-            _kr = "u["+string(_curord)+"]";
-            // draw_sprite_ext(_asciispr, _asciioff + 63, _dx, _dy, 1, 1, 0, c_red, 1); // ????????
-            draw_text_colour(_dx, _dy, _kr, c_red, c_red, c_red, c_red, 1);
+            _u = (_idx3 % 28) * global.hjCharWidHan;
+            _v = (_idx3 div 28) * global.hjCharHeiHan;
+            draw_sprite_part_ext(_hanspr, 0, _u, _v, global.hjCharWidHan, global.hjCharHeiHan, _offx, _offy, 1, 1, _strcol, 1);
             
             // 오프셋 증가
-            _offx += string_width(_kr) + global.hjGlyphKerning;
-        }
-        
+            _offx += _hanw;//global.hjCharWidHan + global.hjGlyphKerning;
+            break;
+            
+        case 4: // 한글 자모
+            _u = (_idx1 % 28) * global.hjCharWidHan;
+            _v = (_idx1 div 28) * global.hjCharHeiHan;
+            draw_sprite_part_ext(_hanspr, 0, _u, _v, global.hjCharWidHan, global.hjCharHeiHan, _offx, _offy, 1, 1, _strcol, 1);
+            
+            // 오프셋 증가
+            _offx += _hanw;//global.hjCharWidHan + global.hjGlyphKerning;
+            break;
     }
 }

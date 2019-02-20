@@ -1,4 +1,4 @@
-// 2019-02-05 21:41:40
+// 2019-02-20 00:50:04
 
 uiActive = true;
 
@@ -7,8 +7,11 @@ tbCellWid = "16";
 tbCellHei = "16";
 cbAscii = true;
 cbDok844 = false; // 도깨비한글 8x4x4벌
+cbSpecialBody = true;
+cbSpecialTail = true;
 cbExportGrid = false;
 cbExportBG = false;
+
 
 // colorem boyy
 enum COL
