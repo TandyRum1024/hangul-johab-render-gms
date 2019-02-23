@@ -1,4 +1,4 @@
-// 2019-02-23 16:32:22
+// 2019-02-23 20:55:30
 #event create
 iui_init();
 iui_init_vars();
@@ -74,6 +74,7 @@ fntAsciiSprite = -1;
 fntTex = surface_create(gridWid * charWid, gridHei * charHei);
 fntAsciiTex = surface_create(32 * charAsciiWid, 8 * charAsciiHei); // Ascii texture
 previewTex = surface_create(gridWid * charWid, gridHei * charHei);
+previewAsciiTex = surface_create(32 * charAsciiWid, 8 * charAsciiHei);
 updateFontSurf = false; // Flag for updating font surface
 
 // Font mask related
@@ -482,13 +483,31 @@ if (!surface_exists(fntTex))
     // build_glyph_surface(charSelected);
 }
 
-if (!surface_exists(previewTex) && uiModal)
+if (!surface_exists(fntAsciiTex))
 {
-    previewTex = surface_create(WIN_WID, WIN_HEI);
-    build_font_tex_ext(cbExportGrid, c_black, cbExportBG);
-    surface_resize(previewTex, surface_get_width(fntTex), surface_get_height(fntTex));
-    surface_copy(previewTex, 0, 0, fntTex);
+    fntAsciiTex = surface_create(WIN_WID, WIN_HEI);
     build_font_tex();
+}
+
+if (uiModal)
+{
+    if (!surface_exists(previewTex))
+    {
+        build_font_tex_ext(cbExportGrid, c_black, cbExportBG);
+        var _w = surface_get_width(fntTex), _h = surface_get_height(fntTex);
+        previewTex = surface_create(_w, _h);
+        surface_copy(previewTex, 0, 0, fntTex);
+        build_font_tex();
+    }
+    
+    if (!surface_exists(previewAsciiTex))
+    {
+        build_font_tex_ext(cbExportGrid, c_black, cbExportBG);
+        var _w = surface_get_width(fntAsciiTex), _h = surface_get_height(fntAsciiTex);
+        previewAsciiTex = surface_create(_w, _h);
+        surface_copy(previewAsciiTex, 0, 0, fntAsciiTex);
+        build_font_tex();
+    }
 }
 
 #event other_game_end
@@ -554,7 +573,7 @@ if (FNT_DKB && FNT_ASCII)
 }
 
 // hints
-var _hintwid = 256;
+var _hintwid = 128;
 var _heady = 0;
 var _bodyy = _heady + choRows * charHei;
 var _taily = _bodyy + jungRows * charHei;
@@ -591,8 +610,11 @@ iui_align_pop();
 // Draw glyph pick hint
 var _mx = floor(mouse_x / charWid) * charWid;
 var _my = floor(mouse_y / charHei) * charHei;
+var _sx = (charSelected % gridWid) * charWid;
+var _sy = (charSelected div gridWid) * charHei;
 
-iui_rect_alpha(_mx, _my, charWid, charHei, $FF00FF, 0.25);
+iui_rect_alpha(_mx, _my, charWid, charHei, $FFFFFF, 0.25); // hover
+iui_rect_alpha(_sx, _sy, charWid, charHei, $FF00FF, 0.3); // current
 #section Texture update
 
 if (updateFontSurf)
@@ -667,7 +689,8 @@ switch (uCurrentTab)
         iui_align_push(fa_center, fa_top);
         // iui_label(_winhalfw, _topmargin + _bigmargin, "방향키로 화면 이동#+ & - 로 줌 인/아웃#맨 위에 있는 표시줄을 이용해 메뉴를 이동하세요", COL.WHITE);
         iui_label(_winhalfw, _topmargin, "조합형 글꼴 도우미 | ZIK@2019", COL.HIGHLIGHT);
-        iui_label(_winhalfw, _topmargin + _bigmargin, ".TTF 화일로부터 조합형 한글 렌더링에 사용되는#비트맵 글꼴 제작을 도와주는 프로그램입니다.", COL.WHITE);
+        iui_label(_winhalfw, _topmargin + _bigmargin, ".TTF 화일을 불러와 조합형 한글 렌더링에 사용되는#비트맵 글꼴 제작을 도와주는 프로그램입니다.", COL.WHITE);
+        iui_label(_winhalfw, _topmargin + _bigmargin * 2 - 10, "마우스로 편집할 글자를 선택한 뒤 좌측의 판을 이용해#마스크를 생성해 글자의 원하는 부분만 떼어내세요.#그 다음 아래의 버튼들을 이용해 마스크를 적용시키거나 여러 동작을 하실 수 있읍니다.", COL.HIGHLIGHT);
         iui_align_pop();
         break;
     
@@ -743,7 +766,9 @@ switch (uCurrentTab)
             
             build_font_tex_ext(cbExportGrid, c_black, cbExportBG);
             surface_resize(previewTex, surface_get_width(fntTex), surface_get_height(fntTex));
+            surface_resize(previewAsciiTex, surface_get_width(fntAsciiTex), surface_get_height(fntAsciiTex));
             surface_copy(previewTex, 0, 0, fntTex);
+            surface_copy(previewAsciiTex, 0, 0, fntAsciiTex);
             build_font_tex();
         }
         if (btnSave)
@@ -841,9 +866,9 @@ switch (uCurrentTab)
         else
         {
             iui_label(_off + 180, _itemy, "ASCII 격자 크기", uTextCol);
-            iui_label(_off + 170 - _tbwid, _itemy + _bigmargin, "X", uTextCol);
-            tbCellAsciiWid = ui_textbox_numberonly(_off + 170 - _tbwid * 2, _itemy + _bigmargin, _tbwid, 32, string(tbCellAsciiWid), "ASCIIWID", 1);
-            tbCellAsciiHei = ui_textbox_numberonly(_off + 180 - _tbwid, _itemy + _bigmargin, _tbwid, 32, string(tbCellAsciiHei), "ASCIIHEI", 1);
+            iui_label(_off + 165 - _tbwid + (string_width("X") >> 1), _itemy + _smallmargin, "X", uTextCol);
+            tbCellAsciiWid = ui_textbox_numberonly(_off + 160 - _tbwid * 2, _itemy + _smallmargin, _tbwid, 32, string(tbCellAsciiWid), "ASCIIWID", 1);
+            tbCellAsciiHei = ui_textbox_numberonly(_off + 170 - _tbwid, _itemy + _smallmargin, _tbwid, 32, string(tbCellAsciiHei), "ASCIIHEI", 1);
         }
         
         // Checkboxes check
@@ -940,8 +965,14 @@ switch (uCurrentTab)
         {
             if (fntPath != "")
             {
-                charWid = real(tbCellWid);
-                charHei = real(tbCellHei);
+                if (tbCellWid != "")
+                    charWid = real(tbCellWid);
+                
+                if (tbCellHei != "")
+                    charHei = real(tbCellHei);
+                
+                if (tbFntSize != "")
+                    fntSize = real(tbFntSize);
                 
                 update_font_attribs();
                 fntLoadRequest = true;
@@ -1008,8 +1039,8 @@ var _wincx = winCropX + _winhalf;
 iui_align_center();
 iui_rect(winCropX, winCropY, winCropPanelSize, 42, COL.HIGHLIGHT); // top title
 iui_rect(winCropX, winCropY + 42, winCropPanelSize, WIN_HEI - (winCropY + 42), COL.BASE);
-iui_label(_wincx, winCropY + 21, "글자 누끼", uTextCol);
-ui_tooltip(winCropX + winCropPanelSize - 42, winCropY, 42, 42, "마우스를 끌어 사각형을 그리면서#폰트의 누끼를 딸 수 있읍니다..#============#SHIFT 단추로 누적 모드#ALT 단추로 빼기 모드", 5, COL.BASE, false, true, COL.HIGHLIGHT2);
+iui_label(_wincx, winCropY + 21, "글자 마스크", COL.BASE);
+ui_tooltip(winCropX + winCropPanelSize - 42, winCropY, 42, 42, "마우스를 끌어 사각형을 그리면서#현재 선택된 글자의 마스크를 딸 수 있읍니다..#============#SHIFT 단추로 누적 모드#ALT 단추로 빼기 모드", 5, COL.BASE, false, true, COL.HIGHLIGHT2);
 
 // inputs
 iuiButtonShadow = false;
@@ -1357,45 +1388,95 @@ if (uiModal)
             iui_align_pop();
         
             // show image preview
-            var _surfHei = (_winModalH >> 1) - (_bigmargin >> 1);
-            var _surfWid = (_surfHei / surface_get_height(previewTex)) * surface_get_width(previewTex);
-            draw_surface_stretched(previewTex, _winhalfw - (_surfWid >> 1), _modalTitleY + _bigmargin, _surfWid, _surfHei);
+            var _surfY = (_winModalH >> 1) - (_bigmargin >> 1);
+            if (FNT_DKB) // dkb844
+            {
+                var _surfWid = (_winModalW >> 1) - _smallmargin;
+                var _surfHeiHan = (_surfWid / surface_get_width(previewTex)) * surface_get_height(previewTex);
+                var _surfHeiAscii = (_surfWid / surface_get_width(previewAsciiTex)) * surface_get_height(previewAsciiTex);
+                
+                draw_surface_stretched(previewTex, _winhalfw - _surfWid - _smallmargin * 0.5, _modalTitleY + _bigmargin, _surfWid, _surfHeiHan);
+                draw_surface_stretched(previewAsciiTex, _winhalfw + _smallmargin * 0.5, _modalTitleY + _bigmargin, _surfWid, _surfHeiAscii);
+            }
+            else // non-dbk844 (compat.)
+            {
+                var _surfWid = _winModalW - (_bigmargin << 1);
+                var _surfHei = (_surfWid / surface_get_width(previewTex)) * surface_get_height(previewTex);
+                
+                var _surfHei2 = (_winModalH >> 1) - (_bigmargin >> 1);
+                var _surfWid2 = (_surfHei2 / surface_get_height(previewTex)) * surface_get_width(previewTex);
+                
+                if (_surfHei >= (_winModalH >> 1))
+                {
+                    _surfWid = _surfWid2;
+                    _surfHei = _surfHei2;
+                    show_debug_message("OHNO");
+                }
+                
+                draw_surface_stretched(previewTex, _winhalfw - (_surfWid >> 1), _modalTitleY + _bigmargin, _surfWid, _surfHei);
+            }
+            
             iui_align_center();
-            iui_label(_winhalfw, _modalTitleY + _surfHei + _bigmargin + _smallmargin, "(표시용 크기 조절로 인해 픽셀이 뭉개질 수 있읍니다...)", COL.PISS);
+            iui_label(_winhalfw, _modalTitleY + _surfY + _bigmargin + _smallmargin, "(표시용 크기 조절로 인해 픽셀이 뭉개질 수 있읍니다...)", COL.PISS);
             iui_align_pop();
             
             // show attributes
-            var _attribY = _modalTitleY + _bigmargin * 2 + _surfHei;
-            var btnExport = ui_button(_winhalfw - 80 - 150, _attribY + 150, 150, 42, ".PNG 내보내기!");
-            var btnReload = ui_button(_winhalfw + 80, _attribY + 150, 150, 42, "미리보기");
+            var _attribY = _modalTitleY + _bigmargin * 2 + _surfY;
+            var btnExport = ui_button(_winhalfw - 75, _attribY + 150, 150, 42, ".PNG 내보내기!");
+            // var btnReload = ui_button(_winhalfw + 80, _attribY + 150, 150, 42, "미리보기");
             
             iui_align_push(2, 0);
             var _checkX = _winhalfw - 80 - 16;
             iui_label(_checkX, _attribY, "격자 내보내기 : ", COL.WHITE);
-            cbExportGrid = ui_checkbox(_checkX, _attribY, 16, 16, cbExportGrid, "CB_EXPORT_GRID");
+            var _exportgrid = ui_checkbox(_checkX, _attribY, 16, 16, cbExportGrid, "CB_EXPORT_GRID");
             
             var _checkX = _winhalfw + 80 + string_width("배경 내보내기 : ");
             iui_label(_checkX, _attribY, "배경 내보내기 : ", COL.WHITE);
-            cbExportBG = ui_checkbox(_checkX, _attribY, 16, 16, cbExportBG, "CB_EXPORT_BG");
+            var _exportbg = ui_checkbox(_checkX, _attribY, 16, 16, cbExportBG, "CB_EXPORT_BG");
             iui_align_pop();
+            
+            if (_exportbg != cbExportBG || _exportgrid != cbExportGrid)
+            {
+                cbExportBG = _exportbg;
+                cbExportGrid = _exportgrid;
+                
+                build_font_tex_ext(cbExportGrid, c_black, cbExportBG);
+                surface_resize(previewTex, surface_get_width(fntTex), surface_get_height(fntTex));
+                surface_resize(previewAsciiTex, surface_get_width(fntAsciiTex), surface_get_height(fntAsciiTex));
+                surface_copy(previewTex, 0, 0, fntTex);
+                surface_copy(previewAsciiTex, 0, 0, fntAsciiTex);
+                build_font_tex();
+            }
             
             if (btnExport)
             {
-                var _path = get_save_filename("PNG 폰트 이미지|*.png", "font" + string(charWid) + "x" + string(charWid));
-                
-                if (_path != "")
+                if (FNT_DKB)
                 {
-                    // export!
-                    surface_save(previewTex, _path);
-                    // export_font_tex(_path, true, true, c_black);
+                    var _path = get_save_filename_ext("PNG 폰트 이미지|*.png", "font" + string(charWid) + "x" + string(charWid) + "_han", fntPath, "한글 폰트 저장 (도깨비한글)");
+                    
+                    if (_path != "")
+                    {
+                        surface_save(previewTex, _path);
+                        
+                        if (FNT_ASCII)
+                        {
+                            _path = get_save_filename_ext("PNG 폰트 이미지|*.png", "font" + string(charWid) + "x" + string(charWid) + "_ascii", _path, "ASCII 폰트 저장 (도깨비한글)");
+                            
+                            if (_path != "")
+                                surface_save(previewAsciiTex, _path);
+                        }
+                    }
                 }
-            }
-            if (btnReload)
-            {
-                build_font_tex_ext(cbExportGrid, c_black, cbExportBG);
-                surface_resize(previewTex, surface_get_width(fntTex), surface_get_height(fntTex));
-                surface_copy(previewTex, 0, 0, fntTex);
-                build_font_tex();
+                else
+                {
+                    var _path = get_save_filename_ext("PNG 폰트 이미지|*.png", "font" + string(charWid) + "x" + string(charWid), fntPath, "폰트 저장");
+                    
+                    if (_path != "")
+                    {
+                        // export!
+                        surface_save(previewTex, _path);
+                    }
+                }
             }
             break;
         

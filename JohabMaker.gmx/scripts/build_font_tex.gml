@@ -59,6 +59,7 @@ for (var i=0; i<_charlen; i++)
         _x += _data[@ CHAR.X];
         _y += _data[@ CHAR.Y];
         
+        iui_rect_alpha(_x, _y, charWid, charHei, c_red, 0.5);
         get_atlas_glyph(bakedAtlas, i, -1); // store baked sprite into the glyphTemp surface
         draw_surface(glyphTemp, _x, _y);
     }
@@ -112,7 +113,12 @@ if (FNT_DKB)
     {
         var _u = (i % 32) * charAsciiWid + (charAsciiWid >> 1);
         var _v = (i div 32) * charAsciiHei + (charAsciiHei >> 1);
-        iui_label(_u, _v, chr(i), c_white);
+        var _ch = chr(i);
+        
+        if (_ch == "#")
+            _ch = "\" + _ch;
+        
+        iui_label(_u, _v, _ch, c_white);
     }
     draw_set_font(fntOWO);
     iui_align_pop();
@@ -195,7 +201,6 @@ for (var i=0; i<_charlen; i++)
         // iui_align_pop();
     }
 }
-show_debug_message("DRAWN " + string(_charlen) + " CHARACTERS TOTAL");
 surface_reset_target();
 
 /// BUILD ASCII IF DKB844

@@ -1,4 +1,4 @@
-// 2019-02-03 22:38:53
+// 2019-02-23 21:13:04
 ///edit_atlas_baked(sprite, glyphindex, surface)
 /*
     Edits the part of baked sprite atlas with given surface
@@ -8,7 +8,7 @@
 var _atlas = argument0, _idx = argument1, _surf = argument2;
 var _atlaswid, _atlashei;
 
-// check sprite
+// check atlas sprite exits
 if (sprite_exists(_atlas))
 {
     _atlaswid = sprite_get_width(_atlas);
@@ -41,7 +41,6 @@ var _v = charHei * (_idx div gridWid); // - basically we're rebuilding [X, Y] po
 draw_set_blend_mode(bm_subtract); // use blend mode to "clear" the editing area
 iui_rect_alpha(_u, _v, charWid, charHei, c_black, 1);
 draw_set_blend_mode(bm_normal);
-
 draw_surface(_surf, _u, _v); // and copy our surface into desired area
 
 surface_reset_target();

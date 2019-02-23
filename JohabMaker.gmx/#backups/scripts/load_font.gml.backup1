@@ -1,4 +1,4 @@
-// 2019-02-21 15:49:58
+// 2019-02-23 19:02:43
 ///load_font(fontDir, size)
 /*
     Exec this when you change the font
@@ -23,8 +23,8 @@ if (font_exists(fntCurrent))
     font_delete(fntCurrent);
 
 // REMEMBER : font_add with .ttf will add """ALL""" the glyphs in the font
+show_debug_message("FNT SIZE : " + string(argument1));
 fntCurrent = font_add(fntPath, argument1, false, false, 666, 666); // weird flex but ok
-fntName = font_get_fontname(fntCurrent);
 fntSize = argument1;
 
 // reset_char_surfaces();
