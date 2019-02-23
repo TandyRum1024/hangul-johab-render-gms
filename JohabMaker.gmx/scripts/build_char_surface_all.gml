@@ -13,12 +13,11 @@ else
 
 _atlaswid = sprite_get_width(bakedAtlas);
 _atlashei = sprite_get_height(bakedAtlas);
-if (!surface_exists(atlasTemp))
-    atlasTemp = surface_create(_atlaswid, _atlashei);
-else
-    surface_resize(atlasTemp, _atlaswid, _atlashei);
+
+var atlasTemp = surface_create(_atlaswid, _atlashei);
 
 // update temp atlas
+texture_set_interpolation(true);
 surface_set_target(atlasTemp);
 draw_clear_alpha(0, 0);
 for (var i=0; i<charLen; i++)
@@ -36,8 +35,11 @@ for (var i=0; i<charLen; i++)
     }
 }
 surface_reset_target();
+texture_set_interpolation(false);
 
 // assign atlas to baked atlas sprite
 if (sprite_exists(bakedAtlas))
     sprite_delete(bakedAtlas);
 bakedAtlas = sprite_create_from_surface(atlasTemp, 0, 0, _atlaswid, _atlashei, false, false, 0, 0);
+
+surface_free(atlasTemp);

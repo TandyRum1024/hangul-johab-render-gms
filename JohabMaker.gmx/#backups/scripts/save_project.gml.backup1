@@ -1,4 +1,4 @@
-// 2019-02-23 16:15:15
+// 2019-02-23 16:15:26
 ///save_project(fname)
 /*
     Saves project
@@ -53,7 +53,7 @@ buffer_seek(_filebuffer, buffer_seek_start, 0);
 
 // write header & project info
 buffer_write(_filebuffer, buffer_string, "JORT"); // Magic word
-buffer_write(_filebuffer, buffer_u16, 84); // version
+buffer_write(_filebuffer, buffer_u16, 128); // version
 buffer_write(_filebuffer, buffer_u16, gridWid); // grid size
 buffer_write(_filebuffer, buffer_u16, gridHei);
 buffer_write(_filebuffer, buffer_u16, charWid); // glyph size

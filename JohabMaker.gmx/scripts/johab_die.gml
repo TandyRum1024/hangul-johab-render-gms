@@ -22,9 +22,6 @@ ds_list_destroy(charData);
 surface_free(maskPreview);
 surface_free(maskOverlay);
 surface_free(maskTemp);
-surface_free(tempTexA);
-surface_free(tempTexB);
 surface_free(fntTex);
 
-surface_free(atlasTemp);
 surface_free(glyphTemp);

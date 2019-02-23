@@ -106,14 +106,11 @@ updateFontSurf = false; // Flag for updating font surface
 maskOverlay = surface_create(charWid, charHei); // rectangle overlay for preview
 maskPreview = surface_create(charWid, charHei); // cached mask preview surface
 maskTemp = surface_create(charWid, charHei); // temp surface for mask building before applying to character
-tempTexA = surface_create(charWid, charHei);
-tempTexB = surface_create(charWid, charHei);
 clipboardTex = surface_create(charWid, charHei);
 
 // TEST : Atlas
 bakedAtlas = -1;
 maskAtlas = -1;
-atlasTemp = surface_create(charWid * charLen, charHei);
 glyphTemp = surface_create(charWid, charHei);
 clear_atlas();
 
@@ -211,8 +208,8 @@ if (!surface_exists(maskPreview))
 {
     maskPreview = surface_create(charWid, charHei);
     
-    if (!surface_exists(maskTemp))
-        maskTemp = surface_create(charWid, charHei);
+    // if (!surface_exists(maskTemp))
+    //     maskTemp = surface_create(charWid, charHei);
     
     build_char_surface_preview(charSelected);
 }
@@ -645,10 +642,7 @@ if (projectLoadRequest)
     projectLoadRequest = false;
     
     if (projectLoad)
-    {
-        draw_texture_flush(); // I wonder if this stuff will work
         load_project(projectLoadPath);
-    }
     else
         save_project(projectLoadPath);
     
@@ -769,6 +763,8 @@ switch (uCurrentTab)
         var btnExport = ui_button(_leftmarginA, _topmargin + _bigmargin + 10, 150, 42, "글꼴 내보내기");
         var btnSave = ui_button(_leftmarginA + 180, _topmargin, 150, 42, "프로젝트 저장");
         var btnLoad = ui_button(_leftmarginA + 180, _topmargin + _bigmargin + 10, 150, 42, "프로젝트 불러오기");
+        var btnReset = ui_button(_leftmarginA + 360, _topmargin, 150, 42, "모두 리셋");
+        var btnReload = ui_button(_leftmarginA + 360, _topmargin + _bigmargin + 10, 150, 42, "텍스쳐 재생성");
         
         
         /// BUTTON FUNCS
@@ -862,6 +858,19 @@ switch (uCurrentTab)
                 projectLoadRequest = true;
                 projectLoadPath = _path;
             }
+        }
+        if (btnReset)
+        {
+            clear_atlas();
+            build_char_surface_all();
+            updateFontSurf = true;
+            updatePreview = true;
+        }
+        if (btnReload)
+        {
+            build_char_surface_all();
+            updateFontSurf = true;
+            updatePreview = true;
         }
         break;
     
@@ -1274,6 +1283,8 @@ if (btnCopy || (uiActive &amp;&amp; _ctrl &amp;&amp; keyboard_check_pressed(ord(
 {
     if (!surface_exists(clipboardTex))
         clipboardTex = surface_create(charWid, charHei);
+    else
+        surface_resize(clipboardTex, charWid, charHei);
         
     surface_copy(clipboardTex, 0, 0, maskTemp);
     

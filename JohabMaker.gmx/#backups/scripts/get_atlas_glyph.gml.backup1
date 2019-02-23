@@ -1,4 +1,4 @@
-// 2019-02-23 16:28:10
+// 2019-02-23 16:28:22
 ///get_atlas_glyph(sprite, glyphindex, surface)
 /*
     Blits part from glyph atlas to given surface
@@ -18,6 +18,7 @@ if (!sprite_exists(_atlas))
 // check surface
 if (!surface_exists(glyphTemp))
 {
+    surface_free(glyphTemp);
     glyphTemp = surface_create(charWid, charHei);
     show_debug_message("CREATED GLYPH TEMP");
 }

@@ -1,4 +1,4 @@
-// 2019-02-23 20:52:15
+// 2019-02-24 02:30:38
 #event create
 iui_init();
 iui_init_vars();
@@ -81,14 +81,11 @@ updateFontSurf = false; // Flag for updating font surface
 maskOverlay = surface_create(charWid, charHei); // rectangle overlay for preview
 maskPreview = surface_create(charWid, charHei); // cached mask preview surface
 maskTemp = surface_create(charWid, charHei); // temp surface for mask building before applying to character
-tempTexA = surface_create(charWid, charHei);
-tempTexB = surface_create(charWid, charHei);
 clipboardTex = surface_create(charWid, charHei);
 
 // TEST : Atlas
 bakedAtlas = -1;
 maskAtlas = -1;
-atlasTemp = surface_create(charWid * charLen, charHei);
 glyphTemp = surface_create(charWid, charHei);
 clear_atlas();
 
@@ -437,10 +434,7 @@ if (projectLoadRequest)
     projectLoadRequest = false;
     
     if (projectLoad)
-    {
-        draw_texture_flush(); // I wonder if this stuff will work
         load_project(projectLoadPath);
-    }
     else
         save_project(projectLoadPath);
     
@@ -467,8 +461,8 @@ if (!surface_exists(maskPreview))
 {
     maskPreview = surface_create(charWid, charHei);
     
-    if (!surface_exists(maskTemp))
-        maskTemp = surface_create(charWid, charHei);
+    // if (!surface_exists(maskTemp))
+    //     maskTemp = surface_create(charWid, charHei);
     
     build_char_surface_preview(charSelected);
 }
@@ -709,6 +703,8 @@ switch (uCurrentTab)
         var btnExport = ui_button(_leftmarginA, _topmargin + _bigmargin + 10, 150, 42, "글꼴 내보내기");
         var btnSave = ui_button(_leftmarginA + 180, _topmargin, 150, 42, "프로젝트 저장");
         var btnLoad = ui_button(_leftmarginA + 180, _topmargin + _bigmargin + 10, 150, 42, "프로젝트 불러오기");
+        var btnReset = ui_button(_leftmarginA + 360, _topmargin, 150, 42, "모두 리셋");
+        var btnReload = ui_button(_leftmarginA + 360, _topmargin + _bigmargin + 10, 150, 42, "텍스쳐 재생성");
         
         
         /// BUTTON FUNCS
@@ -802,6 +798,18 @@ switch (uCurrentTab)
                 projectLoadRequest = true;
                 projectLoadPath = _path;
             }
+        }
+        if (btnReset)
+        {
+            clear_atlas();
+            build_char_surface_all();
+            updateFontSurf = true;
+            updatePreview = true;
+        }
+        if (btnReload)
+        {
+            updateFontSurf = true;
+            updatePreview = true;
         }
         break;
     
@@ -1214,6 +1222,8 @@ if (btnCopy || (uiActive && _ctrl && keyboard_check_pressed(ord('C'))))
 {
     if (!surface_exists(clipboardTex))
         clipboardTex = surface_create(charWid, charHei);
+    else
+        surface_resize(clipboardTex, charWid, charHei);
         
     surface_copy(clipboardTex, 0, 0, maskTemp);
     
@@ -1463,7 +1473,7 @@ if (uiModal)
                             _path = get_save_filename_ext("PNG 폰트 이미지|*.png", "font" + string(charWid) + "x" + string(charWid) + "_ascii", _path, "ASCII 폰트 저장 (도깨비한글)");
                             
                             if (_path != "")
-                                surface_save(previewAsciiTex, _path + "_asc");
+                                surface_save(previewAsciiTex, _path);
                         }
                     }
                 }

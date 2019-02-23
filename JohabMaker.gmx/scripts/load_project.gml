@@ -152,10 +152,7 @@ buffer_copy(_filebuffer, _bakedoff, _bakedsize, _bakedbuffer, 0);
 
 // prep surfaces
 clear_atlas();
-if (!surface_exists(atlasTemp))
-    atlasTemp = surface_create(_atlaswid, _atlashei);
-else
-    surface_resize(atlasTemp, _atlaswid, _atlashei);
+var atlasTemp = surface_create(_atlaswid, _atlashei);
 
 // build mask sprite.. pixel by pixel wtf yoyogames please fix buffer_set_surface()
 // buffer_set_surface(_maskbuffer, atlasTemp, 0, 0, 0);
@@ -237,6 +234,7 @@ for (var i=0; i<charLen; i++)
 buffer_delete(_filebuffer);
 buffer_delete(_maskbuffer);
 buffer_delete(_bakedbuffer);
+surface_free(atlasTemp);
 
 updateFontSurf = true;
 updatePreview = true;

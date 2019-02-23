@@ -18,10 +18,7 @@ var _bakedbuffer = buffer_create(_bakedsize, buffer_grow, 1);
     PREP STUFF
 */
 // check surface
-if (!surface_exists(atlasTemp))
-    atlasTemp = surface_create(_atlaswid, _atlashei);
-else
-    surface_resize(atlasTemp, _atlaswid, _atlashei);
+var atlasTemp = surface_create(_atlaswid, _atlashei);
 
 // copy atlases into each buffer
 // copy mask atlas sprite into _maskbuffer
@@ -125,3 +122,4 @@ buffer_save(_filebuffer, _dir);
 buffer_delete(_filebuffer);
 buffer_delete(_maskbuffer);
 buffer_delete(_bakedbuffer);
+surface_free(atlasTemp);

@@ -1,4 +1,4 @@
-// 2019-02-03 23:07:41
+// 2019-02-23 22:24:54
 #define reset_char_data
 ///reset_char_data(ind)
 /*
@@ -30,10 +30,10 @@ charData[| ind] = _arr;
 */
 
 // reset char data
-var _charlen = ds_list_size(charData);
 /*
 // unused, those uses atlas sprite instead. see clear_atlas()
 // free all baked & mask surfaces assigned to a glyph
+var _charlen = ds_list_size(charData);
 for (var i=0; i<_charlen; i++)
 {
     var _data = charData[| i];
@@ -56,5 +56,5 @@ charLen = gridWid * gridHei;
 // reset char data
 for (var i=0; i<charLen; i++)
 {
-    reset_char_data(i);
+    // reset_char_data(i);
 }

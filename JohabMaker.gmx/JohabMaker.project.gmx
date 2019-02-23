@@ -145,6 +145,7 @@
   </scripts>
   <shaders name="shaders">
     <shader type="GLSLES">shaders\shd_stripe.shader</shader>
+    <shader type="GLSLES">shaders\shd_lumatoalpha.shader</shader>
   </shaders>
   <fonts name="fonts">
     <font>fonts\fntOWO</font>
