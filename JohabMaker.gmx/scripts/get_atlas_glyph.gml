@@ -16,7 +16,11 @@ if (!sprite_exists(_atlas))
 
 // check surface
 if (!surface_exists(glyphTemp))
+{
+    surface_free(glyphTemp);
     glyphTemp = surface_create(charWid, charHei);
+    show_debug_message("CREATED GLYPH TEMP");
+}
 else
     surface_resize(glyphTemp, charWid, charHei);
 

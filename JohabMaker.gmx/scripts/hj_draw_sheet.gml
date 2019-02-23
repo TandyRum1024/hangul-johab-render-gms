@@ -23,7 +23,7 @@ var _strx = argument2, _stry = argument3, _str = argument4;
 var _strcol = argument5, _stralpha = argument6;
 var _offx = _strx, _offy = _stry; // 최종 글자 위치 변수 (줄바꿈 & 정렬... ETC에 사용)
 var _strlen;
-var _linehei = max(global.hjCharHeiAscii, global.hjCharHeiKor) + global.hjGlyphLineheight;
+var _linehei = max(global.hjCharHeiAscii, global.hjCharHeiHan) + global.hjGlyphLineheight;
 
 // 글자 렌더링 준비
 // string_char_at() 이 드럽게 느려서 배열로 바꿔줍니다. 배열로 바꿔주는 김에 초/중/종성 인덱스도 같이 캐시해줍니다.

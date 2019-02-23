@@ -6,30 +6,32 @@ if (FNT_DKB) // dkb844
     jungRows = 4;
     jongRows = 4;
     jamoRows = 0;
+    asciiRows = 0;
 }
 else // comp
 {
     // calc head beol
-    if (cbSpecialBody)
+    if (FNT_MIDDLE)
         choRows = 2;
     else
         choRows = 1;
-    if (cbSpecialTail)
+    if (FNT_LAST)
         choRows *= 2;
     
     // calc body beol
-    if (cbSpecialTail)
-        choRows = 2;
+    if (FNT_LAST)
+        jungRows = 2;
     else
-        choRows = 1;
+        jungRows = 1;
     
     // calc tail beol
-    if (cbSpecialBody)
+    if (FNT_MIDDLE)
         jongRows = 2;
     else
         jongRows = 1;
     
     jamoRows = 2;
+    asciiRows = 5;
 }
 
 gridHei = choRows + jungRows + jongRows + jamoRows;

@@ -1,4 +1,4 @@
-// 2019-02-04 01:57:44
+// 2019-02-21 15:37:02
 #define ui_textbox
 ///ui_textbox(x, y, w, h, text, ID)
 /**
@@ -624,7 +624,7 @@ if (isFocus)
 }
 
 /// lower bound
-if (real(currentText) < argument6)
+if (real(currentText) < argument6 && currentText != "")
 {
     currentText = string(argument6);
     cursorPos = 1;

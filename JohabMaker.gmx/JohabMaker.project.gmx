@@ -19,8 +19,9 @@
     <sprite>sprites\spr_bgtexture</sprite>
     <sprite>sprites\spr_checker1</sprite>
     <sprite>sprites\sprHanH12</sprite>
-    <sprite>sprites\sprEngSlant</sprite>
     <sprite>sprites\sprYayoC64</sprite>
+    <sprite>sprites\sprEngSlant</sprite>
+    <sprite>sprites\sprEngSlantSheet</sprite>
   </sprites>
   <backgrounds name="background"/>
   <paths name="paths"/>
@@ -127,19 +128,20 @@
     <script>scripts\update_font_attribs.gml</script>
     <script>scripts\get_default_char.gml</script>
     <script>scripts\load_font.gml</script>
-    <script>scripts\update_font_tex_old.gml</script>
     <script>scripts\hangul_range.gml</script>
     <script>scripts\johab_die.gml</script>
     <script>scripts\export_font_tex.gml</script>
-    <script>scripts\backup_char_surfaces.gml</script>
     <script>scripts\check_hangul_range.gml</script>
     <script>scripts\dec_to_hex.gml</script>
     <script>scripts\edit_atlas_glyph.gml</script>
     <script>scripts\get_atlas_glyph.gml</script>
     <script>scripts\clear_atlas.gml</script>
-    <script>scripts\build_char_surface_old.gml</script>
     <script>scripts\save_project.gml</script>
     <script>scripts\load_project.gml</script>
+    <scripts name="legacy">
+      <script>scripts\build_char_surface_old.gml</script>
+      <script>scripts\update_font_tex_old.gml</script>
+    </scripts>
   </scripts>
   <shaders name="shaders">
     <shader type="GLSLES">shaders\shd_stripe.shader</shader>

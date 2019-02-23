@@ -1,4 +1,4 @@
-// 2019-02-04 01:50:20
+// 2019-02-21 20:12:46
 ///get_default_char(idx)
 /*
     returns "default" Korean character given the index
@@ -14,11 +14,18 @@ var _jungseongoff = _choseongoff + choRows;
 var _jongseongoff = _jungseongoff + jungRows;
 var _jamooff = _jongseongoff + jongRows;
 var _asciioff = _jamooff + jamoRows;
-
 var localoff;
 
 // check for invalid index
 if (idx < 0)
+    return "";
+    
+// setup for dkb844
+if (FNT_DKB)
+    glyphX--; // Offset for 1 cell
+
+// check for invalid x
+if (glyphX < 0)
     return "";
 
 if (glyphY < _jungseongoff) // Choseong
@@ -27,23 +34,63 @@ if (glyphY < _jungseongoff) // Choseong
     
     if (glyphX <= 18)
     {
-        switch (localoff)
+        if (FNT_DKB)
         {
-            case 0: // beol 1
-                char = chr($AC00 + ((glyphX * 21) + 0) * 28 + 16);
-                break;
+            switch (localoff)
+            {
+                case 0: // beol 1
+                    char = chr($AC00 + ((glyphX * 21) + 1) * 28);
+                    break;
+                    
+                case 1: // beol 2
+                    char = chr($AC00 + ((glyphX * 21) + 8) * 28);
+                    break;
+                    
+                case 2: // beol 3
+                    char = chr($AC00 + ((glyphX * 21) + 13) * 28);
+                    break;
+                    
+                case 3: // beol 4
+                    char = chr($AC00 + ((glyphX * 21) + 10) * 28);
+                    break;
+                    
+                case 4: // beol 5
+                    char = chr($AC00 + ((glyphX * 21) + 15) * 28);
+                    break;
+                    
+                case 5: // beol 6
+                    char = chr($AC00 + ((glyphX * 21) + 1) * 28 + 21);
+                    break;
+                    
+                case 6: // beol 7
+                    char = chr($AC00 + ((glyphX * 21) + 8) * 28 + 21);
+                    break;
                 
-            case 1: // beol 2
-                char = chr($AC00 + ((glyphX * 21) + 8) * 28 + 16);
-                break;
-                
-            case 2: // beol 3
-                char = chr($AC00 + ((glyphX * 21) + 0) * 28);
-                break;
-                
-            case 3: // beol 4
-                char = chr($AC00 + ((glyphX * 21) + 8) * 28);
-                break;
+                case 7: // beol 8
+                    char = chr($AC00 + ((glyphX * 21) + 10) * 28 + 21);
+                    break;
+            }
+        }
+        else
+        {
+            switch (localoff)
+            {
+                case 0: // beol 1
+                    char = chr($AC00 + ((glyphX * 21) + 0) * 28 + 16);
+                    break;
+                    
+                case 1: // beol 2
+                    char = chr($AC00 + ((glyphX * 21) + 8) * 28 + 16);
+                    break;
+                    
+                case 2: // beol 3
+                    char = chr($AC00 + ((glyphX * 21) + 0) * 28);
+                    break;
+                    
+                case 3: // beol 4
+                    char = chr($AC00 + ((glyphX * 21) + 8) * 28);
+                    break;
+            }
         }
     }
 }
@@ -53,29 +100,69 @@ else if (glyphY < _jongseongoff) // Jungseong
     
     if (glyphX <= 20)
     {
-        switch (localoff)
+        if (FNT_DKB)
         {
-            case 0: // yes jongseong 
-                char = chr($AC00 + glyphX * 28 + 16);
-                break;
+            switch (localoff)
+            {
+                case 0: // no jongseong with ㄱ, ㅋ
+                    char = chr($AC00 + (glyphX) * 28);
+                    break;
+                    
+                case 1: // no jongseong without ㄱ, ㅋ
+                    char = chr($AC00 + ((6 * 21) + glyphX) * 28);
+                    break;
                 
-            case 1: // no jongseong
-                char = chr($AC00 + glyphX * 28);
-                break;
+                case 2: // yes jongseong with ㄱ, ㅋ
+                    char = chr($AC00 + (glyphX) * 28 + 6);
+                    break;
+                    
+                case 3: // yes jongseong without ㄱ, ㅋ
+                    char = chr($AC00 + ((6 * 21) + glyphX) * 28 + 6);
+                    break;
+            }
+        }
+        else
+        {
+            switch (localoff)
+            {
+                case 0: // yes jongseong 
+                    char = chr($AC00 + glyphX * 28 + 16);
+                    break;
+                    
+                case 1: // no jongseong
+                    char = chr($AC00 + glyphX * 28);
+                    break;
+            }
         }
     }
-    else
-        char = "";
 }
 else if (glyphY < _jamooff) // Jongseong
 {
     localoff = glyphY - _jongseongoff;
     
-    if (glyphX == 0) // Jongseong's first cell is reserved
+    if (FNT_DKB)
     {
-        char = "";
+        glyphX++;
+        switch (localoff)
+        {
+            case 0: // beol 1
+                char = chr($AC00 + glyphX);
+                break;
+                
+            case 1: // beol 2
+                char = chr($AC00 + (4 * 28) + glyphX);
+                break;
+                
+            case 2: // beol 3
+                char = chr($AC00 + 28 + glyphX);
+                break;
+                
+            case 3: // beol 4
+                char = chr($AC00 + (8 * 28) + glyphX);
+                break;
+        }
     }
-    else
+    else if (glyphX > 0)
     {
         switch (localoff)
         {
@@ -101,6 +188,11 @@ else if (glyphY < _asciioff) // Compatible Jamo
 else // ASCII
 {
     char = chr(idx - gridWid * _asciioff);
+    
+    if (char == "#")
+    {
+        char = "\" + char;
+    }
 }
 /*
 switch (glyphY)

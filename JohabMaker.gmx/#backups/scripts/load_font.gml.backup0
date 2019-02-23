@@ -1,4 +1,4 @@
-// 2019-01-30 00:14:46
+// 2019-02-21 15:50:04
 ///load_font(fontDir, size)
 /*
     Exec this when you change the font
@@ -6,12 +6,24 @@
 
 fntPath = argument0;
 
+var _strlen = string_length(fntPath);
+var _fontname = "", _fontpath = "";
+for (var i=_strlen; i>=1; i--)
+{
+    var _char = string_char_at(fntPath, i);
+    if (_char == "\")
+    {
+        i++;
+        fntName = string_copy(fntPath, i, _strlen - i + 1);
+        break;
+    }
+}
+
 if (font_exists(fntCurrent))
     font_delete(fntCurrent);
 
 // REMEMBER : font_add with .ttf will add """ALL""" the glyphs in the font
 fntCurrent = font_add(fntPath, argument1, false, false, 666, 666); // weird flex but ok
-fntName = font_get_fontname(fntCurrent);
 fntSize = argument1;
 
 // reset_char_surfaces();

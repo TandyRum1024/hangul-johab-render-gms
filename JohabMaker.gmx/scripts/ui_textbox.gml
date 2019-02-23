@@ -623,7 +623,7 @@ if (isFocus)
 }
 
 /// lower bound
-if (real(currentText) < argument6)
+if (real(currentText) < argument6 && currentText != "")
 {
     currentText = string(argument6);
     cursorPos = 1;

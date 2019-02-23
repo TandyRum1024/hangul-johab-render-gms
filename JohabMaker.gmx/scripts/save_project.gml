@@ -52,11 +52,13 @@ buffer_seek(_filebuffer, buffer_seek_start, 0);
 
 // write header & project info
 buffer_write(_filebuffer, buffer_string, "JORT"); // Magic word
-buffer_write(_filebuffer, buffer_u16, 42); // version
+buffer_write(_filebuffer, buffer_u16, 128); // version
 buffer_write(_filebuffer, buffer_u16, gridWid); // grid size
 buffer_write(_filebuffer, buffer_u16, gridHei);
 buffer_write(_filebuffer, buffer_u16, charWid); // glyph size
 buffer_write(_filebuffer, buffer_u16, charHei);
+buffer_write(_filebuffer, buffer_u16, charAsciiWid);
+buffer_write(_filebuffer, buffer_u16, charAsciiHei);
 buffer_write(_filebuffer, buffer_u8, fntSize); // font size
 buffer_write(_filebuffer, buffer_u8, choRows); // beols
 buffer_write(_filebuffer, buffer_u8, jungRows);
@@ -64,6 +66,9 @@ buffer_write(_filebuffer, buffer_u8, jongRows);
 buffer_write(_filebuffer, buffer_u8, jamoRows);
 buffer_write(_filebuffer, buffer_u8, asciiRows);
 buffer_write(_filebuffer, buffer_bool, FNT_ASCII); // use ascii?
+buffer_write(_filebuffer, buffer_bool, FNT_DKB); // dkb844?
+buffer_write(_filebuffer, buffer_bool, FNT_MIDDLE); // Middle?
+buffer_write(_filebuffer, buffer_bool, FNT_LAST); // Last?
 // write atlas size & offsets
 buffer_write(_filebuffer, buffer_u32, _masksize); // buffer size
 buffer_write(_filebuffer, buffer_u32, _bakedsize);

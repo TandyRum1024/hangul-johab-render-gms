@@ -1,4 +1,4 @@
-// 2019-02-04 00:05:04
+// 2019-02-04 01:57:44
 #define ui_textbox
 ///ui_textbox(x, y, w, h, text, ID)
 /**
@@ -615,6 +615,11 @@ if (isFocus)
         
         if (cursorPos > (showPos + maxChars) - 1) // move er'!
             showPos++;
+    }
+    else if (inputCode == 45 && cursorPos == 0) // minus
+    {
+        currentText = string_insert('-', currentText, cursorPos + 1);
+        cursorPos++;
     }
 }
 

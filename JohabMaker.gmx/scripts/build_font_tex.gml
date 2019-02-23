@@ -11,7 +11,11 @@ var _newHei = gridHei * charHei;
 if (surface_exists(fntTex))
     surface_resize(fntTex, _newWid, _newHei);
 else
+{
+ 
+    show_debug_message("NEW FNTTEX");
     fntTex = surface_create(_newWid, _newHei);
+}
 
 // Update contents
 surface_set_target(fntTex);
@@ -67,8 +71,54 @@ for (var i=0; i<_charlen; i++)
     }
 }
 // show_debug_message("DRAWN " + string(_charlen) + " CHARACTERS TOTAL");
-
 surface_reset_target();
+
+
+/// BUILD ASCII IF DKB844
+if (FNT_DKB)
+{
+    // update ascii surface
+    _newWid = 32 * charAsciiWid;
+    _newHei = 8 * charAsciiHei;
+    
+    if (surface_exists(fntAsciiTex))
+        surface_resize(fntAsciiTex, _newWid, _newHei);
+    else
+        fntAsciiTex = surface_create(_newWid, _newHei);
+        
+    
+    // Update contents
+    surface_set_target(fntAsciiTex);
+    
+    // clear
+    draw_clear(c_black);
+    
+    // grid
+    for (var X=0; X<=32; X++)
+    {
+        for (var Y=0; Y<=8; Y++)
+        {
+            var _worldX = X * charAsciiWid;
+            var _worldY = Y * charAsciiHei;
+            iui_rect(_worldX - 1, 0, 2, _newHei, $FF00FF);
+            iui_rect(0, _worldY - 1, _newWid, 2, $FF00FF);
+        }
+    }
+    
+    // ascii
+    iui_align_center();
+    draw_set_font(fntCurrent);
+    for (var i=0; i<256; i++)
+    {
+        var _u = (i % 32) * charAsciiWid + (charAsciiWid >> 1);
+        var _v = (i div 32) * charAsciiHei + (charAsciiHei >> 1);
+        iui_label(_u, _v, chr(i), c_white);
+    }
+    draw_set_font(fntOWO);
+    iui_align_pop();
+    
+    surface_reset_target();
+}
 
 #define build_font_tex_ext
 ///build_font_tex_ext(drawGrid, bgCol, bgAlpha)
@@ -146,5 +196,59 @@ for (var i=0; i<_charlen; i++)
     }
 }
 show_debug_message("DRAWN " + string(_charlen) + " CHARACTERS TOTAL");
-
 surface_reset_target();
+
+/// BUILD ASCII IF DKB844
+if (FNT_DKB)
+{
+    // update ascii surface
+    _newWid = 32 * charAsciiWid;
+    _newHei = 8 * charAsciiHei;
+    
+    if (surface_exists(fntAsciiTex))
+        surface_resize(fntAsciiTex, _newWid, _newHei);
+    else
+        fntAsciiTex = surface_create(_newWid, _newHei);
+        
+    
+    // Update contents
+    surface_set_target(fntAsciiTex);
+    
+    // clear
+    draw_clear_alpha(bgCol, bgAlpha);
+    
+    // grid
+    if (drawGrid)
+    {
+        for (var X=0; X<=32; X++)
+        {
+            for (var Y=0; Y<=8; Y++)
+            {
+                var _worldX = X * charAsciiWid;
+                var _worldY = Y * charAsciiHei;
+                iui_rect(_worldX - 1, 0, 2, _newHei, $FF00FF);
+                iui_rect(0, _worldY - 1, _newWid, 2, $FF00FF);
+            }
+        }
+        
+    }
+    
+    // ascii
+    iui_align_center();
+    draw_set_font(fntCurrent);
+    for (var i=0; i<256; i++)
+    {
+        var _u = (i % 32) * charAsciiWid + (charAsciiWid >> 1);
+        var _v = (i div 32) * charAsciiHei + (charAsciiHei >> 1);
+        var _ch = chr(i);
+        
+        if (_ch == "#")
+            _ch = "\" + _ch;
+        
+        iui_label(_u, _v, _ch, c_white);
+    }
+    draw_set_font(fntOWO);
+    iui_align_pop();
+    
+    surface_reset_target();
+}

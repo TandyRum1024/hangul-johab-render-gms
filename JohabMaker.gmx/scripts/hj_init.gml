@@ -109,8 +109,8 @@ global.hjLUTJamo = hj_gen_table_jamo();
 global.hjCompSpecialMiddle = true;
 /*
     global.hjSpecialLast : 초성 & 중성이 종성 여부에 따라 다른 벌을 사용하는지 여부
-    - true = 초성과 종성이 벌을 2배로 사용합니다. ( 종성 있는버전 & 종성 없는버전 )
-    - false = 초성과 종성의 벌 수가 그대로인 대신 종성이 없는 버전과 똑같이 그려집니다.
+    - true = 초성과 중성이 벌을 2배로 사용합니다. ( 종성 있는버전 & 종성 없는버전 )
+    - false = 초성과 중성의 벌 수가 그대로인 대신 종성이 없는 버전과 똑같이 그려집니다.
     (예를들어 "가" 를 "갈" 글자에서 "ㄹ"이 없고 대신 빈칸이 있다고 생각해보세요.)
 */
 global.hjCompSpecialLast = true; // 초성 & 중성의 종성 없는 버젼 사용?

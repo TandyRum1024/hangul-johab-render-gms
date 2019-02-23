@@ -1,4 +1,4 @@
-// 2019-02-21 00:15:19
+// 2019-02-23 16:32:13
 #event create
 iui_init();
 iui_init_vars();
@@ -21,6 +21,8 @@ fntSize = 16;       // Size of font for rendering
 FNT_ASCII = true;
 FNT_GRID = true;
 FNT_DKB = false;
+FNT_MIDDLE = true;
+FNT_LAST = true;
 
 /* 
     GLYPH RELATED
@@ -38,8 +40,10 @@ gridHei = choRows + jungRows + jongRows + jamoRows + asciiRows; // starts from 0
 
 // Character related
 charLen = gridWid * gridHei; // Total numbers of cells
-charWid = 24; // Single Cell's size/unit... default = 16px monospaced
-charHei = 24;
+charWid = 16; // Single Cell's size/unit... default = 16px monospaced
+charHei = 16;
+charAsciiWid = 8; // Ascii size
+charAsciiHei = 16;
 charSelected = -1; // Currently selected character
 charData = ds_list_create(); // List of glyph's data made out of array
 enum CHAR
@@ -66,7 +70,9 @@ updatePreview = false;
 
 // Font texture for exporting & preview
 fntSprite = -1;
+fntAsciiSprite = -1;
 fntTex = surface_create(gridWid * charWid, gridHei * charHei);
+fntAsciiTex = surface_create(32 * charAsciiWid, 8 * charAsciiHei); // Ascii texture
 previewTex = surface_create(gridWid * charWid, gridHei * charHei);
 updateFontSurf = false; // Flag for updating font surface
 
@@ -430,7 +436,10 @@ if (projectLoadRequest)
     projectLoadRequest = false;
     
     if (projectLoad)
+    {
+        draw_texture_flush();
         load_project(projectLoadPath);
+    }
     else
         save_project(projectLoadPath);
     
@@ -533,8 +542,51 @@ surface_reset_target();
 draw_clear(COL.GRAY);
 
 // surface
-iui_rect(10, 10, surface_get_width(fntTex), surface_get_height(fntTex), COL.BASE); // shadow
+var _sw = surface_get_width(fntTex), _sh = surface_get_height(fntTex);
+var _ay = _sh + charHei * 2;
+iui_rect(10, 10, _sw, _sh, COL.BASE); // shadow
 draw_surface(fntTex, 0, 0); // draw hangul stuff
+
+if (FNT_DKB && FNT_ASCII)
+{
+    iui_rect(10, _ay + 10, surface_get_width(fntAsciiTex), surface_get_height(fntAsciiTex), COL.BASE); // shadow
+    draw_surface(fntAsciiTex, 0, _ay); // draw ascii if DKB884
+}
+
+// hints
+var _hintwid = 256;
+var _heady = 0;
+var _bodyy = _heady + choRows * charHei;
+var _taily = _bodyy + jungRows * charHei;
+var _jamoy = _taily + jongRows * charHei;
+var _asciiy = _jamoy + jamoRows * charHei;
+
+iui_align_push(0, 2);
+iui_rect(-_hintwid, _heady, _hintwid, 2, c_red);
+iui_label_shadow(-_hintwid, _heady - 2, "초성 ("+ string(choRows) +"벌)", c_red, 1, 1, COL.BASE);
+
+iui_rect(-_hintwid, _bodyy, _hintwid, 2, c_green);
+iui_label_shadow(-_hintwid, _bodyy - 2, "중성 ("+ string(jungRows) +"벌)", c_green, 1, 1, COL.BASE);
+
+iui_rect(-_hintwid, _taily, _hintwid, 2, c_aqua);
+iui_label_shadow(-_hintwid, _taily - 2, "종성 ("+ string(jongRows) +"벌)", c_aqua, 1, 1, COL.BASE);
+
+if (!FNT_DKB)
+{
+    iui_rect(-_hintwid, _jamoy, _hintwid, 2, c_yellow);
+    iui_label_shadow(-_hintwid, _jamoy - 2, "자모", c_yellow, 1, 1, COL.BASE);
+    
+    if (FNT_ASCII)
+    {
+        iui_rect(-_hintwid, _asciiy, _hintwid, 2, c_orange);
+        iui_label_shadow(-_hintwid, _asciiy - 2, "ASCII 문자", c_orange, 1, 1, COL.BASE);
+    }
+}
+else if (FNT_ASCII)
+{
+    iui_label_shadow(0, _ay, "ASCII 문자 (편집불가)", c_yellow, 1, 1, COL.BASE);
+}
+iui_align_pop();
 
 // Draw glyph pick hint
 var _mx = floor(mouse_x / charWid) * charWid;
@@ -554,6 +606,10 @@ if (updateFontSurf)
     
     // reset preview glyph
     build_char_surface_preview(charSelected);
+    
+    uiModal = false;
+    iui_activeItem = -1;
+    iui_hotItem = -1;
 }
 
 if (updatePreview)
@@ -640,67 +696,43 @@ switch (uCurrentTab)
             uiModalState = UI_MODAL.PREVIEW;
             
             // build font
-            /*
-            image_group_clear("FONT");
-            var _path = build_sprite_from_tex("fontTextureSprite.png");
-            
-            image_stream_start("FONT", 1024, 1024, 0, false, false);
-                image_stream_add_sheet("FONT", "spr", _path, gridWid, gridHei, 0, 0);
-            image_stream_finish("FONT");
-            // fntSprite = image_group_find_image("FONT", "spr");//sprite_add(_path, gridWid * gridHei, false, false, false, false);
-            */
             if (sprite_exists(fntSprite))
                 sprite_delete(fntSprite);
             
             build_font_tex_ext(false, 0, 0);
             fntSprite = sprite_create_from_surface(fntTex, 0, 0, gridWid * charWid, gridHei * charHei, false, false, 0, 0);
+            fntAsciiSprite = sprite_create_from_surface(fntAsciiTex, 0, 0, 32 * charAsciiWid, 8 * charAsciiHei, false, false, 0, 0);
             build_font_tex();
             
             if (FNT_DKB) // dkb844 - set han & asc font & size
             {
                 hj_change_font_ext(-1, -1, charWid, charHei, 8, 16);
+                
+                if (FNT_ASCII)
+                {
+                    // set ascii attribs also
+                    global.hjSpriteAscii = fntAsciiSprite;
+                    global.hjCharWidAscii = charAsciiWid;
+                    global.hjCharHeiAscii = charAsciiHei;
+                }
+                else
+                {
+                    // use default sprite
+                    global.hjSpriteAscii = sprYayoC64;
+                    global.hjCharWidAscii = charWid;
+                    global.hjCharHeiAscii = charHei;
+                }
             }
             else // previous / compat
             {
-                global.hjCharWidAscii = charWid;
-                global.hjCharHeiAscii = charHei;
-                global.hjUseAsciiSprite = false;
+                var _w = 16, _h = 16;
+                if (FNT_ASCII)
+                {
+                    _w = charWid;
+                    _h = charHei;
+                }
                 
-                
-            }
-            global.hjSpriteKor = fntSprite;
-            global.hjCharWidKor = charWid;
-            global.hjCharHeiKor = charHei;
-            
-            global.hjBeolFirst = choRows;
-            global.hjBeolMiddle = jungRows;
-            global.hjBeolLast = jongRows;
-            global.hjBeolJamo = jamoRows;
-            
-            global.hjOffFirst = 0;
-            global.hjOffMiddle = global.hjOffFirst + (global.hjBeolFirst * 28);
-            global.hjOffLast = global.hjOffMiddle + (global.hjBeolMiddle * 28);
-            global.hjOffJamo = global.hjOffLast + (global.hjBeolLast * 28);
-            global.hjOffAscii = global.hjOffJamo + (global.hjBeolJamo * 28);
-            
-            global.hjSpecialMiddle = true;
-            global.hjSpecialLast = true;
-            
-            if (FNT_ASCII)
-            {
-                // set ascii attribs also
-                global.hjSpriteAscii = fntSprite;
-                global.hjCharWidAscii = charWid;
-                global.hjCharHeiAscii = charHei;
-                global.hjUseAsciiSprite = false;
-            }
-            else
-            {
-                // use default sprite
-                global.hjSpriteAscii = sprYayoC64;
-                global.hjCharWidAscii = charWid;
-                global.hjCharHeiAscii = charHei;
-                global.hjUseAsciiSprite = true;
+                hj_comp_change_font(charWid, charHei, _w, _h, FNT_MIDDLE, FNT_LAST);
             }
         }
         if (btnExport)
@@ -729,8 +761,6 @@ switch (uCurrentTab)
                 projectLoad = false;
                 projectLoadRequest = true;
                 projectLoadPath = _path;
-                
-                // save_project();
             }
         }
         if (btnLoad)
@@ -746,8 +776,6 @@ switch (uCurrentTab)
                 projectLoad = true;
                 projectLoadRequest = true;
                 projectLoadPath = _path;
-                
-                // load_project(_path);
             }
         }
         break;
@@ -759,46 +787,117 @@ switch (uCurrentTab)
             set font & font size & cell size
         */
         var _leftmarginA = _smallmargin;
-        var _leftmarginB = _smallmargin + 300 + (_bigmargin << 1) + 100;
+        var _leftmarginB = _smallmargin + 128 + (_bigmargin << 1) + 100;
         var _rightmargin = WIN_WID - 300;
         var _topmargin = _bigmargin;
+        var _itemy = _topmargin + _smallmargin;
         
         /// load & reload section
-        var btnLoad = ui_button(_leftmarginA, _topmargin + _bigmargin, 150, 42, ".TTF 불러오기");
-        var btnReload = ui_button(_leftmarginA + 150 + _bigmargin , _topmargin + _bigmargin, 150, 42, ".TTF 다시 불러오기");
         iui_label(_leftmarginA, _topmargin, "현재 글꼴 : " + string(fntName), COL.HIGHLIGHT);
+        var btnLoad = ui_button(_leftmarginA, _itemy, 240, 42, ".TTF 불러오기");
+        var btnReload = ui_button(_leftmarginA, _itemy + 52, 240, 42, ".TTF 다시 불러오기");
         
+        /// texture info
+        iui_label(_rightmargin, _topmargin, "격자 최종 크기 : [" + string(gridWid) + ", " + string(gridHei) + "]", uTextCol);
+        iui_label(_rightmargin, _topmargin + _bigmargin, "텍스쳐 사이즈 : [" + string(gridWid * charWid) + ", " + string(gridHei * charHei) + "]", uTextCol);
         
-        /// font attributes section
+        /// font attributes section (1)
+        _itemy += _smallmargin;
+        var _tbwid = 50;
         var _off = _leftmarginB + _bigmargin;
+        iui_align_push(fa_middle, fa_top);
+        iui_label(_leftmarginB + 70, _topmargin, "[폰트 불러오기 옵션]#(다시 불러오기 필요)", COL.HIGHLIGHT);
+        iui_label(_leftmarginB + 350, _topmargin, "[폰트 형식 옵션]#(변경시 모든 데이터 리셋)", COL.HIGHLIGHT);
+        iui_align_pop();
+        
         iui_align_push(fa_right, fa_top);
+        iui_label(_off, _itemy, "글꼴 크기 : ", uTextCol);
+        iui_label(_off, _itemy + _bigmargin, "격자 크기 : ", uTextCol);
+        iui_label(_off + _tbwid + 5 + (string_width("X") >> 1), _itemy + _bigmargin, "X", uTextCol);
         
-        iui_label(_off, _topmargin, "글꼴 크기 : ", uTextCol);
-        iui_label(_off, _topmargin + _bigmargin, "격자 크기 : ", uTextCol);
-        iui_label(_off, _topmargin + (_bigmargin << 1), "ASCII 문자 사용 : ", uTextCol);
-        iui_label(_off + 300, _topmargin + (_bigmargin << 1), "도깨비 한글 8x4x4벌 : ", uTextCol);
-        iui_label(_off + _smallmargin + 90 + (string_width("X") >> 1), _topmargin + _bigmargin, "X", uTextCol);
+        tbFntSize = ui_textbox_numberonly(_off, _itemy, _tbwid, 32, string(tbFntSize), "FONTSIZE", 0);
+        tbCellWid = ui_textbox_numberonly(_off, _itemy + _bigmargin, _tbwid, 32, string(tbCellWid), "CELLWID", 1);
+        tbCellHei = ui_textbox_numberonly(_off + _tbwid + 10, _itemy + _bigmargin, _tbwid, 32, string(tbCellHei), "CELLHEI", 1);
         
-        tbFntSize = ui_textbox_numberonly(_off + _smallmargin, _topmargin, 80, 32, string(tbFntSize), "FONTSIZE", 0);
-        tbCellWid = ui_textbox_numberonly(_off + _smallmargin, _topmargin + _bigmargin, 80, 32, string(tbCellWid), "CELLWID", 1);
-        tbCellHei = ui_textbox_numberonly(_off + _smallmargin + 100, _topmargin + _bigmargin, 80, 32, string(tbCellHei), "CELLHEI", 1);
-        cbAscii = ui_checkbox(_off + _smallmargin + 2, _topmargin + (_bigmargin << 1), 16, 16, cbAscii, "ASCII");
-        cbDok844 = ui_checkbox(_off + _smallmargin + 2 + 300, _topmargin + (_bigmargin << 1), 16, 16, cbDok844, "HAN844");
-        cbSpecialBody = ui_checkbox(_off + _smallmargin + 2 + 400, _topmargin + _bigmargin, 16, 16, cbSpecialBody, "SPECIALBODY");
-        cbSpecialTail = ui_checkbox(_off + _smallmargin + 2 + 400, _topmargin + (_bigmargin << 1), 16, 16, cbSpecialTail, "SPECIALTAIL");
-        FNT_ASCII = cbAscii;
+        /// font attributes section (2)
+        _off += 300;
         
-        if (FNT_DKB != cbDok844)
+        iui_label(_off, _itemy, "도깨비 한글 8x4x4벌 : ", uTextCol);
+        cbDok844 = ui_checkbox(_off + 2, _itemy, 16, 16, cbDok844, "HAN844");
+        
+        iui_label(_off, _itemy + _bigmargin, "ASCII 문자 사용 : ", uTextCol);
+        cbAscii = ui_checkbox(_off + 2, _itemy + _bigmargin, 16, 16, cbAscii, "ASCII");
+        
+        if (!FNT_DKB)
+        {
+            iui_label(_off + 180, _itemy, "초/종성 추가 벌 : ", uTextCol);
+            cbSpecialBody = ui_checkbox(_off + 2 + 180, _itemy, 16, 16, FNT_MIDDLE, "SPECIALBODY");
+            ui_tooltip(_off + 2 + 180, _itemy, 16, 16, "중성 모양에 따라 초/종성에 별도의 벌을 사용합니다.#(=global.hjCompSpecialMiddle)", -1, c_black, false, false, 0);
+            
+            iui_label(_off + 180, _itemy + _bigmargin, "초/중성 추가 벌 : ", uTextCol);
+            cbSpecialTail = ui_checkbox(_off + 2 + 180, _itemy + _bigmargin, 16, 16, FNT_LAST, "SPECIALTAIL");
+            ui_tooltip(_off + 2 + 180, _itemy + _bigmargin, 16, 16, "종성 여부에 따라 초/중성에 별도의 벌을 사용합니다.#(=global.hjCompSpecialLast)", -1, c_black, false, false, 0);
+        }
+        else
+        {
+            iui_label(_off + 180, _itemy, "ASCII 격자 크기", uTextCol);
+            iui_label(_off + 170 - _tbwid, _itemy + _bigmargin, "X", uTextCol);
+            tbCellAsciiWid = ui_textbox_numberonly(_off + 170 - _tbwid * 2, _itemy + _bigmargin, _tbwid, 32, string(tbCellAsciiWid), "ASCIIWID", 1);
+            tbCellAsciiHei = ui_textbox_numberonly(_off + 180 - _tbwid, _itemy + _bigmargin, _tbwid, 32, string(tbCellAsciiHei), "ASCIIHEI", 1);
+        }
+        
+        // Checkboxes check
+        if (FNT_ASCII != cbAscii) // USE ASCII (comp)
+        {
+            FNT_ASCII = cbAscii;
+            reset_char_data_all();
+            clear_atlas();
+            build_char_surface_all();
+            updateFontSurf = true;
+        }
+        
+        if (FNT_DKB != cbDok844) // USE DKB844 (fuck)
         {
             FNT_DKB = cbDok844;
-            update_font_attribs();
+            reset_char_data_all();
+            clear_atlas();
+            build_char_surface_all();
+            updateFontSurf = true;
+        }
+        
+        if (FNT_MIDDLE != cbSpecialBody) // USE YET ANOTHER DAMN SPECIAL SUITS FOR SPECIFIC MIDDLE STUFF
+        {
+            FNT_MIDDLE = cbSpecialBody;
+            global.hjCompSpecialMiddle = FNT_MIDDLE; // OH NO FUCk!!
+            reset_char_data_all();
+            clear_atlas();
+            build_char_surface_all();
+            updateFontSurf = true;
+        }
+        
+        if (FNT_LAST != cbSpecialTail) // USE YET ANOTHER DAMN SPECIAL SUITS FOR CHARACTERS WITHOUT TAIL PART
+        {
+            FNT_LAST = cbSpecialTail;
+            global.hjCompSpecialLast = FNT_LAST;
+            reset_char_data_all();
+            clear_atlas();
+            build_char_surface_all();
+            updateFontSurf = true;
+        }
+        
+        if (tbCellAsciiWid != "" && charAsciiWid != real(tbCellAsciiWid)) // ASCII WID
+        {
+            charAsciiWid = real(tbCellAsciiWid);
+            updateFontSurf = true;
+        }
+        
+        if (tbCellAsciiHei != "" && charAsciiHei != real(tbCellAsciiHei)) // ASCII HEI
+        {
+            charAsciiHei = real(tbCellAsciiHei);
             updateFontSurf = true;
         }
         
         iui_align_pop();
-        
-        iui_label(_rightmargin, _topmargin, "격자 최종 크기 : [" + string(gridWid) + ", " + string(gridHei) + "]", uTextCol);
-        iui_label(_rightmargin, _topmargin + _bigmargin, "텍스쳐 사이즈 : [" + string(gridWid * charWid) + ", " + string(gridHei * charHei) + "]", uTextCol);
         
         
         /// Buttons
@@ -1219,9 +1318,23 @@ if (uiModal)
             
             //////////////////
             if (FNT_DKB)
-                hj_draw_sheet(fntSprite, sprEngSlant, _inputX + 10, _inputTestY + 10, _testtext, _teststr, 1);
+            {
+                var _asciifnt = sprEngSlantSheet;
+                
+                if (FNT_ASCII)
+                    _asciifnt = fntAsciiSprite;
+                
+                hj_draw_sheet(fntSprite, _asciifnt, _inputX + 10, _inputTestY + 10, _testtext, _teststr, 1);
+            }
             else
-                hj_draw_comp(fntSprite, -1, _inputX + 10, _inputTestY + 10, _testtext, _teststr, 1);
+            {
+                var _asciifnt = sprYayoC64;
+                
+                if (FNT_ASCII)
+                    _asciifnt = -1;
+                
+                hj_draw_comp(fntSprite, _asciifnt, _inputX + 10, _inputTestY + 10, _testtext, _teststr, 1);
+            }
             
             draw_set_font(fntCurrent);
             iui_label(_inputX + 10, _inputFontY + 10, _fonttext, _fontstr);

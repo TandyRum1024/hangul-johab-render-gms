@@ -1,7 +1,8 @@
-// 2019-01-29 19:40:46
+// 2019-02-23 16:28:10
 ///get_atlas_glyph(sprite, glyphindex, surface)
 /*
     Blits part from glyph atlas to given surface
+    pass -1 into surface argument to only store the result to glyphTemp variable
 */
 
 var _atlas = argument0, _idx = argument1, _surf = argument2;
@@ -16,7 +17,10 @@ if (!sprite_exists(_atlas))
 
 // check surface
 if (!surface_exists(glyphTemp))
+{
     glyphTemp = surface_create(charWid, charHei);
+    show_debug_message("CREATED GLYPH TEMP");
+}
 else
     surface_resize(glyphTemp, charWid, charHei);
 

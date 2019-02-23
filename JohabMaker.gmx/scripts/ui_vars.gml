@@ -4,6 +4,8 @@ uiActive = true;
 tbFntSize = "12";
 tbCellWid = "16";
 tbCellHei = "16";
+tbCellAsciiWid = "8";
+tbCellAsciiHei = "16";
 cbAscii = true;
 cbDok844 = false; // 도깨비한글 8x4x4벌
 cbSpecialBody = true;
@@ -73,11 +75,7 @@ uInputBackCtr = 0;
 uInputBackHolding = false;
 uTestInputActive = false;
 uFontInputActive = false;
-var _testStr = "";//"키스의 조건은 다람쥐가 헌 쳇바퀴를#와장창 쾅 우지끈 하고 터트리는것이다!#곰놈돔롬 똠방각하 구와아아악#ABCD 1234567890 !@\#$%^&*()<>/[]_+-=#A quick brown fox died of dysentery#Rest in pepsi,,, press X to die";//"다람쥐 헌 쳇바퀴 타고파#A lazy dog jumps over the quick brown fox#1234567890#ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ#똠방각하#맨도롱 또똣하다";
-for (var i=0; i<21; i++)
-{
-    _testStr += chr(i * 28 + $AC00);
-}
+var _testStr = "키스의 조건은 다람쥐가 헌 쳇바퀴를#와장창 쾅 우지끈 하고 터트리는것이다!#곰놈돔롬 똠방각하 구와아아악#ABCD 1234567890 !@\#$%^&*()<>/[]_+-=#A quick brown fox died of dysentery#Rest in pepsi,,, press X to die";//"다람쥐 헌 쳇바퀴 타고파#A lazy dog jumps over the quick brown fox#1234567890#ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ#똠방각하#맨도롱 또똣하다";
 
 uTestInput = _testStr;
 uFontInput = _testStr;

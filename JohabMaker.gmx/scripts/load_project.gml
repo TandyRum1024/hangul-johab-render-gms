@@ -15,7 +15,7 @@ var _magic = buffer_read(_filebuffer, buffer_string);
 var _version = buffer_read(_filebuffer, buffer_u16);
 
 // FAILSAFE
-show_debug_message("MAGIC WORD : " + _magic);
+// show_debug_message("MAGIC WORD : " + _magic);
 if (_magic != "JORT")
 {
     // throw up
@@ -59,6 +59,15 @@ gridWid = buffer_read(_filebuffer, buffer_u16); // grid size
 gridHei = buffer_read(_filebuffer, buffer_u16);
 charWid = buffer_read(_filebuffer, buffer_u16); // glyph size
 charHei = buffer_read(_filebuffer, buffer_u16);
+
+if (_version >= 128)
+{
+    charAsciiWid = buffer_read(_filebuffer, buffer_u16); // ascii size
+    charAsciiHei = buffer_read(_filebuffer, buffer_u16);
+    tbCellAsciiWid = charAsciiWid;
+    tbCellAsciiHei = charAsciiHei;
+}
+
 fntSize = buffer_read(_filebuffer, buffer_u8); // font size
 choRows = buffer_read(_filebuffer, buffer_u8); // beols
 jungRows = buffer_read(_filebuffer, buffer_u8);
@@ -67,6 +76,23 @@ jamoRows = buffer_read(_filebuffer, buffer_u8);
 asciiRows = buffer_read(_filebuffer, buffer_u8);
 FNT_ASCII = buffer_read(_filebuffer, buffer_bool); // use ascii
 cbAscii = FNT_ASCII;
+
+/*
+    .jort v84 : Added flags for dkb844 and special middle / last (total +3 bools)
+*/
+if (_version >= 84)
+{
+    FNT_DKB = buffer_read(_filebuffer, buffer_bool); // use dkb844
+    cbDok844 = FNT_DKB;
+    
+    FNT_MIDDLE = buffer_read(_filebuffer, buffer_bool); // use special middle suits
+    cbSpecialBody = FNT_MIDDLE;
+    global.hjCompSpecialMiddle = FNT_MIDDLE;
+    
+    FNT_LAST = buffer_read(_filebuffer, buffer_bool); // use special last suits
+    cbSpecialTail = FNT_LAST;
+    global.hjCompSpecialLast = FNT_LAST;
+}
 
 
 /*

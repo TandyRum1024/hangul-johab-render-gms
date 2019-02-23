@@ -1,4 +1,4 @@
-// 2019-02-20 21:48:36
+// 2019-02-20 21:56:18
 ///hj_draw_sheet(hansprite, asciisprite, x, y, str, colour, alpha)
 /*
     (실험용, 도깨비한글 8x4x4벌식) 한글 문자열을 컴파일한 뒤 드로우 합니다.
@@ -17,7 +17,6 @@
     colour : 글자 색
     alpha : 글자 알파 (투명도)
 */
-TODO  : CHANGE hj_dkb_* to hj_*
 
 // 변수
 var _hanspr = argument0, _asciispr = argument1;
