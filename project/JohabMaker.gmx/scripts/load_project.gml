@@ -179,7 +179,7 @@ surface_reset_target();
 if (sprite_exists(maskAtlas))
     sprite_delete(maskAtlas);
 maskAtlas = sprite_create_from_surface(atlasTemp, 0, 0, _atlaswid, _atlashei, false, false, 0, 0);
-surface_save(atlasTemp, working_directory + "/debug/atlas_mask.png");
+// surface_save(atlasTemp, working_directory + "/debug/atlas_mask.png");
 
 // build baked sprite
 surface_set_target(atlasTemp);
@@ -205,7 +205,7 @@ surface_reset_target();
 if (sprite_exists(bakedAtlas))
     sprite_delete(bakedAtlas);
 bakedAtlas = sprite_create_from_surface(atlasTemp, 0, 0, _atlaswid, _atlashei, false, false, 0, 0);
-surface_save(atlasTemp, working_directory + "/debug/atlas_baked.png");
+// surface_save(atlasTemp, working_directory + "/debug/atlas_baked.png");
 
 
 /*

@@ -1,4 +1,3 @@
-// 2019-02-21 20:12:46
 ///get_default_char(idx)
 /*
     returns "default" Korean character given the index
@@ -67,7 +66,7 @@ if (glyphY < _jungseongoff) // Choseong
                     break;
                 
                 case 7: // beol 8
-                    char = chr($AC00 + ((glyphX * 21) + 10) * 28 + 21);
+                    char = chr($AC00 + ((glyphX * 21) + 11) * 28 + 4);
                     break;
             }
         }
@@ -113,11 +112,11 @@ else if (glyphY < _jongseongoff) // Jungseong
                     break;
                 
                 case 2: // yes jongseong with ㄱ, ㅋ
-                    char = chr($AC00 + (glyphX) * 28 + 6);
+                    char = chr($AC00 + (glyphX) * 28 + 16);
                     break;
                     
                 case 3: // yes jongseong without ㄱ, ㅋ
-                    char = chr($AC00 + ((6 * 21) + glyphX) * 28 + 6);
+                    char = chr($AC00 + ((6 * 21) + glyphX) * 28 + 16);
                     break;
             }
         }

@@ -10,14 +10,19 @@ if (index < 0)
     return -1;
     
 // prep temp surface
+/*
 if (!surface_exists(glyphTemp))
     glyphTemp = surface_create(charWid, charHei);
 else
     surface_resize(glyphTemp, charWid, charHei);
+*/
+var _temp = surface_create(charWid, charHei);
 
 // build & assign to atlas
-build_char_surface_to(index, glyphTemp);
-bakedAtlas = edit_atlas_glyph_alt(bakedAtlas, index, glyphTemp);
+build_char_surface_to(index, _temp);
+bakedAtlas = edit_atlas_glyph_alt(bakedAtlas, index, _temp);
+
+surface_free(_temp);
 
 #define build_char_surface_to
 ///build_char_surface_to(index, surface)
@@ -85,6 +90,7 @@ draw_set_blend_mode(bm_normal);
 surface_reset_target();
 draw_set_font(fntOWO);
 
+surface_free(maskSurf);
 surface_free(tempTexA);
 
 #define build_char_surface_preview

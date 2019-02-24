@@ -109,6 +109,6 @@ surface_reset_target();
 if (sprite_exists(_atlas))
     sprite_delete(_atlas);
 _atlas = sprite_create_from_surface(atlasTemp, 0, 0, _atlaswid, _atlashei, false, false, 0, 0);
-return _atlas;
 
 surface_free(atlasTemp);
+return _atlas;

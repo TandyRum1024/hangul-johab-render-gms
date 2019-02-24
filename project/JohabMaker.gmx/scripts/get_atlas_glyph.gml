@@ -15,6 +15,7 @@ if (!sprite_exists(_atlas))
 }
 
 // check surface
+/*
 if (!surface_exists(glyphTemp))
 {
     surface_free(glyphTemp);
@@ -23,8 +24,10 @@ if (!surface_exists(glyphTemp))
 }
 else
     surface_resize(glyphTemp, charWid, charHei);
-
-surface_set_target(glyphTemp);
+*/
+var _temp = surface_create(charWid, charHei);
+    
+surface_set_target(_temp);
 var _u = charWid * (_idx % gridWid);
 var _v = charHei * (_idx div gridWid);
 
@@ -35,7 +38,7 @@ draw_sprite_part(_atlas, 0, _u, _v, charWid, charHei, 0, 0);
 surface_reset_target();
 
 // set surface
-if (_surf != -1) // copy to othe rsurface
+if (_surf != -1) // copy to tohe rsurface
 {
     if (!surface_exists(_surf))
     {
@@ -45,8 +48,13 @@ if (_surf != -1) // copy to othe rsurface
     // surface_set_target(_surf);
     // draw_surface(glyphTemp, 0, 0);
     // surface_reset_target();
-    surface_copy(_surf, 0, 0, glyphTemp);
+    surface_copy(_surf, 0, 0, _temp);
+    surface_free(_temp);
     return _surf;
 }
 else // user only wants to get data on glyphTemp surface
+{
+    surface_copy(glyphTemp, 0, 0, _temp);
+    surface_free(_temp);
     return true;
+}

@@ -5,9 +5,10 @@
   </Configs>
   <NewExtensions>
     <extension index="0">extensions\ImNotGUI</extension>
-    <extension index="1">extensions\johabBoy</extension>
+    <extension index="1">extensions\johabBoy_old</extension>
     <extension index="2">extensions\ime_get</extension>
     <extension index="3">extensions\Custom Sprite Framework</extension>
+    <extension index="4">extensions\johab_mann</extension>
   </NewExtensions>
   <sounds name="sound"/>
   <sprites name="sprites">
@@ -22,6 +23,7 @@
     <sprite>sprites\sprYayoC64</sprite>
     <sprite>sprites\sprEngSlant</sprite>
     <sprite>sprites\sprEngSlantSheet</sprite>
+    <sprite>sprites\sprHangul24</sprite>
   </sprites>
   <backgrounds name="background"/>
   <paths name="paths"/>
