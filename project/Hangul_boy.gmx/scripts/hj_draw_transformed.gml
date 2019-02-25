@@ -1,4 +1,4 @@
-///hj_draw_dkb_transformed(x, y, str, xscale, yscale, angle, colour, alpha)
+///hj_draw_transformed(x, y, str, xscale, yscale, angle, colour, alpha)
 /*
     (도깨비 8x4x4벌식) 한글 문자열을 컴파일한 뒤 드로우 합니다.
     컴파일 된 데이터는 global.hjCache 해시맵 변수에 캐쉬됩니다.
@@ -114,16 +114,16 @@ for (var i=0; i<_strlen; i++)
             break;
         default:
         case 2: // ASCII
-            draw_sprite_ext(global.hjSpriteAscii, _idx1, _offx, _offy, _xscale, _yscale, _strangle, _strcol, 1);
+            draw_sprite_ext(global.hjSpriteAscii, _idx1, _offx, _offy, _xscale, _yscale, _strangle, _strcol, _stralpha);
             
             // 오프셋 증가
             _offx += _stepxascii;
             _offy += _stepyascii;
             break;
         case 3: // 조합형 한글
-            draw_sprite_ext(global.hjSpriteHan, _idx1, _offx, _offy, _xscale, _yscale, _strangle, _strcol, 1);
-            draw_sprite_ext(global.hjSpriteHan, _idx2, _offx, _offy, _xscale, _yscale, _strangle, _strcol, 1);
-            draw_sprite_ext(global.hjSpriteHan, _idx3, _offx, _offy, _xscale, _yscale, _strangle, _strcol, 1);
+            draw_sprite_ext(global.hjSpriteHan, _idx1, _offx, _offy, _xscale, _yscale, _strangle, _strcol, _stralpha);
+            draw_sprite_ext(global.hjSpriteHan, _idx2, _offx, _offy, _xscale, _yscale, _strangle, _strcol, _stralpha);
+            draw_sprite_ext(global.hjSpriteHan, _idx3, _offx, _offy, _xscale, _yscale, _strangle, _strcol, _stralpha);
             
             // 오프셋 증가
             _offx += _stepxhan;
@@ -131,7 +131,7 @@ for (var i=0; i<_strlen; i++)
             break;
             
         case 4: // 한글 자모
-            draw_sprite_ext(global.hjSpriteHan, _idx1, _offx, _offy, _xscale, _yscale, _strangle, _strcol, 1);
+            draw_sprite_ext(global.hjSpriteHan, _idx1, _offx, _offy, _xscale, _yscale, _strangle, _strcol, _stralpha);
             
             // 오프셋 증가
             _offx += _stepxhan;

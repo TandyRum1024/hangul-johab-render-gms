@@ -1,7 +1,6 @@
 ///hj_draw_comp(kor_font_sprite, ascii_font_sprite, x, y, str, colour, alpha)
 /*
     (이전버전 벌식) 한글 문자열을 컴파일한 뒤 드로우 합니다.
-    통짜 스프라이트 (= 서브이미지가 없고 모든 글자가 한 이미지에 채워져있는 것)를 사용합니다. (이전 버젼 호환용)
     
     글자 크기는 그대로 글로벌 변수에서 가져옵니다.
     hj_init() 참고!
@@ -30,7 +29,6 @@ var _offx = _strx, _offy = _stry; // 글자 위치에 더해지는 오프셋 변
 var _strcol = argument5, _stralpha = argument6;
 var _strlen = string_length(_str);
 var _asciioff = global.hjCompOffAscii;
-var _asciicol = 28;
 var _asciiwid = global.hjCharWidHan;
 var _asciihei = global.hjCharHeiHan;
 
@@ -39,7 +37,6 @@ if (argument1 != -1)
 {
     _asciioff = 0;
     _asciispr = argument1;
-    _asciicol = 16;
     
     _asciiwid = global.hjCharWidAscii;
     _asciihei = global.hjCharHeiAscii;
@@ -124,10 +121,14 @@ for (var i=0; i<_strlen; i++)
             continue; // 쌩까기
         }
         
+        /*
         _idx = _curord;
         _u = (_idx % _asciicol) * _asciiwid;
         _v = (_idx div _asciicol) * _asciihei + _asciioff;
         draw_sprite_general(_asciispr, 0, _u, _v, _asciiwid, _asciihei, _offx, _offy, 1, 1, 0, _strcol, _strcol, _strcol, _strcol, 1);
+        */
+        _idx = _curord + _asciioff;
+        draw_sprite_ext(_asciispr, _idx, _offx, _offy, 1, 1, 0, _strcol, _stralpha);
         
         // 오프셋 증가
         _offx += _asciiwid + global.hjGlyphKerning;
@@ -143,6 +144,11 @@ for (var i=0; i<_strlen; i++)
         _rowlast = global.hjComp_LUT_BEOL_MID[@ _mid] * global.hjCompSpecialMiddle;
         _rowmid = global.hjComp_LUT_BEOL_LAST[@ _last] * global.hjCompSpecialLast;
         
+        draw_sprite_ext(_korspr, _first + global.hjCompOffFirst + _rowlast + _rowmid * 2, _offx, _offy, 1, 1, 0, _strcol, _stralpha);
+        draw_sprite_ext(_korspr, _mid + global.hjCompOffMiddle + _rowmid, _offx, _offy, 1, 1, 0, _strcol, _stralpha);
+        draw_sprite_ext(_korspr, _last + global.hjCompOffLast + _rowlast, _offx, _offy, 1, 1, 0, _strcol, _stralpha);
+        // draw_sprite_general(_korspr, 0, _u, _v, global.hjCharWidHan, global.hjCharHeiHan, _offx, _offy, 1, 1, 0, _strcol, _strcol, _strcol, _strcol, 1);
+        /*
         _u = _first * global.hjCharWidHan;
         _v = global.hjCompOffFirst + _rowlast + _rowmid * 2;
         draw_sprite_general(_korspr, 0, _u, _v, global.hjCharWidHan, global.hjCharHeiHan, _offx, _offy, 1, 1, 0, _strcol, _strcol, _strcol, _strcol, 1);
@@ -154,6 +160,7 @@ for (var i=0; i<_strlen; i++)
         _u = _last * global.hjCharWidHan;
         _v = global.hjCompOffLast + _rowlast;
         draw_sprite_general(_korspr, 0, _u, _v, global.hjCharWidHan, global.hjCharHeiHan, _offx, _offy, 1, 1, 0, _strcol, _strcol, _strcol, _strcol, 1);
+        */
         
         // 오프셋 증가
         _offx += global.hjCharWidHan + global.hjGlyphKerning;
@@ -162,9 +169,12 @@ for (var i=0; i<_strlen; i++)
     {
         _kr = _curord - $3130;
         
+        /*
         _u = (_kr % 28) * global.hjCharWidHan;
         _v = (_kr div 28) * global.hjCharHeiHan + global.hjCompOffJamo;
         draw_sprite_general(_korspr, 0, _u, _v, global.hjCharWidHan, global.hjCharHeiHan, _offx, _offy, 1, 1, 0, _strcol, _strcol, _strcol, _strcol, 1);
+        */
+        draw_sprite_ext(_korspr, _kr + global.hjCompOffJamo, _offx, _offy, 1, 1, 0, _strcol, _stralpha);
         
         // 오프셋 증가
         _offx += global.hjCharWidHan + global.hjGlyphKerning;

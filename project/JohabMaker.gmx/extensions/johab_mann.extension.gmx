@@ -30,6 +30,10 @@
   </ConfigOptions>
   <androidPermissions/>
   <IncludedResources>
+    <Resource>Sprites\sprEngSlant</Resource>
+    <Resource>Sprites\sprHanH12</Resource>
+    <Resource>Sprites\sprHangul24</Resource>
+    <Resource>Sprites\sprYayoC64</Resource>
     <Resource>Scripts\JOHAB_RENDER\compat\hj_comp_change_font</Resource>
     <Resource>Scripts\JOHAB_RENDER\compat\hj_draw_comp</Resource>
     <Resource>Scripts\JOHAB_RENDER\compat\hj_draw_comp_transformed</Resource>
@@ -57,10 +61,6 @@
     <Resource>Scripts\JOHAB_RENDER\hj_string_width_line</Resource>
     <Resource>Scripts\JOHAB_RENDER\hj_string_height</Resource>
     <Resource>Scripts\JOHAB_RENDER\hj_set_align</Resource>
-    <Resource>Sprites\sprEngSlant</Resource>
-    <Resource>Sprites\sprHanH12</Resource>
-    <Resource>Sprites\sprHangul24</Resource>
-    <Resource>Sprites\sprYayoC64</Resource>
   </IncludedResources>
   <files/>
 </extension>

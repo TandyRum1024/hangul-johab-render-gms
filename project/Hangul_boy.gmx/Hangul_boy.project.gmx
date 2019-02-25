@@ -4,32 +4,40 @@
     <Config>Configs\Default</Config>
   </Configs>
   <NewExtensions>
-    <extension index="0">extensions\johabBoy</extension>
+    <extension index="0">extensions\johab_mann</extension>
   </NewExtensions>
   <sounds name="sound"/>
   <sprites name="sprites">
     <sprite>sprites\sprRect</sprite>
-    <sprite>sprites\sprHanH12</sprite>
     <sprite>sprites\sprEngSlant</sprite>
+    <sprite>sprites\sprHanH12</sprite>
     <sprite>sprites\sprHangul24</sprite>
+    <sprite>sprites\sprHangul24Sub</sprite>
+    <sprite>sprites\sprHanYH16</sprite>
+    <sprite>sprites\sprHanByte16</sprite>
+    <sprite>sprites\sprEngByte16</sprite>
+    <sprite>sprites\sprHanSeoul24</sprite>
+    <sprite>sprites\sprEngSeoul24</sprite>
     <sprite>sprites\sprYayoC64</sprite>
-    <sprite>sprites\sprHanYH</sprite>
+    <sprite>sprites\sprYayoC64Sub</sprite>
   </sprites>
   <backgrounds name="background"/>
   <paths name="paths"/>
   <scripts name="scripts">
     <scripts name="JOHAB_RENDER">
       <scripts name="compat">
-        <script>scripts\hj_comp_change_font.gml</script>
+        <script>scripts\hj_comp_set.gml</script>
         <script>scripts\hj_draw_comp.gml</script>
+        <script>scripts\hj_draw_comp_sheet.gml</script>
         <script>scripts\hj_draw_comp_transformed.gml</script>
         <script>scripts\hj_draw_comp_ext.gml</script>
         <script>scripts\hj_draw_comp_raw.gml</script>
       </scripts>
       <scripts name="dkb884">
         <script>scripts\hj_dkb_compile_str.gml</script>
-        <script>scripts\hj_dkb_change_font.gml</script>
-        <script>scripts\hj_dkb_change_font_ext.gml</script>
+        <script>scripts\hj_change_font.gml</script>
+        <script>scripts\hj_change_font_ext.gml</script>
+        <script>scripts\hj_draw_sheet.gml</script>
         <script>scripts\hj_draw.gml</script>
         <script>scripts\hj_draw_transformed.gml</script>
         <script>scripts\hj_draw_ext.gml</script>
@@ -51,14 +59,41 @@
       <script>scripts\hj_string_width_line.gml</script>
       <script>scripts\hj_string_height.gml</script>
       <script>scripts\hj_set_align.gml</script>
+      <script>scripts\hj_end.gml</script>
     </scripts>
     <script>scripts\draw_rect.gml</script>
+    <script>scripts\draw_rect_rot.gml</script>
+    <script>scripts\hj_draw_wave.gml</script>
   </scripts>
+  <shaders name="shaders">
+    <shader type="GLSLES">shaders\shd_whatthefuck.shader</shader>
+  </shaders>
   <objects name="objects">
     <object>objects\oKNT</object>
+    <object>objects\oKNT_2</object>
+    <objects name="TUT">
+      <object>objects\oKNT_PA_LINJEN</object>
+      <object>objects\oTUT1</object>
+      <object>objects\oTUT2</object>
+      <object>objects\oTUT3</object>
+      <object>objects\oTUT4</object>
+      <object>objects\oTUT5</object>
+      <object>objects\oTUT6</object>
+      <object>objects\oTUT7</object>
+    </objects>
   </objects>
   <rooms name="rooms">
-    <room>rooms\room0</room>
+    <room>rooms\rm_test1</room>
+    <room>rooms\rm_test2</room>
+    <rooms name="KNUT_PA_LINJEN">
+      <room>rooms\rm_t1</room>
+      <room>rooms\rm_t2</room>
+      <room>rooms\rm_t3</room>
+      <room>rooms\rm_t4</room>
+      <room>rooms\rm_t5</room>
+      <room>rooms\rm_t6</room>
+      <room>rooms\rm_t7</room>
+    </rooms>
   </rooms>
   <help>
     <rtf>help.rtf</rtf>

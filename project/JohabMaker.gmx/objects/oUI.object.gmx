@@ -1481,7 +1481,6 @@ if (uiModal)
                 {
                     _surfWid = _surfWid2;
                     _surfHei = _surfHei2;
-                    show_debug_message("OHNO");
                 }
                 
                 draw_surface_stretched(previewTex, _winhalfw - (_surfWid &gt;&gt; 1), _modalTitleY + _bigmargin, _surfWid, _surfHei);
@@ -1496,6 +1495,37 @@ if (uiModal)
             var btnExport = ui_button(_winhalfw - 75, _attribY + 150, 150, 42, ".PNG 내보내기!");
             // var btnReload = ui_button(_winhalfw + 80, _attribY + 150, 150, 42, "미리보기");
             
+            iui_align_push(1, 1);
+            iui_label(_winhalfw, _attribY + 10, "한글 이미지 수 : " + string(gridWid * gridHei), COL.WHITE);
+            iui_label(_winhalfw, _attribY + 40, "한글 격자 크기 : [" + string(charWid) + ", " + string(charWid) + "]", COL.WHITE);
+            
+            if (FNT_DKB)
+            {
+                iui_label(_winhalfw, _attribY + 70, "도깨비한글 8x4x4벌식 (hj_draw_*)", COL.HIGHLIGHT);
+                iui_label(_winhalfw, _attribY + 100, "격자 : 총 [" + string(gridWid) + ", " + string(gridHei) + "]칸", COL.WHITE);
+                if (FNT_ASCII)
+                    iui_label(_winhalfw, _attribY + 130, "ASCII 격자 크기 : [" + string(charAsciiWid) + ", " + string(charAsciiHei) + "] * 256 이미지", COL.WHITE);
+            }
+            else
+            {
+                iui_label(_winhalfw, _attribY + 70, "일반 / 이전버전 (hj_draw_comp_*)", COL.HIGHLIGHT);
+                
+                var _str = "중성 모양에 따른 벌 사용 (global.hjCompSpecialMiddle) : ";
+                if (FNT_MIDDLE)
+                    _str += "true";
+                else
+                    _str += "false";
+                iui_label(_winhalfw, _attribY + 100, _str, COL.PISS);
+                
+                _str = "받침 여부에 따른 벌 사용 (global.hjCompSpecialLast) : ";
+                if (FNT_LAST)
+                    _str += "true";
+                else
+                    _str += "false";
+                iui_label(_winhalfw, _attribY + 130, _str, COL.PISS);
+            }
+            iui_align_pop();
+            /*
             iui_align_push(2, 0);
             var _checkX = _winhalfw - 80 - 16;
             iui_label(_checkX, _attribY, "격자 내보내기 : ", COL.WHITE);
@@ -1518,6 +1548,7 @@ if (uiModal)
                 surface_copy(previewAsciiTex, 0, 0, fntAsciiTex);
                 build_font_tex();
             }
+            */
             
             if (btnExport)
             {

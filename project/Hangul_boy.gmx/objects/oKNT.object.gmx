@@ -33,6 +33,8 @@ WIN_HEI = room_height;
 WIN_HALF_WID = room_width &gt;&gt; 1;
 WIN_HALF_HEI = room_height &gt;&gt; 1;
 
+_trashsurf = surface_create(WIN_WID, WIN_HEI);
+
 enum COL // 포켓몬 게임보이
 {
     BLK = $101018,
@@ -41,10 +43,48 @@ enum COL // 포켓몬 게임보이
     CLR = $ffefff
 }
 
-randStr = "으어어어아ㅏ#취한드아";
-randTimer = 0;
+enum F8 // https://lospec.com/palette-list/fantastic-8
+{
+    WHITE = $dddbdb,
+    GRAY = $8e8e9c,
+    BLUE = $a34b52,
+    BLACK = $231e1f,
+    GREEN = $54926a,
+    YELLOW = $6cacdc,
+    RED = $5656e5,
+    BROWN = $3c4973
+}
 
-show_debug_overlay(true);
+randTimer = 0;
+randFlip = 0;
+colF1 = F8.BLUE;
+colF2 = F8.BLACK;
+
+colB1 = F8.YELLOW;
+colB2 = F8.BROWN;
+</string>
+          </argument>
+        </arguments>
+      </action>
+    </event>
+    <event eventtype="7" enumb="5">
+      <action>
+        <libid>1</libid>
+        <id>603</id>
+        <kind>7</kind>
+        <userelative>0</userelative>
+        <isquestion>0</isquestion>
+        <useapplyto>-1</useapplyto>
+        <exetype>2</exetype>
+        <functionname></functionname>
+        <codestring></codestring>
+        <whoName>self</whoName>
+        <relative>0</relative>
+        <isnot>0</isnot>
+        <arguments>
+          <argument>
+            <kind>1</kind>
+            <string>hj_end();
 </string>
           </argument>
         </arguments>
@@ -67,115 +107,135 @@ show_debug_overlay(true);
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>// za warudo
-animTimer++;
-
-if (randTimer &gt; 0)
-    randTimer--;
-else
+            <string>
+if (!surface_exists(_trashsurf))
 {
-    randTimer = 45;
-    
-    var _tmp = randStr;
-    while (_tmp == randStr)
-    {
-        randomize();
-        _tmp = choose("띠요오오옹", "포-잉", "으어어어아ㅏ#취한드아", "뚀요요요오옹#오ㅗㅇㅇ요용ㅇ");
-    }
-    randStr = _tmp;
+    _trashsurf = surface_create(WIN_WID, WIN_HEI);
 }
 
-// backdrop
-draw_clear(COL.BLU);
+// za warudo
+animTimer++;
 
-// 잡소리
-var _originStr = "'쿠와아앙 구와ㅏㅏㅏ아앍ㄺ' 투명드래곤이 짖었다... 투명드래곤은 엄청 세서 스파게티 드래곤을 핸드백으로 들고 다닌다. 출처 : 위키백과"; //"어린 &lt;&lt;그레고리 'Ivan' 샘손 똘똘이 2세&gt;&gt;는 어느 날 아침, 잠에서 깨어나곤 깜짝 놀랐다. \'어머나, 시벯,.,.,, 그/와/아/앗!11!1\' 자기 몸이 괴기하고 날아다니는 스파게티 주스 악마[tm]으로 변해 있었기 때문이다. 똘똘이는 방에 걸린 거울을 뚫어지게 쳐다보았다. 새빨간 꼬리, 악마같은 뿔, 맛난 주스 한 잔마저 달랑거린다. 이리저리 휘감기고 토마토의 풍미가 느껴지는 국수가락 덩어리가 된 똘똘이는 후회가 밀려오기 시작했다. 아무리 생각해 봐도 전에는 이런 일이 없었는데 말이다. 의문을 가지기도 전에 똘똘이의 아버지가 아래층에서 블렀다.#\'똘똘아 딸딸 똘똘. 하왛왛.. The 똘똘쟝은 곧 삼성 디지털 맹장염,.,., 쓰라린 자본주의의 고통을 느끼는 거시에ㅔ앵앵애애ㅐ요 &gt;.&lt;\'#그 말에 충격을 받은 똘똘이는 공중에서 3바퀴를 돌며 컴퓨터와 한 몸이 되어 서울역 광천구 구로시로 날아갔다.#지금까지도 똘똘이는 안양 8동에서 공중제비를 돌며 우리들을 지켜준답니다. -끝-#&lt;&lt;질레트 퓨전 프로글라이드 (Die Verwandlung)&gt;&gt; - 후랑켄 카프리카썬 발췌";//"가나다라마바사#한글테스트";
-var _panelStr = _originStr;//string_copy(_originStr, 1, string_length(_originStr) * clamp(sin(animTimer * 0.005) * 0.7 + 0.5, 0, 1));
-var _panelMargin = 8;
-var _panelW = 400 * clamp(sin(animTimer * 0.02) * 0.8 + 0.5, 0.2, 1) + (_panelMargin &lt;&lt; 1); //_strw + (_panelMargin &lt;&lt; 1);
-var _panelH = 300;
+var _BPM = 115;
+var _max = (1 / (_BPM / 60)) * 60;
+var _margin = (_max * 0.85);
+if (randTimer &lt; _max)
+    randTimer++;
+else
+{
+    randFlip = !randFlip;
+    randTimer -= _max;
+    randomize();
+    
+    // DISCO FUKCIGNN FLOOR :DDDDDDD
+    var _tmp = colF1;
+    while (_tmp == colF1)
+        _tmp = make_colour_hsv(random_range(0, 255), random_range(150, 230), 255);//choose(F8.YELLOW, F8.RED, F8.WHITE, F8.BLUE);
+    
+    if (randFlip) // 2번째 박자에서 디스코 장판 색 서로 교차
+    {
+        colF1 = _tmp;
+        colB1 = make_colour_hsv(colour_get_hue(colF1) - 80, colour_get_saturation(colF1) - 45, colour_get_value(colF1) - random_range(180, 220));//choose(F8.BLACK, F8.BROWN);
+    }
+    else
+    {
+        colB1 = _tmp;
+        colF1 = make_colour_hsv(colour_get_hue(colB1) - 80, colour_get_saturation(colB1) - 45, colour_get_value(colB1) - random_range(180, 220));//choose(F8.BLACK, F8.BROWN);
+    }
+    
+    // 어두운 색
+    colF2 = make_colour_hsv(colour_get_hue(colF1) + 10, colour_get_saturation(colF1) + 20, colour_get_value(colF1) * 0.85);
+    colB2 = make_colour_hsv(colour_get_hue(colB1) + 10, colour_get_saturation(colB1) + 20, colour_get_value(colB1) - 10);
+}
 
-// 이전 버전식 드로잉 데모
-hj_set_align(1, 1); // 센터 정렬
+// fill
+shader_set(shd_whatthefuck);
+shader_set_uniform_f(shader_get_uniform(shd_whatthefuck, "time"), animTimer * 0.01);
 
-// 폰트 바꾸기. hj_draw_sheet_*() 할때 사용하세요.
-// 폰트 스프라이트는 넘기지 않으셔도 됩니다. 드로잉 할때 인자로 넘겨주세요.
-hj_comp_change_font(24, 24, 24, 24, true, true);
+var _t = min(randTimer / _margin, 1);
+var _b = power(_t, 3);
+var _epict = power(1 - _t, 9), _invt = 1 - _epict;
 
-// 박스 그리기
-var _panelX = WIN_HALF_WID - 250 - (_panelW * 0.5);
-var _panelY = WIN_HALF_HEI + 180 - (_panelH * 0.5);
-draw_rect(_panelX + 10, _panelY + 10, _panelW, _panelH, COL.BLK); // 그림자
-draw_rect(_panelX - 1, _panelY - 1, _panelW + 2, _panelH + 2, COL.BLK); // 테두리
-draw_rect(_panelX, _panelY, _panelW, _panelH, COL.CLR); // 본체
+var _c1 = merge_colour(colF1, colF2, _b);
+var _c2 = merge_colour(colB1, colB2, _b);
+shader_set_uniform_f(shader_get_uniform(shd_whatthefuck, "col1"), (_c1 &amp; $0000FF) / 255, ((_c1 &amp; $00FF00) &gt;&gt; 8) / 255, ((_c1 &amp; $FF0000) &gt;&gt; 16) / 255);
+shader_set_uniform_f(shader_get_uniform(shd_whatthefuck, "col2"), (_c2 &amp; $0000FF) / 255, ((_c2 &amp; $00FF00) &gt;&gt; 8) / 255, ((_c2 &amp; $FF0000) &gt;&gt; 16) / 255);
+draw_surface(_trashsurf, 0, 0);
+shader_reset();
+    
+// Draw title
+var _titleW = WIN_WID;
+var _titleHalf = (_titleW &gt;&gt; 1);
+var _titleL = WIN_HALF_WID - _titleHalf;
+var _titleR = WIN_HALF_WID + _titleHalf;
+draw_set_blend_mode_ext(bm_dest_color, bm_zero);
+draw_rect(_titleL, WIN_HALF_HEI - 64 + 120, _titleW, 24, F8.GRAY);
+draw_set_blend_mode(bm_normal);
 
-// 한글 드로잉
-var _x = _panelX + (_panelW * 0.5);
-var _y = _panelY + _panelMargin;
-hj_draw_comp_ext(sprHangul24, -1, _x + 1, _y + 1, _panelStr, -1, _panelW - (_panelMargin &lt;&lt; 1), COL.RED, 1);
-hj_draw_comp_ext(sprHangul24, -1, _x, _y, _panelStr, -1, _panelW - (_panelMargin &lt;&lt; 1), COL.BLK, 1);
-//
+draw_rect(_titleL, WIN_HALF_HEI - 64 - 120, _titleW, 240, F8.BLUE);
+draw_rect(_titleL, WIN_HALF_HEI - 64 - 120 - 4, _titleW, 8, F8.WHITE);
+draw_rect(_titleL, WIN_HALF_HEI - 64 + 120, _titleW, 8, F8.WHITE);
 
+/*
+draw_rect_rot(-120, WIN_HALF_HEI - 64, 170, 170, F8.WHITE, 45);
+draw_rect_rot(WIN_WID - 120, WIN_HALF_HEI - 64, 170, 170, F8.WHITE, 45);
+*/
 
-// 도깨비8x4x4벌식 드로잉 데모
-// 폰트 바꾸기. 만약 16x16 (한글) &amp; 8x16 (ASCII) 이외의 사이즈의 스프라이트를 쓰시려면
-// hj_dkb_change_font_ext() 를 사용해주세요!
-// 이번 경우는 hj_compat_change_font() 함수로 24x24로 글자 크기를 바꾸었으니 다시 되돌리기위해 hj_dkb_change_font_ext() 를 사용합니다.
-hj_dkb_change_font_ext(sprHanH12, sprEngSlant, 16, 16, 8, 16); // 한글 스프라이트 : sprHanH12, ASCII 스프라이트 : sprEngSlant
+hj_change_font_ext(sprHanYH16, sprEngSlant, 16, 16, 8, 16);
+hj_set_align(fa_center, fa_middle);
 
-// 박스 그리기
-_panelX = WIN_HALF_WID + 250 - (_panelW * 0.5);
-draw_rect(_panelX + 10, _panelY + 10, _panelW, _panelH, COL.BLK); // 그림자
-draw_rect(_panelX - 1, _panelY - 1, _panelW + 2, _panelH + 2, COL.BLK); // 테두리
-draw_rect(_panelX, _panelY, _panelW, _panelH, COL.CLR); // 본체
+var _title = "한글 조합형 렌더링[tm]";
+var _wid = hj_string_width(_title) * 4;
+var _sz = 4 + (1 - _epict) * 0.75;
+var _angle = (1 - _epict) * 4 * (randFlip * 2 - 1);//cos(animTimer * 0.042) * 8;
 
-// 한글 드로잉
-_x = _panelX + (_panelW * 0.5);
-_y = _panelY + _panelMargin;
-hj_draw_ext(_x + 1, _y + 1, _panelStr, -1, _panelW - (_panelMargin &lt;&lt; 1), COL.RED, 1);
-hj_draw_ext(_x, _y, _panelStr, -1, _panelW - (_panelMargin &lt;&lt; 1), COL.BLK, 1);
-//
+hj_draw_transformed(WIN_HALF_WID + 4, WIN_HALF_HEI - 84 + 4, _title, _sz, _sz, _angle, F8.BLACK, 1);
+hj_draw_transformed(WIN_HALF_WID, WIN_HALF_HEI - 84, _title, _sz, _sz, _angle, F8.WHITE, 1);
 
+var _colour = make_colour_hsv(animTimer * 5, 255, 255);
+var _squeeze = _epict * 0.75;//cos(animTimer * 0.4) * _t;
+var _squeezex = 2 - _squeeze;
+var _squeezey = 2 + _squeeze;
+hj_draw(WIN_HALF_WID, WIN_HALF_HEI - 64 - 120 - 20, "(엔터 키로 다음 룸으로 넘어가세요)", _colour, 1);
+hj_draw_transformed(WIN_HALF_WID + _squeezex, WIN_HALF_HEI + 10 + _squeezey, "도깨비한글 벌식 지원!", _squeezex, _squeezey, 0, F8.BLACK, 1);
+hj_draw_transformed(WIN_HALF_WID, WIN_HALF_HEI + 10, "도깨비한글 벌식 지원!", _squeezex, _squeezey, 0, F8.YELLOW, 1);
 
-// 글자 변형 예제
-hj_set_align(1, 1); // 센터 정렬
-var _movex = WIN_HALF_WID - 200;
-var _movey = WIN_HALF_HEI - 150;
-var _angle = cos(animTimer * 0.5) * 24 * (randTimer / 45); // 띠요요용 하게 만드는 각도 변수
-var _squishcoeff = cos(animTimer * 0.5) * 0.5 * (randTimer / 45); // 또-잉 하는 글자 크기 배율
-var _squishx = 1 + _squishcoeff;
-var _squishy = 1 - _squishcoeff;
-var _colour = merge_colour(COL.CLR, COL.RED, ((randTimer &gt;&gt; 2) &amp; 1) * clamp(randTimer - 25, 0, 1));
+var _copypasta = "이 스크립트 모음은 조합형을 사용해서 그릴수 있게 해줍니다.. 그러하여 이젠 '똚방괅화' 같이 개같은 글자도 그릴 수 있다는거죠. 다만 속도가... 슬퍼요..      제작 : 짘박구루@2019";
+var _screenmaxchars = WIN_WID div 48;
+var _scrolllen = string_length(_copypasta) * 48 + _screenmaxchars * 48 + 84;
+var _offset = (animTimer * 4) % _scrolllen, _offsetch = (_offset div 48);
+var _screenchars = min(_screenmaxchars, _offsetch) + 2;
+var _firstoff = max(_offset - WIN_WID, 0) div 48;
+var _window = string_copy(_copypasta, _firstoff + 1, _screenchars);
+var _offmod = max(_offset - WIN_WID, 0) % 48;
 
-// 이전 버전식 드로잉 데모
-hj_comp_change_font(24, 24, 24, 24, true, true); // 폰트 변경
-
-// 흔들거리는 글자
-hj_draw_comp_transformed(sprHangul24, -1, _movex + 1, _movey - 50 + 1, randStr, 1, 1, _angle, COL.BLK, 1); // 글자 그림자
-hj_draw_comp_transformed(sprHangul24, -1, _movex, _movey - 50, randStr, 1, 1, _angle, _colour, 1); // 본체
-
-// 쫄깃한 글자
-hj_draw_comp_transformed(sprHangul24, -1, _movex + 1, _movey + 50 + 1, "뽀-쟉#또오오오용ㅇ요용용ㅇ잉", _squishx, _squishy, 0, COL.BLK, 1); // 글자 그림자
-hj_draw_comp_transformed(sprHangul24, -1, _movex, _movey + 50, "뽀-쟉#또오오오용ㅇ요용용ㅇ잉", _squishx, _squishy, 0, _colour, 1); // 본체
-//
-
-
-// 도깨비8x4x4벌식 드로잉 데모
-// (글자가 너무 작으니 2배로 키워서 그립니다)
-_squishx *= 2;
-_squishy *= 2;
-_movex = WIN_HALF_WID + 200;
-hj_dkb_change_font_ext(sprHanH12, sprEngSlant, 16, 16, 8, 16); // 폰트 변경
-
-// 흔들거리는 글자
-hj_draw_transformed(_movex + 1, _movey - 50 + 1, randStr, 2, 2, _angle, COL.BLK, 1); // 글자 그림자
-hj_draw_transformed(_movex, _movey - 50, randStr, 2, 2, _angle, _colour, 1); // 본체
-
-// 쫄깃한 글자
-hj_draw_transformed(_movex + 1, _movey + 50 + 1, "뽀-쟉#또오오오용ㅇ요용용ㅇ잉", _squishx, _squishy, 0, COL.BLK, 1); // 글자 그림자
-hj_draw_transformed(_movex, _movey + 50, "뽀-쟉#또오오오용ㅇ요용용ㅇ잉", _squishx, _squishy, 0, _colour, 1); // 본체
-//
-
+hj_change_font_ext(sprHanByte16, sprEngByte16, 16, 16, 16, 16);
+hj_set_align(fa_left, fa_middle);
+hj_draw_wave(WIN_WID - min(_offset, WIN_WID + _offmod) + 3, WIN_HALF_HEI + 200 + 3, _window, 3, 3, 0, F8.BLUE, 1, animTimer, 32, 0.6, _firstoff);
+hj_draw_wave(WIN_WID - min(_offset, WIN_WID + _offmod), WIN_HALF_HEI + 200, _window, 3, 3, 0, _colour, 1, animTimer, 32, 0.6, _firstoff);
+</string>
+          </argument>
+        </arguments>
+      </action>
+    </event>
+    <event eventtype="9" enumb="13">
+      <action>
+        <libid>1</libid>
+        <id>603</id>
+        <kind>7</kind>
+        <userelative>0</userelative>
+        <isquestion>0</isquestion>
+        <useapplyto>-1</useapplyto>
+        <exetype>2</exetype>
+        <functionname></functionname>
+        <codestring></codestring>
+        <whoName>self</whoName>
+        <relative>0</relative>
+        <isnot>0</isnot>
+        <arguments>
+          <argument>
+            <kind>1</kind>
+            <string>room_goto_next();
 </string>
           </argument>
         </arguments>

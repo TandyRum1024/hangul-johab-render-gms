@@ -1,0 +1,120 @@
+// 2019-02-26 04:13:17
+//
+// vaat da faak
+//
+attribute vec3 in_Position;                  // (x,y,z)
+//attribute vec3 in_Normal;                  // (x,y,z)     unused in this shader.
+attribute vec4 in_Colour;                    // (r,g,b,a)
+attribute vec2 in_TextureCoord;              // (u,v)
+
+varying vec2 v_vTexcoord;
+varying vec4 v_vColour;
+
+void main()
+{
+    vec4 object_space_pos = vec4( in_Position.x, in_Position.y, in_Position.z, 1.0);
+    gl_Position = gm_Matrices[MATRIX_WORLD_VIEW_PROJECTION] * object_space_pos;
+    
+    v_vColour = in_Colour;
+    v_vTexcoord = in_TextureCoord;
+}
+
+//######################_==_YOYO_SHADER_MARKER_==_######################@~//
+// #define PIX_W 512
+// Vååt då fååk???????
+// 요상한 쉐이더 -- Munching Squares 알고리즘 응용.. 라이선스는 아래에
+/*
+	Munching Squares example Shader
+    Copyright (C) 2013  Daniel Hedeblom <maxifoo@gmail.com>
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+// #define PIX_H 384
+varying vec2 v_vTexcoord;
+varying vec4 v_vColour;
+uniform float time;
+uniform vec3 col1;
+uniform vec3 col2;
+
+const vec2 screenSize = vec2(1024, 768);
+const float pixel = 256.0;
+
+void main()
+{
+    vec4 final = vec4(1.0);
+    
+    float scale = screenSize.x / screenSize.y;
+    vec2 uv = v_vTexcoord;
+    
+    // rotation & translate setup
+    float offset = time * 0.2 + sin(time * 5.0) * 0.05;
+    float angle = sin(time) * 15.0 + sin(time * 2.4 + 4.2) * 2.0 * cos(time * 3.0);
+    float _cos = cos(radians(angle));
+    float _sin = sin(radians(angle));
+    
+    // 크기 조정
+    uv = uv - 0.5;
+	uv.y /= scale;
+    
+    // mat2로 회전 행렬 생성
+    uv -= 0.5;
+    uv *= mat2(_cos, _sin, -_sin, _cos);
+    uv += 0.5;
+    
+    // 화면 이동
+    uv += vec2(offset + sin(time) * 0.1, offset + cos(time) * 0.1);
+    
+    // XOR
+	vec2 b = uv * pixel + pixel;
+    float p;
+    float c = 0.0;
+	for(float i=16.0;i>=1.0;i-=1.0)
+	{
+		p = pow(2.0,i);
+ 
+		if((p < b.x) ^^
+		   (p < b.y))
+		{
+			c += p;
+		}
+ 
+		if(p < b.x)
+		{
+			b.x -= p;
+		}
+ 
+		if(p < b.y)
+		{
+			b.y -= p;
+		}
+ 
+	}
+	c = mod(c / 128.0, 1.0);
+ 
+    // XOR냠냠이 애니메이션
+    float cbig = c * 10.0 - pow(sin(time * 1.65), 2.0) * 10.0 + 5.0;
+	float intensity = fract(max(floor(cbig) / 10.0, 0.0));
+    
+    // 색 입히기
+	final = vec4(mix(col1, col2, intensity), 1.0);
+    
+    // 빈녵
+    vec2 delta = v_vTexcoord - vec2(0.5);
+    float vignette = smoothstep(0.7, 0.5, length(delta));
+    final.rgb = mix(final.rgb, final.rgb * vec3(0.41, 0.6, 0.64), 1.0 - vignette);
+        
+    gl_FragColor = final;
+}
+

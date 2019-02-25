@@ -54,6 +54,15 @@ if (_surf != -1) // copy to tohe rsurface
 }
 else // user only wants to get data on glyphTemp surface
 {
+    if (!surface_exists(glyphTemp))
+    {
+        surface_free(glyphTemp);
+        glyphTemp = surface_create(charWid, charHei);
+        show_debug_message("CREATED GLYPH TEMP");
+    }
+    else
+        surface_resize(glyphTemp, charWid, charHei);
+
     surface_copy(glyphTemp, 0, 0, _temp);
     surface_free(_temp);
     return true;

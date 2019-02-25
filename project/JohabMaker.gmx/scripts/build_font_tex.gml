@@ -12,7 +12,6 @@ if (surface_exists(fntTex))
     surface_resize(fntTex, _newWid, _newHei);
 else
 {
- 
     show_debug_message("NEW FNTTEX");
     fntTex = surface_create(_newWid, _newHei);
 }
@@ -171,8 +170,6 @@ if (drawGrid)
 }
 
 // Glyphs
-draw_set_blend_mode_ext(bm_one, bm_inv_src_alpha);
-
 var _charlen = gridWid * gridHei;
 var _data;
 for (var i=0; i<_charlen; i++)
@@ -197,20 +194,14 @@ for (var i=0; i<_charlen; i++)
         // draw_sprite(_data[@ CHAR.BAKED], 0, _x, _y);
         get_atlas_glyph(bakedAtlas, i, -1); // store baked sprite into the glyphTemp surface
         
+        draw_set_blend_mode_ext(bm_one, bm_inv_src_alpha);
         shader_set(shd_lumatoalpha);
         draw_surface(glyphTemp, _x, _y);
         shader_reset();
-    }
-    else if (drawGrid)
-    {
-        iui_rect(_x, _y, charWid, charHei, $FF00FF);
-        
-        // iui_align_center();
-        // iui_label(_x + (charWid >> 1), _y + (charHei >> 1), dec_to_hex(ord(get_default_char(i))), c_yellow);
-        // iui_align_pop();
+        draw_set_blend_mode(bm_normal);
     }
 }
-draw_set_blend_mode(bm_normal);
+
 surface_reset_target();
 
 /// BUILD ASCII IF DKB844

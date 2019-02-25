@@ -1,4 +1,4 @@
-// 2019-02-17 23:16:55
+// 2019-02-17 23:30:28
 ///hj_draw(x, y, str, colour, alpha)
 /*
     (도깨비한글 8x4x4벌식) 한글 문자열을 컴파일한 뒤 드로우 합니다.
@@ -26,7 +26,7 @@ var _strlen;
 var _strarray = global.hjCacheData[? _str];
 if (_strarray == undefined)
 {
-    _strarray = hj_dkb_compile_str(_str); // 섹스 초코
+    _strarray = hj_dkb_compile_str(_str);
     global.hjCacheData[? _str] = _strarray;
 }
 _strlen = array_length_1d(_strarray);
