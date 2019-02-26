@@ -1,0 +1,38 @@
+// 2019-02-09 16:49:08
+///hj_dkb_get_beol_first(head, body, tail)
+/*
+    [도깨비884벌식]
+    초성, 중성, 종성을 입력받아 초성의 벌을 반환합니다.
+    
+    ===================================================
+    초성 1벌: 받침없는 ‘ㅏㅐㅑㅒㅓㅔㅕㅖㅣ’ 와 결합
+    초성 2벌: 받침없는 ‘ㅗㅛㅡ’
+    초성 3벌: 받침없는 ‘ㅜㅠ’
+    초성 4벌: 받침없는 ‘ㅘㅙㅚㅢ’
+    초성 5벌: 받침없는 ‘ㅝㅞㅟ’
+    초성 6벌: 받침있는 ‘ㅏㅐㅑㅒㅓㅔㅕㅖㅣ’ 와 결합
+    초성 7벌: 받침있는 ‘ㅗㅛㅜㅠㅡ’
+    초성 8벌: 받침있는 ‘ㅘㅙㅚㅢㅝㅞㅟ’
+    ===================================================
+    head - 초성
+    body - 중성
+    tail - 종성
+*/
+
+var _head = argument0, _body = argument1, _tail = argument2;
+
+// 종성체크
+if (_tail == 0) // 1~5
+{
+    if (string_pos(_head, global.hjLUTBody1) != 0) // 1
+        return 1;
+    else if (string_pos(_head, global.hjLUTBody2) != 0) // 2
+        return 2;
+    else if (string_pos(_head, global.hjLUTBody3) != 0) // 3
+        return 3;
+    else if (string_pos(_head, global.hjLUTBody4) != 0) // 4
+}
+else // 6~8
+{
+    
+}

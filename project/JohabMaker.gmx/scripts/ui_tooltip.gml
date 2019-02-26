@@ -1,0 +1,52 @@
+///ui_tooltip(x, y, w, h, string, icon, col, outline, fill, fillcol)
+/**
+    A bounding box which would display tooltip when hovered
+**/
+
+/// Setup
+// box edges
+var boxL = argument0, boxT = argument1
+var boxR = (boxL + argument2), boxB = (boxT + argument3);
+// attribs
+var iconSpr = argument5;
+var iconCol = argument6;
+var outline = argument7;
+var fill = argument8;
+var fillCol = argument9;
+
+/// Get label and ID.
+var stringArray = iui_get_all(argument4);
+var ID     = stringArray[0];
+var LABEL  = stringArray[1];
+
+/// Tooltip logic
+if (point_in_rectangle(iui_inputX, iui_inputY, boxL, boxT, boxR, boxB))
+{
+    iui_hotItem = ID;
+        
+    // set tooltip
+    if (LABEL != "")
+    {
+        uiTooltipMsg = LABEL;
+        uiTooltipShow = true;
+    }
+}
+
+// Draw
+if (fill)
+    iui_rect_pos(boxL, boxT, boxR, boxB, fillCol, 1);
+
+if (outline)
+{
+    var _col = COL.GRAY;
+    iui_rect_pos(boxL, boxT, boxR, boxT + 1, _col, 1);
+    iui_rect_pos(boxL, boxT, boxL + 1, boxB, _col, 1);
+    iui_rect_pos(boxL, boxB - 1, boxR, boxB, _col, 1);
+    iui_rect_pos(boxR - 1, boxT, boxR, boxB, _col, 1);
+}
+
+if (iconSpr != -1)
+{
+    // Draw icons at the center of tooltip box
+    draw_sprite_ext(spr_icons, iconSpr, (boxL + boxR) >> 1, (boxT + boxB) >> 1, 1, 1, 0, iconCol, 1);
+}

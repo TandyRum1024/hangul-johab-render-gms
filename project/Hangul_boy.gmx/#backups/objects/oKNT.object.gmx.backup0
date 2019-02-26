@@ -1,0 +1,153 @@
+// 2019-02-26 05:11:27
+#event create
+hj_init();
+
+animTimer = 0;
+WIN_WID = room_width;
+WIN_HEI = room_height;
+WIN_HALF_WID = room_width >> 1;
+WIN_HALF_HEI = room_height >> 1;
+
+_trashsurf = surface_create(WIN_WID, WIN_HEI);
+
+enum COL // 포켓몬 게임보이
+{
+    BLK = $101018,
+    BLU = $9c7384,
+    RED = $8cb5f7,
+    CLR = $ffefff
+}
+
+enum F8 // https://lospec.com/palette-list/fantastic-8
+{
+    WHITE = $dddbdb,
+    GRAY = $8e8e9c,
+    BLUE = $a34b52,
+    BLACK = $231e1f,
+    GREEN = $54926a,
+    YELLOW = $6cacdc,
+    RED = $5656e5,
+    BROWN = $3c4973
+}
+
+randTimer = 0;
+randFlip = 0;
+colF1 = F8.BLUE;
+colF2 = F8.BLACK;
+
+colB1 = F8.YELLOW;
+colB2 = F8.BROWN;
+
+#event other_room_end
+hj_end();
+
+#event draw
+
+if (!surface_exists(_trashsurf))
+{
+    _trashsurf = surface_create(WIN_WID, WIN_HEI);
+}
+
+// za warudo
+animTimer++;
+
+var _BPM = 115;
+var _max = (1 / (_BPM / 60)) * 60;
+var _margin = (_max * 0.85);
+if (randTimer < _max)
+    randTimer++;
+else
+{
+    randFlip = !randFlip;
+    randTimer -= _max;
+    randomize();
+    
+    // DISCO FUKCIGNN FLOOR :DDDDDDD
+    var _tmp = colF1;
+    while (_tmp == colF1)
+        _tmp = make_colour_hsv(random_range(0, 255), random_range(150, 230), 255);//choose(F8.YELLOW, F8.RED, F8.WHITE, F8.BLUE);
+    
+    if (randFlip) // 2번째 박자에서 디스코 장판 색 서로 교차
+    {
+        colF1 = _tmp;
+        colB1 = make_colour_hsv(colour_get_hue(colF1) - 80, colour_get_saturation(colF1) - 45, colour_get_value(colF1) - random_range(180, 220));//choose(F8.BLACK, F8.BROWN);
+    }
+    else
+    {
+        colB1 = _tmp;
+        colF1 = make_colour_hsv(colour_get_hue(colB1) - 80, colour_get_saturation(colB1) - 45, colour_get_value(colB1) - random_range(180, 220));//choose(F8.BLACK, F8.BROWN);
+    }
+    
+    // 어두운 색
+    colF2 = make_colour_hsv(colour_get_hue(colF1) + 10, colour_get_saturation(colF1) + 20, colour_get_value(colF1) * 0.85);
+    colB2 = make_colour_hsv(colour_get_hue(colB1) + 10, colour_get_saturation(colB1) + 20, colour_get_value(colB1) - 10);
+}
+
+// fill
+shader_set(shd_whatthefuck);
+shader_set_uniform_f(shader_get_uniform(shd_whatthefuck, "time"), animTimer * 0.01);
+
+var _t = min(randTimer / _margin, 1);
+var _b = power(_t, 3);
+var _epict = power(1 - _t, 9), _invt = 1 - _epict;
+
+var _c1 = merge_colour(colF1, colF2, _b);
+var _c2 = merge_colour(colB1, colB2, _b);
+shader_set_uniform_f(shader_get_uniform(shd_whatthefuck, "col1"), (_c1 & $0000FF) / 255, ((_c1 & $00FF00) >> 8) / 255, ((_c1 & $FF0000) >> 16) / 255);
+shader_set_uniform_f(shader_get_uniform(shd_whatthefuck, "col2"), (_c2 & $0000FF) / 255, ((_c2 & $00FF00) >> 8) / 255, ((_c2 & $FF0000) >> 16) / 255);
+draw_surface(_trashsurf, 0, 0);
+shader_reset();
+    
+// Draw title
+var _titleW = WIN_WID;
+var _titleHalf = (_titleW >> 1);
+var _titleL = WIN_HALF_WID - _titleHalf;
+var _titleR = WIN_HALF_WID + _titleHalf;
+draw_set_blend_mode_ext(bm_dest_color, bm_zero);
+draw_rect(_titleL, WIN_HALF_HEI - 64 + 120, _titleW, 24, F8.GRAY);
+draw_set_blend_mode(bm_normal);
+
+draw_rect(_titleL, WIN_HALF_HEI - 64 - 120, _titleW, 240, F8.BLUE);
+draw_rect(_titleL, WIN_HALF_HEI - 64 - 120 - 4, _titleW, 8, F8.WHITE);
+draw_rect(_titleL, WIN_HALF_HEI - 64 + 120, _titleW, 8, F8.WHITE);
+
+/*
+draw_rect_rot(-120, WIN_HALF_HEI - 64, 170, 170, F8.WHITE, 45);
+draw_rect_rot(WIN_WID - 120, WIN_HALF_HEI - 64, 170, 170, F8.WHITE, 45);
+*/
+
+hj_change_font_ext(sprHanYH16, sprEngSlant, 16, 16, 8, 16);
+hj_set_align(fa_center, fa_middle);
+
+var _title = "한글 조합형 렌더링[tm]";
+var _wid = hj_string_width(_title) * 4;
+var _sz = 4 + (1 - _epict) * 0.75;
+var _angle = (1 - _epict) * 4 * (randFlip * 2 - 1);//cos(animTimer * 0.042) * 8;
+
+hj_draw_transformed(WIN_HALF_WID + 4, WIN_HALF_HEI - 84 + 4, _title, _sz, _sz, _angle, F8.BLACK, 1);
+hj_draw_transformed(WIN_HALF_WID, WIN_HALF_HEI - 84, _title, _sz, _sz, _angle, F8.WHITE, 1);
+
+var _colour = make_colour_hsv(animTimer * 5, 255, 255);
+var _squeeze = _epict * 0.75;//cos(animTimer * 0.4) * _t;
+var _squeezex = 2 - _squeeze;
+var _squeezey = 2 + _squeeze;
+hj_draw(WIN_HALF_WID, WIN_HALF_HEI - 64 - 120 - 20, "(엔터 키로 다음 룸으로 넘어가세요)", _colour, 1);
+hj_draw_transformed(WIN_HALF_WID + _squeezex, WIN_HALF_HEI + 10 + _squeezey, "도깨비한글 벌식 지원!", _squeezex, _squeezey, 0, F8.BLACK, 1);
+hj_draw_transformed(WIN_HALF_WID, WIN_HALF_HEI + 10, "도깨비한글 벌식 지원!", _squeezex, _squeezey, 0, F8.YELLOW, 1);
+
+var _copypasta = "이 스크립트 모음은 조합형을 사용해서 그릴수 있게 해줍니다.. 그러하여 이젠 '똚방괅화' 같이 개같은 글자도 그릴 수 있다는거죠. 다만 속도가... 슬퍼요..      제작 : 짘박구루@2019";
+var _screenmaxchars = WIN_WID div 48;
+var _scrolllen = string_length(_copypasta) * 48 + _screenmaxchars * 48 + 84;
+var _offset = (animTimer * 4) % _scrolllen, _offsetch = (_offset div 48);
+var _screenchars = min(_screenmaxchars, _offsetch) + 2;
+var _firstoff = max(_offset - WIN_WID, 0) div 48;
+var _window = string_copy(_copypasta, _firstoff + 1, _screenchars);
+var _offmod = max(_offset - WIN_WID, 0) % 48;
+
+hj_change_font_ext(sprHanByte16, sprEngByte16, 16, 16, 16, 16);
+hj_set_align(fa_left, fa_middle);
+hj_draw_wave(WIN_WID - min(_offset, WIN_WID + _offmod) + 3, WIN_HALF_HEI + 200 + 3, _window, 3, 3, 0, F8.BLUE, 1, animTimer, 32, 0.6, _firstoff);
+hj_draw_wave(WIN_WID - min(_offset, WIN_WID + _offmod), WIN_HALF_HEI + 200, _window, 3, 3, 0, _colour, 1, animTimer, 32, 0.6, _firstoff);
+
+#event keypress:vk_return
+room_goto_next();

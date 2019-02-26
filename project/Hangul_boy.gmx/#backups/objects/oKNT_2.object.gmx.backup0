@@ -1,0 +1,129 @@
+// 2019-02-26 05:12:11
+#event create
+hj_init();
+
+animTimer = 0;
+WIN_WID = room_width;
+WIN_HEI = room_height;
+WIN_HALF_WID = room_width >> 1;
+WIN_HALF_HEI = room_height >> 1;
+
+randStr = "으어어어아ㅏ#취한드아";
+randTimer = 0;
+
+#event other_room_end
+hj_end();
+
+#event draw
+// za warudo
+animTimer++;
+
+if (randTimer > 0)
+    randTimer--;
+else
+{
+    randTimer = 45;
+    
+    var _tmp = randStr;
+    while (_tmp == randStr)
+    {
+        randomize();
+        _tmp = choose("띠요오오옹", "포-잉", "으어어어아ㅏ#취한드아", "뚀요요요오옹#오ㅗㅇㅇ요용ㅇ");
+    }
+    randStr = _tmp;
+}
+
+// backdrop
+draw_clear(COL.BLU);
+
+// 잡소리
+var _originStr = "'쿠와아앙 구와ㅏㅏㅏ아앍ㄺ' 투명드래곤이 짖었다... 투명드래곤은 엄청 세서 스파게티 드래곤을 핸드백으로 들고 다닌다. 출처 : 위키백과"; //"어린 <<그레고리 'Ivan' 샘손 똘똘이 2세>>는 어느 날 아침, 잠에서 깨어나곤 깜짝 놀랐다. \'어머나, 시벯,.,.,, 그/와/아/앗!11!1\' 자기 몸이 괴기하고 날아다니는 스파게티 주스 악마[tm]으로 변해 있었기 때문이다. 똘똘이는 방에 걸린 거울을 뚫어지게 쳐다보았다. 새빨간 꼬리, 악마같은 뿔, 맛난 주스 한 잔마저 달랑거린다. 이리저리 휘감기고 토마토의 풍미가 느껴지는 국수가락 덩어리가 된 똘똘이는 후회가 밀려오기 시작했다. 아무리 생각해 봐도 전에는 이런 일이 없었는데 말이다. 의문을 가지기도 전에 똘똘이의 아버지가 아래층에서 블렀다.#\'똘똘아 딸딸 똘똘. 하왛왛.. The 똘똘쟝은 곧 삼성 디지털 맹장염,.,., 쓰라린 자본주의의 고통을 느끼는 거시에ㅔ앵앵애애ㅐ요 >.<\'#그 말에 충격을 받은 똘똘이는 공중에서 3바퀴를 돌며 컴퓨터와 한 몸이 되어 서울역 광천구 구로시로 날아갔다.#지금까지도 똘똘이는 안양 8동에서 공중제비를 돌며 우리들을 지켜준답니다. -끝-#<<질레트 퓨전 프로글라이드 (Die Verwandlung)>> - 후랑켄 카프리카썬 발췌";//"가나다라마바사#한글테스트";
+var _panelStr = _originStr;//string_copy(_originStr, 1, string_length(_originStr) * clamp(sin(animTimer * 0.005) * 0.7 + 0.5, 0, 1));
+var _panelMargin = 8;
+var _panelW = 400 * clamp(sin(animTimer * 0.02) * 0.8 + 0.5, 0.2, 1) + (_panelMargin << 1); //_strw + (_panelMargin << 1);
+var _panelH = 300;
+
+// 이전 버전식 드로잉 데모
+hj_set_align(1, 1); // 센터 정렬
+
+// 폰트 바꾸기. hj_draw_sheet_*() 할때 사용하세요.
+// 폰트 스프라이트는 넘기지 않으셔도 됩니다. 드로잉 할때 인자로 넘겨주세요.
+hj_comp_set(24, 24, 24, 24, true, true);
+
+// 박스 그리기
+var _panelX = WIN_HALF_WID - 250 - (_panelW * 0.5);
+var _panelY = WIN_HALF_HEI + 180 - (_panelH * 0.5);
+draw_rect(_panelX + 10, _panelY + 10, _panelW, _panelH, COL.BLK); // 그림자
+draw_rect(_panelX - 1, _panelY - 1, _panelW + 2, _panelH + 2, COL.BLK); // 테두리
+draw_rect(_panelX, _panelY, _panelW, _panelH, COL.CLR); // 본체
+
+// 한글 드로잉
+var _x = _panelX + (_panelW * 0.5);
+var _y = _panelY + _panelMargin;
+hj_draw_comp_ext(sprHangul24Sub, -1, _x + 1, _y + 1, _panelStr, -1, _panelW - (_panelMargin << 1), COL.RED, 1);
+hj_draw_comp_ext(sprHangul24Sub, -1, _x, _y, _panelStr, -1, _panelW - (_panelMargin << 1), COL.BLK, 1);
+//
+
+
+// 도깨비8x4x4벌식 드로잉 데모
+// 폰트 바꾸기. 만약 16x16 (한글) & 8x16 (ASCII) 이외의 사이즈의 스프라이트를 쓰시려면
+// hj_change_font_ext() 를 사용해주세요!
+// 이번 경우는 hj_compat_change_font() 함수로 24x24로 글자 크기를 바꾸었으니 다시 되돌리기위해 hj_change_font_ext() 를 사용합니다.
+hj_change_font_ext(sprHanH12, sprEngSlant, 16, 16, 8, 16); // 한글 스프라이트 : sprHanH12, ASCII 스프라이트 : sprEngSlant
+
+// 박스 그리기
+_panelX = WIN_HALF_WID + 250 - (_panelW * 0.5);
+draw_rect(_panelX + 10, _panelY + 10, _panelW, _panelH, COL.BLK); // 그림자
+draw_rect(_panelX - 1, _panelY - 1, _panelW + 2, _panelH + 2, COL.BLK); // 테두리
+draw_rect(_panelX, _panelY, _panelW, _panelH, COL.CLR); // 본체
+
+// 한글 드로잉
+_x = _panelX + (_panelW * 0.5);
+_y = _panelY + _panelMargin;
+hj_draw_ext(_x + 1, _y + 1, _panelStr, -1, _panelW - (_panelMargin << 1), COL.RED, 1);
+hj_draw_ext(_x, _y, _panelStr, -1, _panelW - (_panelMargin << 1), COL.BLK, 1);
+//
+
+
+// 글자 변형 예제
+hj_set_align(1, 1); // 센터 정렬
+var _movex = WIN_HALF_WID - 200;
+var _movey = WIN_HALF_HEI - 150;
+var _angle = cos(animTimer * 0.5) * 24 * (randTimer / 45); // 띠요요용 하게 만드는 각도 변수
+var _squishcoeff = cos(animTimer * 0.5) * 0.5 * (randTimer / 45); // 또-잉 하는 글자 크기 배율
+var _squishx = 1 + _squishcoeff;
+var _squishy = 1 - _squishcoeff;
+var _colour = merge_colour(COL.CLR, COL.RED, ((randTimer >> 2) & 1) * clamp(randTimer - 25, 0, 1));
+
+// 이전 버전식 드로잉 데모
+hj_comp_set(24, 24, 24, 24, true, true); // 폰트 변경
+
+// 흔들거리는 글자
+hj_draw_comp_transformed(sprHangul24Sub, -1, _movex + 1, _movey - 50 + 1, randStr, 1, 1, _angle, COL.BLK, 1); // 글자 그림자
+hj_draw_comp_transformed(sprHangul24Sub, -1, _movex, _movey - 50, randStr, 1, 1, _angle, _colour, 1); // 본체
+
+// 쫄깃한 글자
+hj_draw_comp_transformed(sprHangul24Sub, -1, _movex + 1, _movey + 50 + 1, "뽀-쟉#또오오오용ㅇ요용용ㅇ잉", _squishx, _squishy, 0, COL.BLK, 1); // 글자 그림자
+hj_draw_comp_transformed(sprHangul24Sub, -1, _movex, _movey + 50, "뽀-쟉#또오오오용ㅇ요용용ㅇ잉", _squishx, _squishy, 0, _colour, 1); // 본체
+//
+
+
+// 도깨비8x4x4벌식 드로잉 데모
+// (글자가 너무 작으니 2배로 키워서 그립니다)
+_squishx *= 2;
+_squishy *= 2;
+_movex = WIN_HALF_WID + 200;
+hj_change_font_ext(sprHanH12, sprEngSlant, 16, 16, 8, 16); // 폰트 변경
+
+// 흔들거리는 글자
+hj_draw_transformed(_movex + 1, _movey - 50 + 1, randStr, 2, 2, _angle, COL.BLK, 1); // 글자 그림자
+hj_draw_transformed(_movex, _movey - 50, randStr, 2, 2, _angle, _colour, 1); // 본체
+
+// 쫄깃한 글자
+hj_draw_transformed(_movex + 1, _movey + 50 + 1, "뽀-쟉#또오오오용ㅇ요용용ㅇ잉", _squishx, _squishy, 0, COL.BLK, 1); // 글자 그림자
+hj_draw_transformed(_movex, _movey + 50, "뽀-쟉#또오오오용ㅇ요용용ㅇ잉", _squishx, _squishy, 0, _colour, 1); // 본체
+//
+
+
+#event keypress:vk_return
+room_goto_next();

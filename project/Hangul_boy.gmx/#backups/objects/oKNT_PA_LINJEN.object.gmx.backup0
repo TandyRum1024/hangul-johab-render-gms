@@ -1,0 +1,144 @@
+// 2019-02-26 00:39:14
+#event create
+hj_init();
+
+animTimer = 0;
+WIN_WID = room_width;
+WIN_HEI = room_height;
+WIN_HALF_WID = room_width >> 1;
+WIN_HALF_HEI = room_height >> 1;
+
+#event other_room_end
+hj_end();
+
+#event draw
+// za warudo
+animTimer++;
+
+// fill
+draw_clear(F8.BLACK);
+
+// draw basic (dkb844)
+hj_change_font(sprHanH12, sprEngSlant);
+
+
+// 도깨비한글 벌식으로 드로우합니다.
+// '#' 으로 개행할 수 있으며 #을 그리고 싶으시면 '\#' 로 이스케이프 해주세요!
+// hj_draw(100, 100, "악, 이건 욜라 아프다!!#뒈졌다... -다음장-", F8.RED, 1);
+
+
+// hj_draw_ext()는 주어진 최대 너비(width 인자)를 넘으면 자동으로 다음줄로 개행됩니다.
+// 또한 sep 인자를 -1 이외의 값을 넘겨주면 그 값으로 줄 간격을 정합니다.
+// var t = clamp(sin(animTimer * 0.042424242) * 0.75 + 0.5, 0, 1);
+// var width = 128 + t * 128; // 최대너비; 128 ~ 256 사이의 값을 왔다갔다 하는 값
+// var text = "충주집 대문에 들어서서 술좌석에서 짜장 동이를 만났을 때에는 어찌 된 서슬엔지 빨끈 화가 나버렸다.";
+
+// hj_draw_ext(100, 100, text, -1, width, F8.YELLOW, 1);
+
+// hj_draw_transformed()는 글자를 회전, 크기 조정을 할수있게 해줍니다.
+// var angle = sin(animTimer * 0.22) * 10; // 휘적거리는녀석 글자 각도
+// var scaleX = 1 + cos(animTimer * 0.22) * 0.2; // 주욱 늘어나는놈의 글자 크기 (X)
+// var scaleY = 1 - cos(animTimer * 0.22) * 0.2; // 주욱 늘어나는놈의 글자 크기 (Y)
+
+// hj_draw_transformed(100, 100, "휘적휘적휘적휘적", 1, 1, angle, F8.RED, 1);
+// hj_draw_transformed(100, 142, "주우우우우욱", scaleX, scaleY, 0, F8.BLUE, 1);
+
+
+// hj_change_font 와 hj_change_font_ext 는 폰트를 바꿀때(= 다른 스프라이트를 사용해 그릴 떄) 사용합니다.
+// 폰트 크기에 변동이 있으면 hj_change_font_ext() 를 이용해 한글과 ASCII 글자의 크기도 정해 주세요!
+// hj_change_font_ext(sprHanByte16, sprEngByte16, 16, 16, 8, 16); // 글자 크기에 변동 있음 -- 전 프레임에서 24x24 폰트를 사용하였기 때문
+// var dogsound = "서기 2400년, 사람들은 [PARASONIC BLU-RAY 99$] 로 변하게 된다...#이를 막기위해 전국연합은 사람들에게 개인용 로켓 점프 장치[tm]을#지금하기 시작했다. 하지만 국제적 테러조직 '강철의 엉덩이단단'의 소행으로#사람들은 [2단 로켓점프], [스트레이프 점프], [3x 싱크] 등의 현란한 로켓 점프 기술을 연마하기 시작했다.#그리고 지구는 상하좌우앞뒤로 갈라져서 멸망했다고 한다. -The end-";
+// hj_draw(100, 100, dogsound, F8.BLUE, 1);
+
+// hj_change_font(sprHanH12, sprEngSlant); // 글자 크기 변동 없음 -- 스프라이트만 바뀜
+// dogsound = "셜리 존스 씨를 만나보세요. <<뮤직 맨>> 에 출연한 배우이자 Lustre Creme 샴푸[tm]의 홍보대사이기도 하죠.#"+'"'+"맞아요, 할리우드에서는 Lustre Creme에 견줄만한 샴푸는 없다고 다들 인정한답니다.."+'"';
+// hj_draw(100, 220, dogsound, F8.WHITE, 1);
+
+// hj_change_font(sprHanYH16, sprEngSlant);
+// dogsound = "5점 만점에 4점, 최고의 영화 스타들은 Lustre Creme 샴푸를 사용합니다--#빛나는 머릿결, 그리고 관리하기 쉬운 머릿결을 선물해줘요!";
+// hj_draw(100, 260, dogsound, F8.YELLOW, 1);
+
+// hj_change_font_ext(sprHanSeoul24, sprEngSeoul24, 24, 24, 14, 24); // 글자 크기 변동 -- 24x24 폰트
+// hj_draw(100, 320, "안녕하세요. 픽셀 폰트만 보다가 이런거 보니깐 막 짜릿하고 그렇죠?#괜찮아요. 저도 그런데요 뭘 ㅋㅋ ㅎㅎ", F8.RED, 1);
+
+// hj_draw_comp() 는 일반/이전 버전 벌식으로 한글을 출력하며,
+// 한글, ASCII 스프라이트를 인자로 받아서 그 스프라이트를 이용해 출력합니다.
+// 스프라이트는 통째로 된 스프라이트를 사용하며, (서브이미지 X)
+// ASCII 인자에 -1 를 넣으면 한글 스프라이트에서 ASCII 글자를 그립니다.
+// 우선 사용하기 위해 hj_comp_set() 로 사이즈, 추가 벌 사용 여부를 지정해줍니다.
+// hj_comp_set(24, 24, 24, 24, true, true); // 24x24 한글, 24x24 ASCII, 추가 벌 사용 : 풀옵션 (중성 종류, 받침 여부 고려)
+
+// // 그리고 (드디어) 그립니다
+// // 일반적 그리기
+// var dogsound = "안녕하세요. 오랜만입니다. ㅋㅋㅋㅋㅎㅎ#A quick brown fox somersaults#over a lazy dog#ABC1234567890";
+// hj_draw_comp(sprHangul24Sub, -1, 100, 100, dogsound, F8.WHITE, 1); // <- 한글 스프라이트에 ASCII 문자도 있는 케이스
+
+// hj_comp_set(24, 24, 16, 16, true, true); // 24x24 한글, 16x16 ASCII
+// hj_draw_comp(sprHangul24Sub, sprYayoC64Sub, 100, 220, dogsound, F8.YELLOW, 1); // <- ASCII 스프라이트를 따로 사용하는 케이스
+
+// // hj_draw_transformed() 대체버전
+// var angle = animTimer * 10;
+// var size = 1 + sin(animTimer) * 0.2;
+// hj_draw_comp_transformed(sprHangul24Sub, sprYayoC64Sub, 100, 400, "회전 회오리!!", 1, 1, angle, F8.RED, 1); // 회전 회오리!
+// hj_draw_comp_transformed(sprHangul24Sub, sprYayoC64Sub, 200, 400, "주와아악ㄺ", size, size, 0, F8.RED, 1); // 주와아악
+
+// // hj_draw_ext() 대체버전
+// var width = 512 + sin(animTimer * 0.42) * 256;
+// var text = "충주집 대문에 들어서서 술좌석에서 짜장 동이를 만났을 때에는 어찌 된 서슬엔지 빨끈 화가 나버렸다.";
+// hj_draw_comp_ext(sprHangul24Sub, sprYayoC64Sub, 100, 450, text, -1, width, F8.GREEN, 1);
+
+// // hj_draw_sheet() 대체버전
+// hj_draw_comp_sheet(sprHangul24, sprYayoC64, 100, 600, "이 글자는 통짜 스프라이트를 사용해 그려졌습니다#그리고 다음 줄은 아무런 의미로 없는 잡소립니다...#ㄺㄶㄹㅇㅋㅋㄴ앍ㄷ서차퍼렄ㄴbhjsfkdaskdaf!!1223534^%64", F8.YELLOW, 1);
+/*
+// hj_set_align() 은 정렬을 정할때 사용합니다.
+// 일반적인 draw_set_halign(), draw_set_valign() 와 비슷하지만,
+// halign과 valign을 한번에 정합니다.
+hj_change_font(sprHanH12, sprEngSlant);
+
+hj_set_align(fa_left, fa_top);
+hj_draw_transformed(WIN_HALF_WID - 200, WIN_HALF_HEI - 200, "좌측#상단!", 2, 2, 0, F8.WHITE, 1);
+draw_rect(WIN_HALF_WID - 200, WIN_HALF_HEI - 200, 4, 4, F8.RED); // 원본 좌표를 보여주는 사각형
+hj_set_align(fa_center, fa_top);
+hj_draw_transformed(WIN_HALF_WID, WIN_HALF_HEI - 200, "상단!", 2, 2, 0, F8.WHITE, 1);
+draw_rect(WIN_HALF_WID, WIN_HALF_HEI - 200, 4, 4, F8.RED); // 원본 좌표를 보여주는 사각형
+hj_set_align(fa_right, fa_top);
+hj_draw_transformed(WIN_HALF_WID + 200, WIN_HALF_HEI - 200, "우측#상단!", 2, 2, 0, F8.WHITE, 1);
+draw_rect(WIN_HALF_WID + 200, WIN_HALF_HEI, 4, 4, F8.RED); // 원본 좌표를 보여주는 사각형
+
+hj_set_align(fa_left, fa_middle);
+hj_draw_transformed(WIN_HALF_WID - 200, WIN_HALF_HEI, "좌측!", 2, 2, 0, F8.WHITE, 1);
+draw_rect(WIN_HALF_WID - 200, WIN_HALF_HEI, 4, 4, F8.RED); // 원본 좌표를 보여주는 사각형
+hj_set_align(fa_center, fa_middle);
+hj_draw_transformed(WIN_HALF_WID, WIN_HALF_HEI, "중간!", 2, 2, 0, F8.WHITE, 1);
+draw_rect(WIN_HALF_WID, WIN_HALF_HEI, 4, 4, F8.RED); // 원본 좌표를 보여주는 사각형
+hj_set_align(fa_right, fa_middle);
+hj_draw_transformed(WIN_HALF_WID + 200, WIN_HALF_HEI, "우측!", 2, 2, 0, F8.WHITE, 1);
+draw_rect(WIN_HALF_WID + 200, WIN_HALF_HEI, 4, 4, F8.RED); // 원본 좌표를 보여주는 사각형
+
+hj_set_align(fa_left, fa_bottom);
+hj_draw_transformed(WIN_HALF_WID - 200, WIN_HALF_HEI + 200, "좌측#하단!", 2, 2, 0, F8.WHITE, 1);
+draw_rect(WIN_HALF_WID - 200, WIN_HALF_HEI + 200, 4, 4, F8.RED); // 원본 좌표를 보여주는 사각형
+hj_set_align(fa_center, fa_bottom);
+hj_draw_transformed(WIN_HALF_WID, WIN_HALF_HEI + 200, "하단!", 2, 2, 0, F8.WHITE, 1);
+draw_rect(WIN_HALF_WID, WIN_HALF_HEI + 200, 4, 4, F8.RED); // 원본 좌표를 보여주는 사각형
+hj_set_align(fa_right, fa_bottom);
+hj_draw_transformed(WIN_HALF_WID + 200, WIN_HALF_HEI + 200, "우측#하단!", 2, 2, 0, F8.WHITE, 1);
+draw_rect(WIN_HALF_WID + 200, WIN_HALF_HEI + 200, 4, 4, F8.RED); // 원본 좌표를 보여주는 사각형
+*/
+
+/*
+// hj_string_width() 는 현재 설정을 기반으로 문자열의 넓이를 반환합니다.
+// 예를들어 현재 설정된 한글 사이즈가 16x16 이고 총 4글자의 한글이면 16*4인 84를 반환합니다.
+// 마찬가지로 hj_string_height() 는 문자열의 높이를 반환합니다.
+var text = "기다란 계란은 기다란 치킨에서 나옵니다.#굉장히 맛있겠죠?";
+var width = hj_string_width(text);
+var height = hj_string_height(text);
+
+hj_draw(100, 100, text, F8.RED, 1);
+
+draw_rect(100, 110 + height, width, 4, F8.YELLOW); // 길이!
+hj_draw(100, 115 + height, string(width) + "px", F8.YELLOW, 1);
+
+draw_rect(100 - 10, 100, 4, height, F8.YELLOW); // 높이!
+hj_draw(100 - 60, 100, string(height) + "px", F8.YELLOW, 1);
+*/

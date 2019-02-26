@@ -1,0 +1,7 @@
+// 2019-01-03 14:09:14
+/*
+    Update ui related stuff
+*/
+
+// update tooltip
+uiTooltipShow = false;

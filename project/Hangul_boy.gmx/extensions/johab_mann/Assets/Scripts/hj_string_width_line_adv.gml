@@ -1,0 +1,41 @@
+///hj_string_width_adv(str)
+/*
+    주어진 한글 문자열 첫 줄(만)의 너비 관련 데이터를 반환합니다.
+    ============================================================
+    배열 반환.
+    [0] : ASCII 문자의 개수
+    [1] : 한글 문자의 개수
+*/
+
+var _in = argument0, _out = -1;
+var _strlen = string_length(_in);
+var _prev = "", _ch;
+var _numascii = 0, _numhan = 0;
+
+for (var i=1; i<=_strlen; i++)
+{
+    _ch = string_char_at(_in, i);
+    
+    // 다음줄 체크
+    if (_ch == "#")
+    {
+        if (_prev != "\")
+            break;
+        else
+            _numascii--; // 이스케이프된 개행문자 : [\#] => [#] 따라서 글자 1개 차감
+    }
+    
+    // 글자 개수 더하기
+    if (ord(_ch) >= 0 && ord(_ch) <= $FF) // ASCII 문자 개수 더하기
+        _numascii++;
+    else // 한글 문자 개수 더하기
+        _numhan++;
+    
+    _prev = _ch;
+}
+
+// show_debug_message(_in + " : " + string(_numascii) + "/" + string(_numhan));
+
+_out[0] = _numascii;
+_out[1] = _numhan;
+return _out;

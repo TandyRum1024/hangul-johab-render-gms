@@ -1,0 +1,18 @@
+// 2019-01-03 13:56:18
+///add_char_mask(idx, x1, y1, x2, y2)
+/*
+    Adds a rectangle to mask of character given the index
+*/
+
+// setup
+var idx = argument0, x1 = argument1, y1 = argument2, x2 = argument3, y2 = argument4;
+var data = charData[| idx];
+
+if (!is_array(data))
+    return;
+    
+// set mask
+var mask = data[@ CHAR.MASK];
+surface_set_target(mask);
+iui_rect_pos(x1, y1, x2, y2, c_white, 1);
+surface_reset_target();

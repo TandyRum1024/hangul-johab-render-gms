@@ -1,0 +1,56 @@
+// 2019-02-18 20:29:28
+///hj_comp_change_font(hanWidth, hanHeight, asciiWidth, asciiHeight, specialMiddle, specialLast)
+/*
+    [호환용/hj_draw_comp()]
+    폰트 설정을 바꿉니다.
+    이 스크립트로 폰트의 크기를 조정하면 앞으로 그려지는 모든 글자 (= 도깨비8x4x4식으로 그리는것도)가
+    영향을 받습니다.
+    이 스크립트로 폰트를 변경하시고 다시 도깨비8x4x4식으로 그리시려면 hj_dkb_change_font()로
+    알맞은 설정을 해주는걸 잊지 마세요!!
+    
+    ========================================
+    
+    hanWidth, hanHeight : 한글 폰트 너비 & 높이
+    asciiWidth, asciiHeight : ASCII 폰트 너비 & 높이
+    
+    specialMiddle : 초성 & 종성이 중성에 따라 다른 벌을 사용하는지 여부
+    여기서 벌은 폰트 스프라이트에서 줄 수나 마찬가지입니다.
+    예를들어 초성이 2벌이라면 스프라이트 내에서는 총 2줄을 차지하게 되겠죠.
+    - true = 초성과 종성이 2벌을 사용합니다.
+    - false = 초성과 종성이 1벌만을 씁니다. 대신 글자 모양이 이상해집니다. (일명 도깨비체)
+    
+    specialLast : 초성 & 중성이 종성 여부에 따라 다른 벌을 사용하는지 여부
+    - true = 초성과 종성이 벌을 2배로 사용합니다. ( 종성 있는버전 & 종성 없는버전 )
+    - false = 초성과 종성의 벌 수가 그대로인 대신 종성이 없는 버전과 똑같이 그려집니다.
+    (예를들어 "가" 를 "갈" 글자에서 "ㄹ"이 없고 대신 빈칸이 있다고 생각해보세요.)
+*/
+
+// 폰트 높낮이 바꾸기
+global.hjCharWidHan = argument0; // 한글
+global.hjCharHeiHan = argument1;
+global.hjCharWidAscii = argument2; // ASCII
+global.hjCharHeiAscii = argument3;
+
+// 설정 변경
+global.hjCompSpecialMiddle = argument4;
+global.hjCompSpecialLast = argument5;
+
+// 벌 수 & 오프셋 다시 설정
+hj_comp_calc_beol();
+global.hjCompOffFirst = 0; // 초성 인덱스 오프셋
+global.hjCompOffMiddle = global.hjCompOffFirst + (global.hjCompBeolFirst * global.hjCharHeiHan); // 중성 오프셋
+global.hjCompOffLast = global.hjCompOffMiddle + (global.hjCompBeolMiddle * global.hjCharHeiHan); // 종성 오프셋
+global.hjCompOffJamo = global.hjCompOffLast + (global.hjCompBeolLast * global.hjCharHeiHan); // 자모 오프셋
+global.hjCompOffAscii = global.hjCompOffJamo + (global.hjCompBeolJamo * global.hjCharHeiHan); // ASCII 오프셋
+
+global.hjComp_LUT_BEOL_MID = -1; // 중성에 따른 초성 / 종성 벌 오프셋 테이블 ('감' vs '곰')
+for (var i=0; i<=7; i++)
+    global.hjComp_LUT_BEOL_MID[i] = 0; // 중성 [ㅏ ㅐ ㅑ ㅒ ㅓ ㅔ ㅕ ㅖ ㅣ] 는 1번째 벌 쓰기
+global.hjComp_LUT_BEOL_MID[20] = 0;
+for (var i=8; i<=19; i++)
+    global.hjComp_LUT_BEOL_MID[i] = global.hjCharHeiHan; // 중성 [ㅗ ㅘ ㅙ ㅚ ㅛ ㅜ ㅝ ㅞ ㅟ ㅠ ㅡ ㅢ]는 2번째 벌 쓰기
+
+global.hjComp_LUT_BEOL_LAST = -1; // 종성 여부에 따른 초성 벌 오프셋 테이블 ('곰' vs '가')
+global.hjComp_LUT_BEOL_LAST[0] = global.hjCharHeiHan; // 종성 없으면 벌 3~4 가져다 쓰기
+for (var i=1; i<=27; i++)
+    global.hjComp_LUT_BEOL_LAST[i] = 0; // 나머지는 그대로

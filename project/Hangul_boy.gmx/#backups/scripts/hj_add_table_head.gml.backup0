@@ -1,0 +1,28 @@
+// 2019-02-11 06:05:59
+///hj_add_table_jamo(map)
+/*
+    (자모 렌더링용) 자모와 대응하는 초성/중성/종성의 스프라이트 인덱스 테이블을 ds_map 에 넣습니다.
+*/
+
+var _headtable = "ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ";
+var _bodytable = "ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ";
+var _tailtable = "ㄱㄲㄳㄴㄵㄶㄷㄹㄺㄻㄼㄽㄾㄿㅀㅁㅂㅃㅅㅆㅇㅈㅊㅋㅌㅍㅎ";
+
+for (var i=$3130; i<=$3163; i++)
+{
+    var _jamo = chr(i); // 현재 체크할려는 자모
+    
+    var _pos = string_pos(_jamo, _headtable);
+    if (_pos != 0) // 현재 자모가 초성에 속함
+        ds_map_add(argument0, _jamo, global.hjGlyphJamoHead + _pos - 1);
+        
+    _pos = string_pos(_jamo, _bodytable);
+    if (_pos != 0) // 현재 자모가 중성에 속함
+        ds_map_add(argument0, _jamo, global.hjGlyphJamoBody + _pos - 1);
+        
+    _pos = string_pos(_jamo, _tailtable);
+    if (_pos != 0) // 현재 자모가 종성에 속함
+        ds_map_add(argument0, _jamo, global.hjGlyphJamoTail + _pos - 1);
+}
+
+return argument0;

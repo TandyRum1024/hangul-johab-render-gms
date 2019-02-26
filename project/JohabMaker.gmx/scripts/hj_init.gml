@@ -1,0 +1,258 @@
+#define hj_init
+/*
+    한글 조합형 드로잉 MK.2
+    ZIK @ 2019
+    =======================
+    이전 함수들은 hj_..._old 형식으로 보존되어있습니다.
+    
+    이번 버전은 두 가지 방법으로 한글을 드로우 할 수 있습니다.
+    도깨비한글 8x4x4벌식 폰트를 사용한 드로잉, 이전 버전의 형식이 있죠.
+    이전 버전의 형식으로 드로우할려면 hj_draw_sheet() 를 사용하세요.
+    이전 버전은 모두 통짜로 스프라이트를 사용하였는데 이번에는 서브이미지를 최대한 활용하기로 했습니다.
+    =======================
+    도깨비한글 8x4x4벌식:
+    - hj_draw_*() & hj_dkb_*()
+    - 초성 8벌, 중성 4벌, 종성 4벌 (16줄)
+    - 벌수가 많은만큼 글자가 더 자연스럽습니다. 대신 손수 제작하기가 드럽게 어렵습니다.
+    - 대신 자모를 그릴때 부자연스럽습니다 (예를들어 'ㄵ' 가 종성버전을 사용한다던지..)
+    - ASCII 스프라이트 별도.
+    
+    이전 버전 벌식:
+    - hj_draw_comp_*()
+    - 초성 [4벌 or 2벌 or 1벌], 중성 [2벌 or 1벌], 종성 [2벌 or 1벌], 자모 2줄, ASCII 5줄 (최대 15줄)
+    - 글자가 부자연스럽습니다. (예를들어 초성은 중성 'ㅚ' 와 'ㅏ' 모양을 고려해야한다던지..)
+    - 제작이 위 방식보단 쉽습니다.
+    - 자모를 위한 줄을 따로 만들어서 자모가 굉장히 자연스럽습니다.
+    - ASCII 내장 가능 (별도의 스프라이트 사용도 가능)
+*/
+
+// 캐쉬용 해시맵
+global.hjCacheData = ds_map_create(); // 글자 데이타 전용
+global.hjCacheWid = ds_map_create(); // 글자 넓이 전용
+global.hjCacheMisc = ds_map_create(); // 덜 중요한, 더 자주 초기화 되는 캐시
+
+/*
+    도깨비 8x4x4벌식 관련
+*/
+// 폰트 관련
+global.hjSpriteHan = sprHanH12; // 한글 스프라이트
+global.hjSpriteAscii = sprEngSlant; // ASCII 스프라이트
+global.hjCharWidHan = 16; // 한글 글자 너비 & 높이 (대부분 16x16)
+global.hjCharHeiHan = 16;
+global.hjCharWidAscii = 8; // ASCII 글자 너비 & 높이 (대부분 8x16)
+global.hjCharHeiAscii = 16; // (스페이스 바 넓이, 줄 높이는 이 변수를 사용합니다)
+global.hjGlyphKerning = 0; // 글자간 간격 (글자 너비 제외)
+global.hjGlyphLineheight = 1; // 줄 간격 (줄 높이 제외)
+
+global.hjGlyphJamoHead = 0; // 초성 / 자모만을 그릴때 몇 번째 줄을 사용할 지 정하는 변수
+global.hjGlyphJamoBody = 8; // 중성 / 자모만을 그릴때 몇 번째 줄을 사용할 지 정하는 변수
+global.hjGlyphJamoTail = 15; // 종성 / 자모만을 그릴때 몇 번째 줄을 사용할 지 정하는 변수
+// global.hjOffBody = (8 * 28) + 1; // 중성 오프셋 -- 아래 테이블에 포함되었습니다(?)
+// global.hjOffTail = global.hjOffBody + (4 * 28) - 1; // 종성 오프셋
+////////////////////////
+
+
+// 드로잉 관련
+global.hjDrawAlignH = 0; // 글자 맞춤 / 정렬
+global.hjDrawAlignV = 0;
+////////////////////////
+
+// 초/중/성의 벌을 구하기 위한 테이블
+// 이 테이블을 이용해 어느 줄의 스프라이트를 쓸지 알아냅니다.
+// (여기서 1줄은 28개의 스프라이트)
+/*
+    NOTE : 
+    드로잉 할때 벌 + 오프셋으로 하지 말고
+    애초에 벌 대신 (벌 + 오프셋) 으로 테이블을 제작하면 더욱 편할것같다
+*/
+// 초성 : 받침 없는 벌
+global.hjLUTHead = hj_gen_table(-1, "ㅏㅐㅑㅒㅓㅔㅕㅖㅣ", 0);
+global.hjLUTHead = hj_gen_table(global.hjLUTHead, "ㅗㅛㅡ", 1 * 28);
+global.hjLUTHead = hj_gen_table(global.hjLUTHead, "ㅜㅠ", 2 * 28);
+global.hjLUTHead = hj_gen_table(global.hjLUTHead, "ㅘㅙㅚㅢ", 3 * 28);
+global.hjLUTHead = hj_gen_table(global.hjLUTHead, "ㅝㅞㅟ", 4 * 28);
+
+// 초성 : 받침 있는 벌
+global.hjLUTHeadWithTail = hj_gen_table(-1, "ㅏㅐㅑㅒㅓㅔㅕㅖㅣ", 5 * 28);
+global.hjLUTHeadWithTail = hj_gen_table(global.hjLUTHeadWithTail, "ㅗㅛㅜㅠㅡ", 6 * 28);
+global.hjLUTHeadWithTail = hj_gen_table(global.hjLUTHeadWithTail, "ㅘㅙㅚㅢㅝㅞㅟ", 7 * 28);
+
+// 중성 : 받침 없는 벌
+global.hjLUTBody = hj_gen_table(-1, "ㄱㅋ", 8 * 28);
+global.hjLUTBody = hj_gen_table(global.hjLUTBody, "ㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅌㅍㅎ", 9 * 28); // 더 간편한 인덱싱을 위해 미리 28(한 줄의 스프라이트 갯수)를 곱합니다.
+
+// 중성 : 받침 있는 벌
+global.hjLUTBodyWithTail = hj_gen_table(-1, "ㄱㅋ", 10 * 28);
+global.hjLUTBodyWithTail = hj_gen_table(global.hjLUTBodyWithTail, "ㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅌㅍㅎ", 11 * 28);
+
+// 종성
+global.hjLUTTail = hj_gen_table(-1, "ㅏㅑㅘ", 12 * 28);
+global.hjLUTTail = hj_gen_table(global.hjLUTTail, "ㅓㅕㅚㅝㅟㅢㅣ", 13 * 28);
+global.hjLUTTail = hj_gen_table(global.hjLUTTail, "ㅐㅒㅔㅖㅙㅞ", 14 * 28);
+global.hjLUTTail = hj_gen_table(global.hjLUTTail, "ㅗㅛㅜㅠㅡ", 15 * 28);
+
+// 자모 테이블
+global.hjLUTJamo = hj_gen_table_jamo();
+
+/*
+    이전 버전 벌식 관련
+    이전 버전과의 호환성을 포기하시면 여기있는 글로벌 변수 대부분을 주석하시거나 지우셔도 됩니다.
+*/
+// 벌 수 관련
+/*
+    global.hjSpecialMiddle : 초성 & 종성이 중성에 따라 다른 벌을 사용하는지 여부
+    여기서 벌은 폰트 스프라이트에서 줄 수나 마찬가지입니다.
+    예를들어 초성이 2벌이라면 스프라이트 내에서는 총 2줄을 차지하게 되겠죠.
+    - true = 초성과 종성이 2벌을 사용합니다.
+    - false = 초성과 종성이 1벌만을 씁니다. 대신 글자 모양이 이상해집니다. (일명 도깨비체)
+*/
+global.hjCompSpecialMiddle = true;
+/*
+    global.hjSpecialLast : 초성 & 중성이 종성 여부에 따라 다른 벌을 사용하는지 여부
+    - true = 초성과 중성이 벌을 2배로 사용합니다. ( 종성 있는버전 & 종성 없는버전 )
+    - false = 초성과 중성의 벌 수가 그대로인 대신 종성이 없는 버전과 똑같이 그려집니다.
+    (예를들어 "가" 를 "갈" 글자에서 "ㄹ"이 없고 대신 빈칸이 있다고 생각해보세요.)
+*/
+global.hjCompSpecialLast = true; // 초성 & 중성의 종성 없는 버젼 사용?
+
+/*
+    벌 수 생성
+    (스크립트로 생성했지만 필요에 따라 직접 설정하실 수 있습니다.)
+*/
+global.hjCompBeolFirst = 4; // 초성 벌 수
+global.hjCompBeolMiddle = 2; // 중성 벌 수
+global.hjCompBeolLast = 2; // 종성 벌 수
+global.hjCompBeolJamo = 2; // 호환용 자모 벌 수
+hj_comp_calc_beol();
+
+// 오프셋
+global.hjCompOffFirst = 0; // 초성 인덱스 오프셋
+global.hjCompOffMiddle = global.hjCompOffFirst + (global.hjCompBeolFirst * global.hjCharHeiHan); // 중성 오프셋
+global.hjCompOffLast = global.hjCompOffMiddle + (global.hjCompBeolMiddle * global.hjCharHeiHan); // 종성 오프셋
+global.hjCompOffJamo = global.hjCompOffLast + (global.hjCompBeolLast * global.hjCharHeiHan); // 자모 오프셋
+global.hjCompOffAscii = global.hjCompOffJamo + (global.hjCompBeolJamo * global.hjCharHeiHan); // ASCII 오프셋
+
+// 단단한 상수
+global.hjComp_ASCII_LIMIT = 127; // ASCII 범위
+global.hjComp_LUT_BEOL_MID = -1; // 중성에 따른 초성 / 종성 벌 오프셋 테이블 ('감' vs '곰')
+for (var i=0; i<=7; i++)
+    global.hjComp_LUT_BEOL_MID[i] = 0; // 중성 [ㅏ ㅐ ㅑ ㅒ ㅓ ㅔ ㅕ ㅖ ㅣ] 는 1번째 벌 쓰기
+global.hjComp_LUT_BEOL_MID[20] = 0;
+for (var i=8; i<=19; i++)
+    global.hjComp_LUT_BEOL_MID[i] = global.hjCharHeiHan; // 중성 [ㅗ ㅘ ㅙ ㅚ ㅛ ㅜ ㅝ ㅞ ㅟ ㅠ ㅡ ㅢ]는 2번째 벌 쓰기
+//
+global.hjComp_LUT_BEOL_LAST = -1; // 종성 여부에 따른 초성 벌 오프셋 테이블 ('곰' vs '가')
+global.hjComp_LUT_BEOL_LAST[0] = global.hjCharHeiHan; // 종성 없으면 벌 3~4 가져다 쓰기
+for (var i=1; i<=27; i++)
+    global.hjComp_LUT_BEOL_LAST[i] = 0; // 나머지는 그대로
+////////////////////////
+
+#define hj_draw_unused
+///hj_draw_unused(x, y, str, colour, alpha)
+/*
+    한글 그리는 법 연구중...
+    여기있는 코드는 더이상 쓰이지 않지만 참고용으로 남겨둡니다.
+*/
+
+// 변수
+var _str = argument2;
+var _strx = argument0, _stry = argument1; // 글자 위치
+var _offx = 0, _offy = 0; // 글자 위치에 더해지는 오프셋 변수 (줄바꿈 & 정렬... ETC에 사용)
+var _originx = 0, _originy = 0; // 오프셋 원본 위치
+var _strcol = argument3, _stralpha = argument4;
+var _strlen = string_length(_str);
+var _asciioff = 0;
+var _asciispr = global.hjSpriteAscii;
+
+// 글자 렌더링 준비
+if (!global.hjUseAsciiSprite)
+{
+    _asciioff = global.hjOffAscii;
+    _asciispr = global.hjSpriteKor;
+}
+
+// 글자 렌더링 루틴
+var _curchr = "", _curord = $BEEF;
+var _escape = false; // 바로 전 글자가 \ (backslash) 인가요? (줄바꿈 무시 기능에 사용)
+var _dx, _dy;
+for (var i=1; i<=_strlen; i++)
+{
+    // 현재 위치의 글자 가져오기 & 오프셋 계산
+    _curchr = string_char_at(_str, i);
+    _curord = ord(_curchr);
+    _dx = _strx + _offx;
+    _dy = _stry + _offy;
+    
+    // ASCII (& 줄바꿈 etc)
+    if (_curord >= 0 && _curord <= global.hj_ASCII_LIMIT)
+    {
+        var _drawchr = _curchr;
+        
+        // 줄바꿈
+        if (_curchr == "#" && !_escape)
+        {
+            _offx = _originx;
+            _offy += global.hjGlpyhLineheight + global.hjCharHeiKor;
+            continue; // 쌩까기
+        }
+        // 이스케이프 시퀀스
+        if (_curchr == "\")
+        {
+            _escape = true;
+            continue;
+        }
+        else
+        {
+            _escape = false;
+        }
+        
+        // iui_rect(_dx, _dy, global.hjCharWidAscii, global.hjCharWidAscii, ~_strcol);
+        // iui_label(_dx, _dy, _drawchr, c_black);
+        // draw_image_ext(_asciispr, _asciioff + _curord, _dx, _dy, 1, 1, 0, _strcol, 1);
+        draw_sprite_ext(_asciispr, _asciioff + _curord, _dx, _dy, 1, 1, 0, _strcol, 1);
+        
+        // 오프셋 증가
+        _offx += global.hjCharWidAscii + global.hjGlyphKerning;
+    }
+    else // 한글
+    {
+        var _kr;
+        if (_curord >= $AC00 && _curord <= $D7AF) // 조합
+        {
+            _kr = _curord - $AC00;
+            
+            // 초/중/종성 구하기 & 벌 (오프셋) 구하기
+            var _first = _kr div (588);
+            var _mid = (_kr % (588)) div 28;
+            var _last = _kr % 28;
+            var _offlast = global.hj_LUT_BEOL_MID[_mid] * global.hjSpecialMiddle;
+            var _offmid = global.hj_LUT_BEOL_LAST[_last] * global.hjSpecialLast;
+            var _offfirst = _offlast + _offmid * 2;
+            
+            draw_sprite_ext(global.hjSpriteKor, _first + global.hjOffFirst + _offfirst, _dx, _dy, 1, 1, 0, _strcol, 1);
+            draw_sprite_ext(global.hjSpriteKor, _mid + global.hjOffMiddle + _offmid, _dx, _dy, 1, 1, 0, _strcol, 1);
+            draw_sprite_ext(global.hjSpriteKor, _last + global.hjOffLast + _offlast, _dx, _dy, 1, 1, 0, _strcol, 1);
+            
+            // 오프셋 증가
+            _offx += global.hjCharWidKor + global.hjGlyphKerning;
+        }
+        else if (_curord >= $3130 && _curord <= $3163)// 호환용 자모 ([ㄱㄴㄷㄻㅄ ㅏㅒㅑㅛ] ETC...)
+        {
+            _kr = _curord - $3130;
+            draw_sprite_ext(global.hjSpriteKor, global.hjOffJamo + _kr, _dx, _dy, 1, 1, 0, _strcol, 1);
+            
+            // 오프셋 증가
+            _offx += global.hjCharWidKor + global.hjGlyphKerning;
+        }
+        else // 며느리도 모르는 외계어
+        {
+            _kr = "u["+string(_curord)+"]";
+            // draw_sprite_ext(_asciispr, _asciioff + 63, _dx, _dy, 1, 1, 0, c_red, 1); // ????????
+            draw_text_colour(_dx, _dy, _kr, c_red, c_red, c_red, c_red, 1);
+            
+            // 오프셋 증가
+            _offx += string_width(_kr) + global.hjGlyphKerning;
+        }
+        
+    }
+}
