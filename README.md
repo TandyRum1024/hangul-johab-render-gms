@@ -13,11 +13,15 @@
 **목차...**
 ===
 - [만든 이유](https://github.com/TandyRum1024/hangul-johab-render-gms/tree/johab-rework#%EC%99%9C-%EB%A7%8C%EB%93%A4%EC%97%88%EB%8A%94%EC%A7%80-%EA%B6%81%EA%B8%88%ED%95%A9%EB%8B%88%EB%8B%A4-aka-%ED%95%9C%EA%B8%80-%EC%B6%9C%EB%A0%A5-%EA%B4%80%EB%A0%A8-%EB%95%A1%EA%B9%A1)
-- [기능과 한계점](https://github.com/TandyRum1024/hangul-johab-render-gms/tree/johab-rework#%EC%96%B4%EC%B0%8C%EC%A0%80%EC%B0%8C-%EB%A7%8C%EB%93%A4%EC%96%B4%EB%91%94-%EA%B8%B0%EB%8A%A5--%ED%95%9C%EA%B3%84%EC%A0%90)
-- [정보](https://github.com/TandyRum1024/hangul-johab-render-gms/tree/johab-rework#%EC%99%9C-%EB%A7%8C%EB%93%A4%EC%97%88%EB%8A%94%EC%A7%80-%EA%B6%81%EA%B8%88%ED%95%A9%EB%8B%88%EB%8B%A4-aka-%ED%95%9C%EA%B8%80-%EC%B6%9C%EB%A0%A5-%EA%B4%80%EB%A0%A8-%EB%95%A1%EA%B9%A1)
+- [프로젝트 파일 관련](https://github.com/TandyRum1024/hangul-johab-render-gms/tree/johab-rework#%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%ED%8C%8C%EC%9D%BC-%EA%B4%80%EB%A0%A8)
+- [기능과 한계점](https://github.com/TandyRum1024/hangul-johab-render-gms/tree/johab-rework#%EA%B8%B0%EB%8A%A5--%ED%95%9C%EA%B3%84%EC%A0%90)
+- [정보](https://github.com/TandyRum1024/hangul-johab-render-gms/tree/johab-rework#%EC%95%8C%EC%95%84%EB%91%90%EC%96%B4%EC%95%BC-%ED%95%A0-%EA%B2%83)
     - [함수 길잡이 : 도깨비한글 출력](https://github.com/TandyRum1024/hangul-johab-render-gms/tree/johab-rework#%ED%95%A8%EC%88%98-%EA%B8%B8%EC%9E%A1%EC%9D%B4--%EB%8F%84%EA%B9%A8%EB%B9%84%ED%95%9C%EA%B8%80-%EB%B2%8C%EC%8B%9D--%EA%B8%B0%EB%B3%B8-%EB%B2%8C%EC%8B%9D-%EC%B6%9C%EB%A0%A5-%EA%B4%80%EB%A0%A8)
     - [함수 길잡이 : 사제/이전버전 형식 출력](https://github.com/TandyRum1024/hangul-johab-render-gms/tree/johab-rework#%ED%95%A8%EC%88%98-%EA%B8%B8%EC%9E%A1%EC%9D%B4--%EC%82%AC%EC%A0%9C-%EB%B2%8C%EC%8B%9D--%EC%9D%B4%EC%A0%84-%EB%B2%84%EC%A0%84-%EB%B2%8C%EC%8B%9D-%EC%B6%9C%EB%A0%A5-%EA%B4%80%EB%A0%A8)
     - [함수 길잡이 : 기타](https://github.com/TandyRum1024/hangul-johab-render-gms/tree/johab-rework#%ED%95%A8%EC%88%98-%EA%B8%B8%EC%9E%A1%EC%9D%B4--%EA%B8%B0%ED%83%80)
+- [글꼴 관련](https://github.com/TandyRum1024/hangul-johab-render-gms/tree/johab-rework#%EA%B8%80%EA%BC%B4-%EA%B4%80%EB%A0%A8)
+    - [글꼴 제작 관련](https://github.com/TandyRum1024/hangul-johab-render-gms/tree/johab-rework#%EA%B8%80%EA%BC%B4-%EC%A0%9C%EC%9E%91-%EA%B4%80%EB%A0%A8)
+    - [글꼴 편집기](https://github.com/TandyRum1024/hangul-johab-render-gms/tree/johab-rework#%EA%B8%80%EA%BC%B4-%ED%8E%B8%EC%A7%91%EA%B8%B0)
 
 프로젝트 파일 관련
 ===
@@ -224,9 +228,21 @@ hj_change_font_ext(hanspr, asciispr, hanwidth, hanheight, asciiwidth, asciiheigh
 ---
 ![편집기 1](pics/EDITOR_SCR1.png)
 ![편집기 2](pics/EDITOR_SCR2.png)
+
 개발 당시 테스트와 글꼴 제작을 돕기 위해 편집기를 뚝딱 만들었습니다.
 itch\.io 에 올려두었으니 필요하시면 확인해 보세요!<br>
 (귀찮으시면 `조합_글꼴_편집기.exe`를 실행시켜도 되요. 하지만 늘 최신버전일지는 장담 못해요!)
 
 ### **[itch.io 링크](https://zikbakguru.itch.io/einstein-bacon-machine)**
 
+
+**참고 문헌 & 더 보기**
+===
+
+### [김성익님의 한글 출력에 관한 글](https://mytears.org/resources/doc/Hangul/HANGUL.TXT)
+
+### [박연오님의 "한글 비트맵 폰트 출력"](https://bakyeono.net/post/2013-12-03-clojure-hangul-bitmap-font.html)
+
+### [네이버의 "한글 인코딩의 이해"](https://d2.naver.com/helloworld/76650)
+
+### ["한글 구현 및 글꼴(폰트) 처리 관련 C소스코드 자료 모음집"](http://blog.tcltk.co.kr/?p=2858)

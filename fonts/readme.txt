@@ -11,6 +11,8 @@ https://parkjuwan.tistory.com/54
 바이트체 (FNT_HAN_BYTE) - 허인구 님
 소망체 (FNT_HAN_SOMANG) - 윤희옥 님
 긴샘체 (FNT_HAN_GINSAEM) - 이종훈 님
+NEO 둥근모꼴 (FNT_HAN_NEODKM) - https://dalgona.github.io/neodgm/
+삼국지 3 글꼴 (FNT_HAN_SAM3KR) - https://github.com/leedheo/fonts
 
 서울남산체 (FNT_HAN_SEOUL) - 서울시 배포
 > 서울남산체는 한글 24x24, ASCII 14x24 크기를 가집니다!
@@ -21,6 +23,8 @@ ASCII - 8x16
 AD 2400 (FNT_ENG_BYTE) - 작자 미상
 SCRIPT BOLD (FNT_ENG_SCRIPT) - 작자 미상
 SLANT (FNT_ENG_SLANT) - 작자 미상
+NEO 둥근모꼴 (FNT_ENG_NEODKM) - https://dalgona.github.io/neodgm/
+삼국지 3 글꼴 (FNT_ENG_SAM3KR) - https://github.com/leedheo/fonts
 
 서울남산체 (FNT_ENG_SEOUL) - 서울시 배포
 > 서울남산체는 한글 24x24, ASCII 14x24 크기를 가집니다!
