@@ -162,7 +162,8 @@ shader_set_uniform_f(shader_get_uniform(shd_whatthefuck, "col1"), (_c1 &amp; $00
 shader_set_uniform_f(shader_get_uniform(shd_whatthefuck, "col2"), (_c2 &amp; $0000FF) / 255, ((_c2 &amp; $00FF00) &gt;&gt; 8) / 255, ((_c2 &amp; $FF0000) &gt;&gt; 16) / 255);
 draw_surface(_trashsurf, 0, 0);
 shader_reset();
-    
+
+
 // Draw title
 var _titleW = WIN_WID;
 var _titleHalf = (_titleW &gt;&gt; 1);
@@ -200,6 +201,7 @@ hj_draw(WIN_HALF_WID, WIN_HALF_HEI - 64 - 120 - 20, "(엔터 키로 다음 룸�
 hj_draw_transformed(WIN_HALF_WID + _squeezex, WIN_HALF_HEI + 10 + _squeezey, "도깨비한글 벌식 지원!", _squeezex, _squeezey, 0, F8.BLACK, 1);
 hj_draw_transformed(WIN_HALF_WID, WIN_HALF_HEI + 10, "도깨비한글 벌식 지원!", _squeezex, _squeezey, 0, F8.YELLOW, 1);
 
+var _colour = make_colour_hsv(animTimer * 5, 255, 255);
 var _copypasta = "이 스크립트 모음은 조합형을 사용해서 그릴수 있게 해줍니다.. 그러하여 이젠 '똚방괅화' 같이 개같은 글자도 그릴 수 있다는거죠. 다만 속도가... 슬퍼요..      제작 : 짘박구루@2019";
 var _screenmaxchars = WIN_WID div 48;
 var _scrolllen = string_length(_copypasta) * 48 + _screenmaxchars * 48 + 84;

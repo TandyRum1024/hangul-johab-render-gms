@@ -82,16 +82,16 @@ for (var i=0; i<_strlen; i++)
             break;
         default:
         case 2: // ASCII
-            draw_sprite_ext(global.hjSpriteAscii, _idx1, _offx, _offy, 1, 1, 0, _strcol, _stralpha);
+            draw_sprite_ext(global.hjSpriteAscii, _idx1, _offx, _offy, 1, 1, 0, _strcol, 1);
             
             // 오프셋 증가
             _offx += _asciiw;//global.hjCharWidAscii + global.hjGlyphKerning;
             _linewid += _asciiw;
             break;
         case 3: // 조합형 한글
-            draw_sprite_ext(global.hjSpriteHan, _idx1, _offx, _offy, 1, 1, 0, _strcol, _stralpha);
-            draw_sprite_ext(global.hjSpriteHan, _idx2, _offx, _offy, 1, 1, 0, _strcol, _stralpha);
-            draw_sprite_ext(global.hjSpriteHan, _idx3, _offx, _offy, 1, 1, 0, _strcol, _stralpha);
+            draw_sprite_ext(global.hjSpriteHan, _idx1, _offx, _offy, 1, 1, 0, _strcol, 1);
+            draw_sprite_ext(global.hjSpriteHan, _idx2, _offx, _offy, 1, 1, 0, _strcol, 1);
+            draw_sprite_ext(global.hjSpriteHan, _idx3, _offx, _offy, 1, 1, 0, _strcol, 1);
             
             // 오프셋 증가
             _offx += _hanw;//global.hjCharWidHan + global.hjGlyphKerning;
@@ -99,7 +99,7 @@ for (var i=0; i<_strlen; i++)
             break;
             
         case 4: // 한글 자모
-            draw_sprite_ext(global.hjSpriteHan, _idx1, _offx, _offy, 1, 1, 0, _strcol, _stralpha);
+            draw_sprite_ext(global.hjSpriteHan, _idx1, _offx, _offy, 1, 1, 0, _strcol, 1);
             
             // 오프셋 증가
             _offx += _hanw;//global.hjCharWidHan + global.hjGlyphKerning;

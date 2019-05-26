@@ -76,7 +76,7 @@ for (var i=0; i<_charlen; i++)
 surface_reset_target();
 
 
-/// BUILD ASCII IF DKB844
+/// BAKE ASCII TEXTURE IF DKB844 FLAG IS SET
 if (FNT_DKB)
 {
     // update ascii surface
@@ -204,9 +204,14 @@ for (var i=0; i<_charlen; i++)
 
 surface_reset_target();
 
-/// BUILD ASCII IF DKB844
+/// BAKE ASCII TEXTURE IF DKB844 FLAG IS SET
 if (FNT_DKB)
 {
+    // Calc new sizes for ascii texture
+    // Why did I forgot about this.. god dammit
+    _newWid = 32 * charAsciiWid;
+    _newHei = 8 * charAsciiWid;
+    
     // build temp ascii w/ black bg
     var _tempsurf = surface_create(_newWid, _newHei);
     surface_set_target(_tempsurf);

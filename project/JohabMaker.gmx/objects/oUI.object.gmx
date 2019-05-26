@@ -778,10 +778,15 @@ switch (uCurrentTab)
             if (sprite_exists(fntSprite))
                 sprite_delete(fntSprite);
             
+            show_debug_message("ASCII SZ BEFORE PREVIEW : " + string(charAsciiWid) + ", " + string(charAsciiHei));
+                
             build_font_tex_ext(false, 0, 0);
             fntSprite = sprite_create_from_surface(fntTex, 0, 0, gridWid * charWid, gridHei * charHei, false, false, 0, 0);
             fntAsciiSprite = sprite_create_from_surface(fntAsciiTex, 0, 0, 32 * charAsciiWid, 8 * charAsciiHei, false, false, 0, 0);
             build_font_tex();
+            
+            show_debug_message("&gt; SURFSZ : " + string(surface_get_width(fntAsciiTex)) + ", " + string(surface_get_height(fntAsciiTex)));
+            show_debug_message("&gt; SPRSZ : " + string(sprite_get_width(fntAsciiSprite)) + ", " + string(sprite_get_height(fntAsciiSprite)));
             
             if (FNT_DKB) // dkb844 - set han &amp; asc font &amp; size
             {
@@ -1442,6 +1447,7 @@ if (uiModal)
             iui_label(_inputX + 10, _inputFontY + 10, _fonttext, _fontstr);
             draw_set_font(fntOWO);
             
+            // draw_sprite(fntAsciiSprite, 0, WIN_WID / 2, WIN_HEI / 2);
             // draw_sprite(fntSprite, 0, 10, 10);
             // hj_draw(_inputX + 10, _inputFontY + 10, _fonttext, _fontstr, 1);
             // iui_label(_inputX + 10, _inputTestY + 10, _testtext, _teststr);
@@ -1487,7 +1493,7 @@ if (uiModal)
             }
             
             iui_align_center();
-            iui_label(_winhalfw, _modalTitleY + _surfY + _bigmargin + _smallmargin, "(표시용 크기 조절로 인해 픽셀이 뭉개질 수 있읍니다...)", COL.PISS);
+            iui_label(_winhalfw, _modalTitleY + _surfY + _bigmargin + _smallmargin, "(그림 크기 조절로 픽셀이 뭉개져 보일수 있으나 결과물에 영향은 없습니다.)", COL.PISS);
             iui_align_pop();
             
             // show attributes
