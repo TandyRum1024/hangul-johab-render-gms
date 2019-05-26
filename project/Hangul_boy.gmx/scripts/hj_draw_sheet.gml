@@ -108,7 +108,7 @@ for (var i=0; i<_strlen; i++)
             _v = (_idx1 div 32) * global.hjCharHeiAscii;
             
             // draw_sprite_ext(global.hjSpriteAscii, _idx1, _offx, _offy, 1, 1, 0, _strcol, 1);
-            draw_sprite_part_ext(_asciispr, 0, _u, _v, global.hjCharWidAscii, global.hjCharHeiAscii, _offx, _offy, 1, 1, _strcol, _stralpha);
+            draw_sprite_part_ext(_asciispr, 0, _u, _v, global.hjCharWidAscii, global.hjCharHeiAscii, _offx, _offy, 1, 1, _strcol, 1);
             
             // 오프셋 증가
             _offx += _asciiw;//global.hjCharWidAscii + global.hjGlyphKerning;
@@ -116,15 +116,15 @@ for (var i=0; i<_strlen; i++)
         case 3: // 조합형 한글
             _u = (_idx1 % 28) * global.hjCharWidHan;
             _v = (_idx1 div 28) * global.hjCharHeiHan;
-            draw_sprite_part_ext(_hanspr, 0, _u, _v, global.hjCharWidHan, global.hjCharHeiHan, _offx, _offy, 1, 1, _strcol, _stralpha);
+            draw_sprite_part_ext(_hanspr, 0, _u, _v, global.hjCharWidHan, global.hjCharHeiHan, _offx, _offy, 1, 1, _strcol, 1);
             
             _u = (_idx2 % 28) * global.hjCharWidHan;
             _v = (_idx2 div 28) * global.hjCharHeiHan;
-            draw_sprite_part_ext(_hanspr, 0, _u, _v, global.hjCharWidHan, global.hjCharHeiHan, _offx, _offy, 1, 1, _strcol, _stralpha);
+            draw_sprite_part_ext(_hanspr, 0, _u, _v, global.hjCharWidHan, global.hjCharHeiHan, _offx, _offy, 1, 1, _strcol, 1);
             
             _u = (_idx3 % 28) * global.hjCharWidHan;
             _v = (_idx3 div 28) * global.hjCharHeiHan;
-            draw_sprite_part_ext(_hanspr, 0, _u, _v, global.hjCharWidHan, global.hjCharHeiHan, _offx, _offy, 1, 1, _strcol, _stralpha);
+            draw_sprite_part_ext(_hanspr, 0, _u, _v, global.hjCharWidHan, global.hjCharHeiHan, _offx, _offy, 1, 1, _strcol, 1);
             
             // 오프셋 증가
             _offx += _hanw;//global.hjCharWidHan + global.hjGlyphKerning;
@@ -133,7 +133,7 @@ for (var i=0; i<_strlen; i++)
         case 4: // 한글 자모
             _u = (_idx1 % 28) * global.hjCharWidHan;
             _v = (_idx1 div 28) * global.hjCharHeiHan;
-            draw_sprite_part_ext(_hanspr, 0, _u, _v, global.hjCharWidHan, global.hjCharHeiHan, _offx, _offy, 1, 1, _strcol, _stralpha);
+            draw_sprite_part_ext(_hanspr, 0, _u, _v, global.hjCharWidHan, global.hjCharHeiHan, _offx, _offy, 1, 1, _strcol, 1);
             
             // 오프셋 증가
             _offx += _hanw;//global.hjCharWidHan + global.hjGlyphKerning;

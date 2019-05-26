@@ -19,11 +19,10 @@ void main()
 }
 
 //######################_==_YOYO_SHADER_MARKER_==_######################@~//
-// #define PIX_W 512
 // Vååt då fååk???????
 // 요상한 쉐이더 -- Munching Squares 알고리즘 응용.. 라이선스는 아래에
 /*
-	Munching Squares example Shader
+Munching Squares example Shader
     Copyright (C) 2013  Daniel Hedeblom <maxifoo@gmail.com>
 
     This program is free software: you can redistribute it and/or modify
@@ -40,7 +39,6 @@ void main()
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// #define PIX_H 384
 varying vec2 v_vTexcoord;
 varying vec4 v_vColour;
 uniform float time;
@@ -57,7 +55,7 @@ void main()
     float scale = screenSize.x / screenSize.y;
     vec2 uv = v_vTexcoord;
     
-    // rotation & translate setup
+    // 술취한 아저씨마냥 카메라 흔들거리기
     float offset = time * 0.2 + sin(time * 5.0) * 0.05;
     float angle = sin(time) * 15.0 + sin(time * 2.4 + 4.2) * 2.0 * cos(time * 3.0);
     float _cos = cos(radians(angle));
@@ -65,7 +63,7 @@ void main()
     
     // 크기 조정
     uv = uv - 0.5;
-	uv.y /= scale;
+    uv.y /= scale;
     
     // mat2로 회전 행렬 생성
     uv -= 0.5;
@@ -76,38 +74,39 @@ void main()
     uv += vec2(offset + sin(time) * 0.1, offset + cos(time) * 0.1);
     
     // XOR
-	vec2 b = uv * pixel + pixel;
+    vec2 b = uv * pixel + pixel;
     float p;
     float c = 0.0;
-	for(float i=16.0;i>=1.0;i-=1.0)
-	{
-		p = pow(2.0,i);
- 
-		if((p < b.x) ^^
-		   (p < b.y))
-		{
-			c += p;
-		}
- 
-		if(p < b.x)
-		{
-			b.x -= p;
-		}
- 
-		if(p < b.y)
-		{
-			b.y -= p;
-		}
- 
-	}
-	c = mod(c / 128.0, 1.0);
+    for(float i=16.0;i>=1.0;i-=1.0)
+    {
+    p = pow(2.0,i);
+     
+    if((p < b.x) ^^
+       (p < b.y))
+    {
+    c += p;
+    }
+     
+    if(p < b.x)
+    {
+    b.x -= p;
+    }
+     
+    if(p < b.y)
+    {
+    b.y -= p;
+    }
+     
+    }
+    c = mod(c / 128.0, 1.0);
+    // XOR 끝
  
     // XOR냠냠이 애니메이션
     float cbig = c * 10.0 - pow(sin(time * 1.65), 2.0) * 10.0 + 5.0;
-	float intensity = fract(max(floor(cbig) / 10.0, 0.0));
+    float intensity = fract(max(floor(cbig) / 10.0, 0.0));
     
     // 색 입히기
-	final = vec4(mix(col1, col2, intensity), 1.0);
+    final = vec4(mix(col1, col2, intensity), 1.0);
     
     // 빈녵
     vec2 delta = v_vTexcoord - vec2(0.5);

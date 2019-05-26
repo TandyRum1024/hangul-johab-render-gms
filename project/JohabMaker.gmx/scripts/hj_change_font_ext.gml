@@ -1,4 +1,4 @@
-///hj_dkb_change_font_ext(hanspr, asciispr, hanwidth, hanheight, asciiwidth, asciiheight)
+///hj_change_font_ext(hanspr, asciispr, hanwidth, hanheight, asciiwidth, asciiheight)
 /*
     [도꺠비 8x8x4벌식]
     폰트와 크기 설정을 바꿉니다.

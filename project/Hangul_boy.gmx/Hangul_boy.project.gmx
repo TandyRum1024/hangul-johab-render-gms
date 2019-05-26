@@ -33,16 +33,6 @@
         <script>scripts\hj_draw_comp_ext.gml</script>
         <script>scripts\hj_draw_comp_raw.gml</script>
       </scripts>
-      <scripts name="dkb884">
-        <script>scripts\hj_dkb_compile_str.gml</script>
-        <script>scripts\hj_change_font.gml</script>
-        <script>scripts\hj_change_font_ext.gml</script>
-        <script>scripts\hj_draw_sheet.gml</script>
-        <script>scripts\hj_draw.gml</script>
-        <script>scripts\hj_draw_transformed.gml</script>
-        <script>scripts\hj_draw_ext.gml</script>
-        <script>scripts\hj_draw_raw.gml</script>
-      </scripts>
       <scripts name="internal">
         <script>scripts\hj_init_old.gml</script>
         <script>scripts\hj_gen_table.gml</script>
@@ -53,6 +43,16 @@
         <script>scripts\hj_string_get_first_line.gml</script>
         <script>scripts\hj_string_width_raw.gml</script>
         <script>scripts\hj_string_width_line_raw.gml</script>
+      </scripts>
+      <scripts name="dkb884">
+        <script>scripts\hj_dkb_compile_str.gml</script>
+        <script>scripts\hj_change_font.gml</script>
+        <script>scripts\hj_change_font_ext.gml</script>
+        <script>scripts\hj_draw_sheet.gml</script>
+        <script>scripts\hj_draw.gml</script>
+        <script>scripts\hj_draw_transformed.gml</script>
+        <script>scripts\hj_draw_ext.gml</script>
+        <script>scripts\hj_draw_raw.gml</script>
       </scripts>
       <script>scripts\hj_init.gml</script>
       <script>scripts\hj_string_width.gml</script>

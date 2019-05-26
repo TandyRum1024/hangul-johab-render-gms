@@ -1,4 +1,4 @@
-///hj_draw_dkb_transformed(x, y, str, xscale, yscale, angle, colour, alpha)
+///hj_draw_transformed(x, y, str, xscale, yscale, angle, colour, alpha)
 /*
     (도깨비 8x4x4벌식) 한글 문자열을 컴파일한 뒤 드로우 합니다.
     컴파일 된 데이터는 global.hjCache 해시맵 변수에 캐쉬됩니다.
