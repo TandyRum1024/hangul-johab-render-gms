@@ -12,17 +12,17 @@
 
 **목차...**
 ===
-- [프로젝트 파일 관련](https://github.com/TandyRum1024/hangul-johab-render-gms/tree/johab-rework#%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%ED%8C%8C%EC%9D%BC-%EA%B4%80%EB%A0%A8)
-- [만든 이유](https://github.com/TandyRum1024/hangul-johab-render-gms/tree/johab-rework#%EC%99%9C-%EB%A7%8C%EB%93%A4%EC%97%88%EB%8A%94%EC%A7%80-%EA%B6%81%EA%B8%88%ED%95%A9%EB%8B%88%EB%8B%A4-aka-%ED%95%9C%EA%B8%80-%EC%B6%9C%EB%A0%A5-%EA%B4%80%EB%A0%A8-%EB%95%A1%EA%B9%A1)
-- [기능과 한계점](https://github.com/TandyRum1024/hangul-johab-render-gms/tree/johab-rework#%EA%B8%B0%EB%8A%A5--%ED%95%9C%EA%B3%84%EC%A0%90)
-- [정보](https://github.com/TandyRum1024/hangul-johab-render-gms/tree/johab-rework#%EC%95%8C%EC%95%84%EB%91%90%EC%96%B4%EC%95%BC-%ED%95%A0-%EA%B2%83)
-    - [함수 길잡이 : 도깨비한글 출력](https://github.com/TandyRum1024/hangul-johab-render-gms/tree/johab-rework#%ED%95%A8%EC%88%98-%EA%B8%B8%EC%9E%A1%EC%9D%B4--%EB%8F%84%EA%B9%A8%EB%B9%84%ED%95%9C%EA%B8%80-%EB%B2%8C%EC%8B%9D--%EA%B8%B0%EB%B3%B8-%EB%B2%8C%EC%8B%9D-%EC%B6%9C%EB%A0%A5-%EA%B4%80%EB%A0%A8)
-    - [함수 길잡이 : 사제/이전버전 형식 출력](https://github.com/TandyRum1024/hangul-johab-render-gms/tree/johab-rework#%ED%95%A8%EC%88%98-%EA%B8%B8%EC%9E%A1%EC%9D%B4--%EC%82%AC%EC%A0%9C-%EB%B2%8C%EC%8B%9D--%EC%9D%B4%EC%A0%84-%EB%B2%84%EC%A0%84-%EB%B2%8C%EC%8B%9D-%EC%B6%9C%EB%A0%A5-%EA%B4%80%EB%A0%A8)
-    - [함수 길잡이 : 기타](https://github.com/TandyRum1024/hangul-johab-render-gms/tree/johab-rework#%ED%95%A8%EC%88%98-%EA%B8%B8%EC%9E%A1%EC%9D%B4--%EA%B8%B0%ED%83%80)
-- [글꼴 관련](https://github.com/TandyRum1024/hangul-johab-render-gms/tree/johab-rework#%EA%B8%80%EA%BC%B4-%EA%B4%80%EB%A0%A8)
-    - [글꼴 제작 관련](https://github.com/TandyRum1024/hangul-johab-render-gms/tree/johab-rework#%EA%B8%80%EA%BC%B4-%EC%A0%9C%EC%9E%91-%EA%B4%80%EB%A0%A8)
-    - [글꼴 편집기](https://github.com/TandyRum1024/hangul-johab-render-gms/tree/johab-rework#%EA%B8%80%EA%BC%B4-%ED%8E%B8%EC%A7%91%EA%B8%B0)
-- [참고 문헌](https://github.com/TandyRum1024/hangul-johab-render-gms/tree/johab-rework#%EC%B0%B8%EA%B3%A0-%EB%AC%B8%ED%97%8C--%EB%8D%94-%EB%B3%B4%EA%B8%B0)
+- [프로젝트 파일 관련](https://github.com/TandyRum1024/hangul-johab-render-gms#%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%ED%8C%8C%EC%9D%BC-%EA%B4%80%EB%A0%A8)
+- [만든 이유](https://github.com/TandyRum1024/hangul-johab-render-gms#%EC%99%9C-%EB%A7%8C%EB%93%A4%EC%97%88%EB%8A%94%EC%A7%80-%EA%B6%81%EA%B8%88%ED%95%A9%EB%8B%88%EB%8B%A4-aka-%ED%95%9C%EA%B8%80-%EC%B6%9C%EB%A0%A5-%EA%B4%80%EB%A0%A8-%EB%95%A1%EA%B9%A1)
+- [기능과 한계점](https://github.com/TandyRum1024/hangul-johab-render-gms#%EA%B8%B0%EB%8A%A5--%ED%95%9C%EA%B3%84%EC%A0%90)
+- [정보](https://github.com/TandyRum1024/hangul-johab-render-gms#%EC%95%8C%EC%95%84%EB%91%90%EC%96%B4%EC%95%BC-%ED%95%A0-%EA%B2%83)
+    - [함수 길잡이 : 도깨비한글 출력](https://github.com/TandyRum1024/hangul-johab-render-gms#%ED%95%A8%EC%88%98-%EA%B8%B8%EC%9E%A1%EC%9D%B4--%EB%8F%84%EA%B9%A8%EB%B9%84%ED%95%9C%EA%B8%80-%EB%B2%8C%EC%8B%9D--%EA%B8%B0%EB%B3%B8-%EB%B2%8C%EC%8B%9D-%EC%B6%9C%EB%A0%A5-%EA%B4%80%EB%A0%A8)
+    - [함수 길잡이 : 사제/이전버전 형식 출력](https://github.com/TandyRum1024/hangul-johab-render-gms#%ED%95%A8%EC%88%98-%EA%B8%B8%EC%9E%A1%EC%9D%B4--%EC%82%AC%EC%A0%9C-%EB%B2%8C%EC%8B%9D--%EC%9D%B4%EC%A0%84-%EB%B2%84%EC%A0%84-%EB%B2%8C%EC%8B%9D-%EC%B6%9C%EB%A0%A5-%EA%B4%80%EB%A0%A8)
+    - [함수 길잡이 : 기타](https://github.com/TandyRum1024/hangul-johab-render-gms#%ED%95%A8%EC%88%98-%EA%B8%B8%EC%9E%A1%EC%9D%B4--%EA%B8%B0%ED%83%80)
+- [글꼴 관련](https://github.com/TandyRum1024/hangul-johab-render-gms#%EA%B8%80%EA%BC%B4-%EA%B4%80%EB%A0%A8)
+    - [글꼴 제작 관련](https://github.com/TandyRum1024/hangul-johab-render-gms#%EA%B8%80%EA%BC%B4-%EC%A0%9C%EC%9E%91-%EA%B4%80%EB%A0%A8)
+    - [글꼴 편집기](https://github.com/TandyRum1024/hangul-johab-render-gms#%EA%B8%80%EA%BC%B4-%ED%8E%B8%EC%A7%91%EA%B8%B0)
+- [참고 문헌](https://github.com/TandyRum1024/hangul-johab-render-gms#%EC%B0%B8%EA%B3%A0-%EB%AC%B8%ED%97%8C--%EB%8D%94-%EB%B3%B4%EA%B8%B0)
 
 프로젝트 파일 관련
 ===
