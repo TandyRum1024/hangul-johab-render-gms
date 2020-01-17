@@ -13,6 +13,9 @@ cbSpecialTail = true;
 cbExportGrid = false;
 cbExportBG = false;
 
+cbExportHeaderGenComments = true;
+cbExportHeaderTrimBlanks = false;
+
 
 // colorem boyy
 enum COL
@@ -64,6 +67,7 @@ enum UI_MODAL
 {
     PREVIEW = 0,
     EXPORT,
+    EXPORT_HEADER,
     DEBUG,
     LOADING,
     MESSAGE

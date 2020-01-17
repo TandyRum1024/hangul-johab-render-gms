@@ -147,6 +147,9 @@ projectLoadRequest = false;
 projectLoadPath = "";
 projectLoad = false;
 
+exportHeaderRequest = false;
+exportHeaderPath = "";
+
 // shashlik
 PEPPERONI_SECRET = false;
 PEPPIS = false;
@@ -232,22 +235,25 @@ if (!surface_exists(fntAsciiTex))
 
 if (uiModal)
 {
-    if (!surface_exists(previewTex))
+    if (uiModalState == UI_MODAL.EXPORT)
     {
-        build_font_tex_ext(cbExportGrid, c_black, cbExportBG);
-        var _w = surface_get_width(fntTex), _h = surface_get_height(fntTex);
-        previewTex = surface_create(_w, _h);
-        surface_copy(previewTex, 0, 0, fntTex);
-        build_font_tex();
-    }
-    
-    if (!surface_exists(previewAsciiTex))
-    {
-        build_font_tex_ext(cbExportGrid, c_black, cbExportBG);
-        var _w = surface_get_width(fntAsciiTex), _h = surface_get_height(fntAsciiTex);
-        previewAsciiTex = surface_create(_w, _h);
-        surface_copy(previewAsciiTex, 0, 0, fntAsciiTex);
-        build_font_tex();
+        if (!surface_exists(previewTex))
+        {
+            build_font_tex_ext(cbExportGrid, c_black, cbExportBG);
+            var _w = surface_get_width(fntTex), _h = surface_get_height(fntTex);
+            previewTex = surface_create(_w, _h);
+            surface_copy(previewTex, 0, 0, fntTex);
+            build_font_tex();
+        }
+        
+        if (!surface_exists(previewAsciiTex))
+        {
+            build_font_tex_ext(cbExportGrid, c_black, cbExportBG);
+            var _w = surface_get_width(fntAsciiTex), _h = surface_get_height(fntAsciiTex);
+            previewAsciiTex = surface_create(_w, _h);
+            surface_copy(previewAsciiTex, 0, 0, fntAsciiTex);
+            build_font_tex();
+        }
     }
 }
 </string>
@@ -650,6 +656,28 @@ if (projectLoadRequest)
     iui_activeItem = -1;
     iui_hotItem = -1;
 }
+
+if (exportHeaderRequest)
+{
+    exportHeaderRequest = false;
+    var _result = export_font_header(exportHeaderPath, cbExportHeaderGenComments, cbExportHeaderTrimBlanks);
+    
+    // message
+    if (_result)
+    {
+        uiMsgTime = room_speed;
+        uiMsg = "성공적으로 헤더 파일을 저장하였읍니다.";
+    }
+    else
+    {
+        uiMsgTime = room_speed;
+        uiMsg = "헤더 파일을 저장하는데 문제가 있었읍니다...";
+    }
+    
+    uiModal = false;
+    iui_activeItem = -1;
+    iui_hotItem = -1;
+}
 </string>
           </argument>
         </arguments>
@@ -742,7 +770,7 @@ switch (uCurrentTab)
         // literally bullshit
         iui_align_push(fa_center, fa_top);
         // iui_label(_winhalfw, _topmargin + _bigmargin, "방향키로 화면 이동#+ &amp; - 로 줌 인/아웃#맨 위에 있는 표시줄을 이용해 메뉴를 이동하세요", COL.WHITE);
-        iui_label(_winhalfw, _topmargin, "조합형 글꼴 도우미 | ZIK@2019", COL.HIGHLIGHT);
+        iui_label(_winhalfw, _topmargin, "조합형 글꼴 도우미 | ZIK@2019~2020", COL.HIGHLIGHT);
         iui_label(_winhalfw, _topmargin + _bigmargin, ".TTF 화일을 불러와 조합형 한글 렌더링에 사용되는#비트맵 글꼴 제작을 도와주는 프로그램입니다.", COL.WHITE);
         iui_label(_winhalfw, _topmargin + _bigmargin * 2 - 10, "마우스로 편집할 글자를 선택한 뒤 좌측의 판을 이용해#마스크를 생성해 글자의 원하는 부분만 떼어내세요.#그 다음 아래의 버튼들을 이용해 마스크를 적용시키거나 여러 동작을 하실 수 있읍니다.", COL.HIGHLIGHT);
         iui_align_pop();
@@ -1498,7 +1526,9 @@ if (uiModal)
             
             // show attributes
             var _attribY = _modalTitleY + _bigmargin * 2 + _surfY;
-            var btnExport = ui_button(_winhalfw - 75, _attribY + 150, 150, 42, ".PNG 내보내기!");
+            var _buttonmargin = 128;
+            var btnExport = ui_button(_winhalfw - _buttonmargin - 75, _attribY + 150, 150, 42, ".PNG 내보내기!");
+            var btnExportHeader = ui_button(_winhalfw + _buttonmargin, _attribY + 150, 150, 42, "헤더 파일 내보내기!");
             // var btnReload = ui_button(_winhalfw + 80, _attribY + 150, 150, 42, "미리보기");
             
             iui_align_push(1, 1);
@@ -1586,6 +1616,74 @@ if (uiModal)
                     }
                 }
             }
+            else if (btnExportHeader)
+            {
+                // Go to export
+                // var _path = get_save_filename_ext(".h 헤더 파일|*.h", "font" + string(charWid) + "x" + string(charWid) + ".h", fntPath, "헤더 파일 저장");
+                uiModal = true;
+                uiModalMsg = "헤더로 내보내기";
+                uiModalState = UI_MODAL.EXPORT_HEADER;
+            }
+            break;
+            
+        case UI_MODAL.EXPORT_HEADER:
+            uiModalInfo = false;
+        
+            // background &amp; title
+            var _modalwid = WIN_WID * 0.5, _modalhei = WIN_HEI * 0.5;
+            var _modalhalfwid = _modalwid * 0.5, _modalhalfhei = _modalhei * 0.5;
+            var _modalx = _winhalfw - _modalhalfwid, _modaly = _winhalfh - _modalhalfhei;
+            iui_rect(_modalx + 10, _modaly + 10, _modalwid, _modalhei, c_black);
+            iui_rect(_modalx, _modaly, _modalwid, _modalhei, COL.BASE);
+            
+            var _modalTitleY = _modaly + 21;
+            var _modalTitleH = 42;
+            
+            iui_rect(_modalx, _modaly, _modalwid, _modalTitleH, COL.WHITE);
+            iui_align_center();
+            iui_label(_winhalfw, _modalTitleY, uiModalMsg, COL.BASE);
+            iui_align_pop();
+            
+            // UI
+            var _itemx = _modalx + _modalhalfwid;
+            var _itemy = _modalTitleY + 64;
+            iui_align_center();
+            iui_label(_itemx, _itemy, "주의 : 헤더 파일로 내보내면 폰트 그래픽의 알파값은 버려지게 되고,#각 픽셀당 1비트, uint8로 인코딩 된 배열로 내보내집니다!", uTextCol);
+            
+            _itemy += 128;
+            iui_align_push(2, 0);
+            iui_label(_itemx, _itemy, "코멘트 생성 : ", uTextCol);
+            cbExportHeaderGenComments = ui_checkbox(_itemx + 2, _itemy, 16, 16, cbExportHeaderGenComments, "GEN_COMMENTS");
+            
+            _itemy += 32;
+            iui_label(_itemx, _itemy, "(한국어 폰트만) 빈 칸 제외하기 : ", uTextCol);
+            cbExportHeaderTrimBlanks = ui_checkbox(_itemx + 2, _itemy, 16, 16, cbExportHeaderTrimBlanks, "TRIM_BLANKS");
+            
+            var btnExport = ui_button(_winhalfw - 75, _modaly + _modalhei - 64, 150, 42, "내보내기!");
+            iui_align_pop();
+            
+            
+            iui_align_pop();
+            
+            if (btnExport)
+            {
+                var _path = get_save_filename_ext(".h 헤더 파일|*.h", "font" + string(charWid) + "x" + string(charWid) + ".h", fntPath, "헤더 파일 저장");
+                
+                if (_path != "")
+                {
+                    exportHeaderRequest = true;
+                    exportHeaderPath = _path;
+                    
+                    uiModalState = UI_MODAL.MESSAGE;
+                    uiModalMsg = "저장 중...";
+                }
+                else
+                {
+                    uiMsgTime = room_speed;
+                    uiMsg = "저장하는데 문제가 있었읍니다 : 경로가 잘못되었읍니다.";
+                }
+            }
+            
             break;
         
         case UI_MODAL.DEBUG:

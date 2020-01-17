@@ -1,4 +1,4 @@
-// 2019-02-24 02:30:52
+// 2020-01-17 04:12:13
 #event create
 iui_init();
 iui_init_vars();
@@ -121,6 +121,9 @@ fntLoadPath = "";
 projectLoadRequest = false;
 projectLoadPath = "";
 projectLoad = false;
+
+exportHeaderRequest = false;
+exportHeaderPath = "";
 
 // shashlik
 PEPPERONI_SECRET = false;
@@ -350,7 +353,7 @@ if (!uiModal)
         uiCursorInCrop = false;
         
         // glyph selecting
-        if (mouse_check_button_pressed(mb_left) && winCropLocalX >= charWid) // We don't want the users able to click through the left panel
+        if (mouse_check_button_pressed(mb_left) && winCropLocalX >= charWid && iui_inputY >= (uToolbarHei + 2)) // We don't want the users able to click through the UI panel
         {
             cropping = false; 
             cropShow = false;
@@ -443,6 +446,28 @@ if (projectLoadRequest)
     iui_hotItem = -1;
 }
 
+if (exportHeaderRequest)
+{
+    exportHeaderRequest = false;
+    var _result = export_font_header(exportHeaderPath, cbExportHeaderGenComments, cbExportHeaderTrimBlanks);
+    
+    // message
+    if (_result)
+    {
+        uiMsgTime = room_speed;
+        uiMsg = "성공적으로 헤더 파일을 저장하였읍니다.";
+    }
+    else
+    {
+        uiMsgTime = room_speed;
+        uiMsg = "헤더 파일을 저장하는데 문제가 있었읍니다...";
+    }
+    
+    uiModal = false;
+    iui_activeItem = -1;
+    iui_hotItem = -1;
+}
+
 #event step_begin Surface heartbeat & window size
 // "AAGAGAAAGAAAAGAGGGGAAAGAGAAAGAAGASOAOSSSOASSSOSSOSSSOSSSSOSISISISOSIDIOSMIO"
 // - Wilhelm willy wanker, 1829
@@ -485,22 +510,25 @@ if (!surface_exists(fntAsciiTex))
 
 if (uiModal)
 {
-    if (!surface_exists(previewTex))
+    if (uiModalState == UI_MODAL.EXPORT)
     {
-        build_font_tex_ext(cbExportGrid, c_black, cbExportBG);
-        var _w = surface_get_width(fntTex), _h = surface_get_height(fntTex);
-        previewTex = surface_create(_w, _h);
-        surface_copy(previewTex, 0, 0, fntTex);
-        build_font_tex();
-    }
-    
-    if (!surface_exists(previewAsciiTex))
-    {
-        build_font_tex_ext(cbExportGrid, c_black, cbExportBG);
-        var _w = surface_get_width(fntAsciiTex), _h = surface_get_height(fntAsciiTex);
-        previewAsciiTex = surface_create(_w, _h);
-        surface_copy(previewAsciiTex, 0, 0, fntAsciiTex);
-        build_font_tex();
+        if (!surface_exists(previewTex))
+        {
+            build_font_tex_ext(cbExportGrid, c_black, cbExportBG);
+            var _w = surface_get_width(fntTex), _h = surface_get_height(fntTex);
+            previewTex = surface_create(_w, _h);
+            surface_copy(previewTex, 0, 0, fntTex);
+            build_font_tex();
+        }
+        
+        if (!surface_exists(previewAsciiTex))
+        {
+            build_font_tex_ext(cbExportGrid, c_black, cbExportBG);
+            var _w = surface_get_width(fntAsciiTex), _h = surface_get_height(fntAsciiTex);
+            previewAsciiTex = surface_create(_w, _h);
+            surface_copy(previewAsciiTex, 0, 0, fntAsciiTex);
+            build_font_tex();
+        }
     }
 }
 
@@ -718,10 +746,15 @@ switch (uCurrentTab)
             if (sprite_exists(fntSprite))
                 sprite_delete(fntSprite);
             
+            show_debug_message("ASCII SZ BEFORE PREVIEW : " + string(charAsciiWid) + ", " + string(charAsciiHei));
+                
             build_font_tex_ext(false, 0, 0);
             fntSprite = sprite_create_from_surface(fntTex, 0, 0, gridWid * charWid, gridHei * charHei, false, false, 0, 0);
             fntAsciiSprite = sprite_create_from_surface(fntAsciiTex, 0, 0, 32 * charAsciiWid, 8 * charAsciiHei, false, false, 0, 0);
             build_font_tex();
+            
+            show_debug_message("> SURFSZ : " + string(surface_get_width(fntAsciiTex)) + ", " + string(surface_get_height(fntAsciiTex)));
+            show_debug_message("> SPRSZ : " + string(sprite_get_width(fntAsciiSprite)) + ", " + string(sprite_get_height(fntAsciiSprite)));
             
             if (FNT_DKB) // dkb844 - set han & asc font & size
             {
@@ -1382,6 +1415,7 @@ if (uiModal)
             iui_label(_inputX + 10, _inputFontY + 10, _fonttext, _fontstr);
             draw_set_font(fntOWO);
             
+            // draw_sprite(fntAsciiSprite, 0, WIN_WID / 2, WIN_HEI / 2);
             // draw_sprite(fntSprite, 0, 10, 10);
             // hj_draw(_inputX + 10, _inputFontY + 10, _fonttext, _fontstr, 1);
             // iui_label(_inputX + 10, _inputTestY + 10, _testtext, _teststr);
@@ -1421,21 +1455,53 @@ if (uiModal)
                 {
                     _surfWid = _surfWid2;
                     _surfHei = _surfHei2;
-                    show_debug_message("OHNO");
                 }
                 
                 draw_surface_stretched(previewTex, _winhalfw - (_surfWid >> 1), _modalTitleY + _bigmargin, _surfWid, _surfHei);
             }
             
             iui_align_center();
-            iui_label(_winhalfw, _modalTitleY + _surfY + _bigmargin + _smallmargin, "(표시용 크기 조절로 인해 픽셀이 뭉개질 수 있읍니다...)", COL.PISS);
+            iui_label(_winhalfw, _modalTitleY + _surfY + _bigmargin + _smallmargin, "(그림 크기 조절로 픽셀이 뭉개져 보일수 있으나 결과물에 영향은 없습니다.)", COL.PISS);
             iui_align_pop();
             
             // show attributes
             var _attribY = _modalTitleY + _bigmargin * 2 + _surfY;
-            var btnExport = ui_button(_winhalfw - 75, _attribY + 150, 150, 42, ".PNG 내보내기!");
+            var _buttonmargin = 128;
+            var btnExport = ui_button(_winhalfw - _buttonmargin - 75, _attribY + 150, 150, 42, ".PNG 내보내기!");
+            var btnExportHeader = ui_button(_winhalfw + _buttonmargin, _attribY + 150, 150, 42, "헤더 파일 내보내기!");
             // var btnReload = ui_button(_winhalfw + 80, _attribY + 150, 150, 42, "미리보기");
             
+            iui_align_push(1, 1);
+            iui_label(_winhalfw, _attribY + 10, "한글 이미지 수 : " + string(gridWid * gridHei), COL.WHITE);
+            iui_label(_winhalfw, _attribY + 40, "한글 격자 크기 : [" + string(charWid) + ", " + string(charWid) + "]", COL.WHITE);
+            
+            if (FNT_DKB)
+            {
+                iui_label(_winhalfw, _attribY + 70, "도깨비한글 8x4x4벌식 (hj_draw_*)", COL.HIGHLIGHT);
+                iui_label(_winhalfw, _attribY + 100, "격자 : 총 [" + string(gridWid) + ", " + string(gridHei) + "]칸", COL.WHITE);
+                if (FNT_ASCII)
+                    iui_label(_winhalfw, _attribY + 130, "ASCII 격자 크기 : [" + string(charAsciiWid) + ", " + string(charAsciiHei) + "] * 256 이미지", COL.WHITE);
+            }
+            else
+            {
+                iui_label(_winhalfw, _attribY + 70, "일반 / 이전버전 (hj_draw_comp_*)", COL.HIGHLIGHT);
+                
+                var _str = "중성 모양에 따른 벌 사용 (global.hjCompSpecialMiddle) : ";
+                if (FNT_MIDDLE)
+                    _str += "true";
+                else
+                    _str += "false";
+                iui_label(_winhalfw, _attribY + 100, _str, COL.PISS);
+                
+                _str = "받침 여부에 따른 벌 사용 (global.hjCompSpecialLast) : ";
+                if (FNT_LAST)
+                    _str += "true";
+                else
+                    _str += "false";
+                iui_label(_winhalfw, _attribY + 130, _str, COL.PISS);
+            }
+            iui_align_pop();
+            /*
             iui_align_push(2, 0);
             var _checkX = _winhalfw - 80 - 16;
             iui_label(_checkX, _attribY, "격자 내보내기 : ", COL.WHITE);
@@ -1458,6 +1524,7 @@ if (uiModal)
                 surface_copy(previewAsciiTex, 0, 0, fntAsciiTex);
                 build_font_tex();
             }
+            */
             
             if (btnExport)
             {
@@ -1489,6 +1556,74 @@ if (uiModal)
                     }
                 }
             }
+            else if (btnExportHeader)
+            {
+                // Go to export
+                // var _path = get_save_filename_ext(".h 헤더 파일|*.h", "font" + string(charWid) + "x" + string(charWid) + ".h", fntPath, "헤더 파일 저장");
+                uiModal = true;
+                uiModalMsg = "헤더로 내보내기";
+                uiModalState = UI_MODAL.EXPORT_HEADER;
+            }
+            break;
+            
+        case UI_MODAL.EXPORT_HEADER:
+            uiModalInfo = false;
+        
+            // background & title
+            var _modalwid = WIN_WID * 0.5, _modalhei = WIN_HEI * 0.5;
+            var _modalhalfwid = _modalwid * 0.5, _modalhalfhei = _modalhei * 0.5;
+            var _modalx = _winhalfw - _modalhalfwid, _modaly = _winhalfh - _modalhalfhei;
+            iui_rect(_modalx + 10, _modaly + 10, _modalwid, _modalhei, c_black);
+            iui_rect(_modalx, _modaly, _modalwid, _modalhei, COL.BASE);
+            
+            var _modalTitleY = _modaly + 21;
+            var _modalTitleH = 42;
+            
+            iui_rect(_modalx, _modaly, _modalwid, _modalTitleH, COL.WHITE);
+            iui_align_center();
+            iui_label(_winhalfw, _modalTitleY, uiModalMsg, COL.BASE);
+            iui_align_pop();
+            
+            // UI
+            var _itemx = _modalx + _modalhalfwid;
+            var _itemy = _modalTitleY + 64;
+            iui_align_center();
+            iui_label(_itemx, _itemy, "주의 : 헤더 파일로 내보내면 폰트 그래픽의 알파값은 버려지게 되고,#각 픽셀당 흑백 1비트, uint8로 인코딩 된 비트맵 배열로 내보내집니다!", uTextCol);
+            
+            _itemy += 128;
+            iui_align_push(2, 0);
+            iui_label(_itemx, _itemy, "코멘트 생성 : ", uTextCol);
+            cbExportHeaderGenComments = ui_checkbox(_itemx + 2, _itemy, 16, 16, cbExportHeaderGenComments, "GEN_COMMENTS");
+            
+            _itemy += 32;
+            iui_label(_itemx, _itemy, "(한국어 폰트만) 빈 칸 제외하기 : ", uTextCol);
+            cbExportHeaderTrimBlanks = ui_checkbox(_itemx + 2, _itemy, 16, 16, cbExportHeaderTrimBlanks, "TRIM_BLANKS");
+            
+            var btnExport = ui_button(_winhalfw - 75, _modaly + _modalhei - 64, 150, 42, "내보내기!");
+            iui_align_pop();
+            
+            
+            iui_align_pop();
+            
+            if (btnExport)
+            {
+                var _path = get_save_filename_ext(".h 헤더 파일|*.h", "font" + string(charWid) + "x" + string(charWid) + ".h", fntPath, "헤더 파일 저장");
+                
+                if (_path != "")
+                {
+                    exportHeaderRequest = true;
+                    exportHeaderPath = _path;
+                    
+                    uiModalState = UI_MODAL.MESSAGE;
+                    uiModalMsg = "저장 중...";
+                }
+                else
+                {
+                    uiMsgTime = room_speed;
+                    uiMsg = "저장하는데 문제가 있었읍니다 : 경로가 잘못되었읍니다.";
+                }
+            }
+            
             break;
         
         case UI_MODAL.DEBUG:

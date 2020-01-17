@@ -133,6 +133,7 @@
     <script>scripts\hangul_range.gml</script>
     <script>scripts\johab_die.gml</script>
     <script>scripts\export_font_tex.gml</script>
+    <script>scripts\export_font_header.gml</script>
     <script>scripts\check_hangul_range.gml</script>
     <script>scripts\dec_to_hex.gml</script>
     <script>scripts\edit_atlas_glyph.gml</script>
