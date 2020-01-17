@@ -20,6 +20,7 @@
     <sprite>sprites\sprEngSeoul24</sprite>
     <sprite>sprites\sprYayoC64</sprite>
     <sprite>sprites\sprYayoC64Sub</sprite>
+    <sprite>sprites\sprDoomy</sprite>
   </sprites>
   <backgrounds name="background"/>
   <paths name="paths"/>
@@ -81,8 +82,10 @@
       <object>objects\oTUT6</object>
       <object>objects\oTUT7</object>
     </objects>
+    <object>objects\oDOOM</object>
   </objects>
   <rooms name="rooms">
+    <room>rooms\rm_doom</room>
     <room>rooms\rm_test1</room>
     <room>rooms\rm_test2</room>
     <rooms name="KNUT_PA_LINJEN">

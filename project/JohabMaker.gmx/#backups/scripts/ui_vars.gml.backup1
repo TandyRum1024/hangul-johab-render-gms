@@ -1,16 +1,20 @@
-// 2019-02-21 20:07:25
+// 2020-01-16 19:28:00
 
 uiActive = true;
 
 tbFntSize = "12";
 tbCellWid = "16";
 tbCellHei = "16";
+tbCellAsciiWid = "8";
+tbCellAsciiHei = "16";
 cbAscii = true;
 cbDok844 = false; // 도깨비한글 8x4x4벌
 cbSpecialBody = true;
 cbSpecialTail = true;
 cbExportGrid = false;
 cbExportBG = false;
+
+cbExportHeaderGenComments = true;
 
 
 // colorem boyy
@@ -63,6 +67,7 @@ enum UI_MODAL
 {
     PREVIEW = 0,
     EXPORT,
+    EXPORT_HEADER,
     DEBUG,
     LOADING,
     MESSAGE

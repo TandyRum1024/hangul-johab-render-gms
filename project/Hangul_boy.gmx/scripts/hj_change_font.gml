@@ -1,4 +1,4 @@
-///hj_change_font(hanspr, asciispr, hanwidth, hanheight, asciiwidth, asciiheight)
+///hj_change_font(hanspr, asciispr)
 /*
     [도꺠비 8x8x4벌식]
     폰트 스프라이트를 바꿉니다.
