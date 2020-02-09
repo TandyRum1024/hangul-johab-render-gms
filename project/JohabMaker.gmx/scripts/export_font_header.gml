@@ -20,6 +20,7 @@ if (_FILE)
     var _jongseongoff = 0;
     var _jamooff = 0;
     var _asciioff = 0;
+    var _flipbitorder = cbExportHeaderFlipOrder;
     
     /// =========================
     /// Compute the packed bits
@@ -61,7 +62,7 @@ if (_FILE)
         var _row = i div gridWid;
         var _x1 = (i % gridWid) * charWid;
         var _y1 = (_row) * charHei;
-        var _x2 = _x1 + charWid;
+        //var _x2 = _x1 + charWid;
         var _y2 = _y1 + charHei;
         
         if (_data[@ CHAR.OCCUPIED] || !trimBlanks)
@@ -105,9 +106,13 @@ if (_FILE)
             var _packed = 0;
             var _bitswritten = 0;
             var _intidx = 0;
-            for (var _x=_x1; _x<_x2; _x++)
+            for (var _x=0; _x<charWid; _x++)
             {
-                var _idx = (_texturewid * _y + _x) * 4;
+                var _samplex = _x1 + _x;
+                if (_flipbitorder)
+                    _samplex = _x1 + (charWid - 1 - _x);
+                
+                var _idx = (_texturewid * _y + _samplex) * 4;
                 // var _pixel = surface_getpixel(fntTex, _x, _y);
                 // fetch surface data
                 var _b = buffer_peek(_texturebuff, _idx, buffer_u8), _g = buffer_peek(_texturebuff, _idx + 1, buffer_u8), _r = buffer_peek(_texturebuff, _idx + 2, buffer_u8);
@@ -185,9 +190,12 @@ if (_FILE)
                 var _packed = 0;
                 var _bitswritten = 0;
                 var _intidx = 0;
-                for (var _x=_x1; _x<_x2; _x++)
+                for (var _x=0; _x<charAsciiWid; _x++)
                 {
-                    var _idx = (_texturewidascii * _y + _x) * 4;
+                    var _samplex = _x1 + _x;
+                    if (_flipbitorder)
+                        _samplex = _x1 + (charAsciiWid - 1 - _x);
+                    var _idx = (_texturewidascii * _y + _samplex) * 4;
                     // var _pixel = surface_getpixel(fntTex, _x, _y);
                     // fetch surface data
                     var _b = buffer_peek(_texturebuff, _idx, buffer_u8), _g = buffer_peek(_texturebuff, _idx + 1, buffer_u8), _r = buffer_peek(_texturebuff, _idx + 2, buffer_u8);
@@ -353,6 +361,17 @@ if (_FILE)
             file_text_write_string(_FILE, chr(9) + "글자당 비트맵 사이즈 / BITMAP SIZE OF EACH GLYPH : " + string(_intperrow * 8) + "x" +  string(charHei) + "px"); file_text_writeln(_FILE);
             file_text_write_string(_FILE, chr(9) + "원본 비트맵 사이즈 / UNALIGNED BITMAP SIZE OF EACH GLYPH : " + string(charWid) + "x" +  string(charHei) + "px"); file_text_writeln(_FILE);
         }
+        var _flipstr = chr(9) + "비트맵 비트 순서 뒤집힘 / BITMAP BIT ORDER FLIPPED : ";
+        if (_flipbitorder)
+        {
+            _flipstr += "TRUE";
+        }
+        else
+        {
+            _flipstr += "FALSE";
+        }
+        
+        file_text_write_string(_FILE, _flipstr); file_text_writeln(_FILE);
         file_text_write_string(_FILE, chr(9) + "===================================="); file_text_writeln(_FILE);
         file_text_write_string(_FILE, chr(9) + "생성 시간 / CREATION TIME : " + date_datetime_string(date_current_datetime())); file_text_writeln(_FILE);
         file_text_write_string(_FILE, "*/"); file_text_writeln(_FILE); file_text_writeln(_FILE);

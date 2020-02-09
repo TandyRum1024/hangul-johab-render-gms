@@ -15,7 +15,7 @@ cbExportBG = false;
 
 cbExportHeaderGenComments = true;
 cbExportHeaderTrimBlanks = false;
-
+cbExportHeaderFlipOrder = false;
 
 // colorem boyy
 enum COL

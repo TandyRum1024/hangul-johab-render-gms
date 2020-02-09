@@ -1659,6 +1659,10 @@ if (uiModal)
             iui_label(_itemx, _itemy, "(한국어 폰트만) 빈 칸 제외하기 : ", uTextCol);
             cbExportHeaderTrimBlanks = ui_checkbox(_itemx + 2, _itemy, 16, 16, cbExportHeaderTrimBlanks, "TRIM_BLANKS");
             
+            _itemy += 32;
+            iui_label(_itemx, _itemy, "비트맵 방향 뒤집기 : ", uTextCol);
+            cbExportHeaderFlipOrder = ui_checkbox(_itemx + 2, _itemy, 16, 16, cbExportHeaderFlipOrder, "FLIP_ORDER");
+            
             var btnExport = ui_button(_winhalfw - 75, _modaly + _modalhei - 64, 150, 42, "내보내기!");
             iui_align_pop();
             
