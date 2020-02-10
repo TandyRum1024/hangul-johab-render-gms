@@ -1561,30 +1561,6 @@ if (uiModal)
                 iui_label(_winhalfw, _attribY + 130, _str, COL.PISS);
             }
             iui_align_pop();
-            /*
-            iui_align_push(2, 0);
-            var _checkX = _winhalfw - 80 - 16;
-            iui_label(_checkX, _attribY, "격자 내보내기 : ", COL.WHITE);
-            var _exportgrid = ui_checkbox(_checkX, _attribY, 16, 16, cbExportGrid, "CB_EXPORT_GRID");
-            
-            var _checkX = _winhalfw + 80 + string_width("배경 내보내기 : ");
-            iui_label(_checkX, _attribY, "배경 내보내기 : ", COL.WHITE);
-            var _exportbg = ui_checkbox(_checkX, _attribY, 16, 16, cbExportBG, "CB_EXPORT_BG");
-            iui_align_pop();
-            
-            if (_exportbg != cbExportBG || _exportgrid != cbExportGrid)
-            {
-                cbExportBG = _exportbg;
-                cbExportGrid = _exportgrid;
-                
-                build_font_tex_ext(cbExportGrid, c_black, cbExportBG);
-                surface_resize(previewTex, surface_get_width(fntTex), surface_get_height(fntTex));
-                surface_resize(previewAsciiTex, surface_get_width(fntAsciiTex), surface_get_height(fntAsciiTex));
-                surface_copy(previewTex, 0, 0, fntTex);
-                surface_copy(previewAsciiTex, 0, 0, fntAsciiTex);
-                build_font_tex();
-            }
-            */
             
             if (btnExport)
             {
@@ -1645,12 +1621,12 @@ if (uiModal)
             iui_align_pop();
             
             // UI
-            var _itemx = _modalx + _modalhalfwid;
+            var _itemx = _modalx + _modalhalfwid - 32;
             var _itemy = _modalTitleY + 64;
             iui_align_center();
             iui_label(_itemx, _itemy, "주의 : 헤더 파일로 내보내면 폰트 그래픽의 알파값은 버려지게 되고,#각 픽셀당 1비트, uint8로 인코딩 된 배열로 내보내집니다!", uTextCol);
             
-            _itemy += 128;
+            _itemy += 64;
             iui_align_push(2, 0);
             iui_label(_itemx, _itemy, "코멘트 생성 : ", uTextCol);
             cbExportHeaderGenComments = ui_checkbox(_itemx + 2, _itemy, 16, 16, cbExportHeaderGenComments, "GEN_COMMENTS");
@@ -1660,13 +1636,62 @@ if (uiModal)
             cbExportHeaderTrimBlanks = ui_checkbox(_itemx + 2, _itemy, 16, 16, cbExportHeaderTrimBlanks, "TRIM_BLANKS");
             
             _itemy += 32;
-            iui_label(_itemx, _itemy, "비트맵 방향 뒤집기 : ", uTextCol);
-            cbExportHeaderFlipOrder = ui_checkbox(_itemx + 2, _itemy, 16, 16, cbExportHeaderFlipOrder, "FLIP_ORDER");
+            iui_label(_itemx, _itemy, "글자 좌/우 뒤집기 : ", uTextCol);
+            cbExportHeaderFlipBitmap = ui_checkbox(_itemx + 2, _itemy, 16, 16, cbExportHeaderFlipBitmap, "FLIP_BITMAP");
             
-            var btnExport = ui_button(_winhalfw - 75, _modaly + _modalhei - 64, 150, 42, "내보내기!");
+            _itemy += 32;
+            iui_label(_itemx, _itemy, "비트 순서 뒤집기 : ", uTextCol);
+            cbExportHeaderFlipBitOrder = ui_checkbox(_itemx + 2, _itemy, 16, 16, cbExportHeaderFlipBitOrder, "FLIP_BITORDER");
+            
             iui_align_pop();
             
+            // Visualize it
+            _itemx = _modalx + _modalhalfwid + 32;
+            _itemy = _modalTitleY + 128;
+            /*
+            NF_NR - 0x7C, 0x00, // 00111110, 00000000
+            NF_R - 0x3E, 0x00, // 00111110, 00000000
+            F_NR - 0x00, 0x3E, // 00000000, 01111100
+            F_R - 0x00, 0x7C, // 00000000, 01111100
+            */
+            var _texbin = "";
+            var _texhex = "";
+            if (cbExportHeaderFlipBitmap)
+            {
+                if (cbExportHeaderFlipBitOrder) // F_R
+                {
+                    _texbin = "00000000, 01111100";
+                    _texhex = "0x00, 0x7C";
+                }
+                else // F_NR
+                {
+                    _texbin = "00000000, 01111100";
+                    _texhex = "0x00, 0x3E";
+                }
+            }
+            else
+            {
+                if (cbExportHeaderFlipBitOrder) // NF_R
+                {
+                    _texbin = "00111110, 00000000";
+                    _texhex = "0x3E, 0x00";
+                }
+                else // NF_NR
+                {
+                    _texbin = "00111110, 00000000";
+                    _texhex = "0x7C, 0x00";
+                }
+            }
             
+            iui_align_push(0, 0);
+            iui_label(_itemx, _itemy, "비트 순서 미리보기 :", uTextCol);
+            _itemy += 32;
+            iui_label(_itemx, _itemy, "2진수 : [" + _texbin + "]", uTextCol);
+            _itemy += 32;
+            iui_label(_itemx, _itemy, "-&gt; 16진수 : [" + _texhex + "]", uTextCol);
+            iui_align_pop();
+            
+            var btnExport = ui_button(_winhalfw - 75, _modaly + _modalhei - 64, 150, 42, "내보내기!");
             iui_align_pop();
             
             if (btnExport)

@@ -20,7 +20,8 @@ if (_FILE)
     var _jongseongoff = 0;
     var _jamooff = 0;
     var _asciioff = 0;
-    var _flipbitorder = cbExportHeaderFlipOrder;
+    var _flipbitmap = cbExportHeaderFlipBitmap;
+    var _flipbitorder = cbExportHeaderFlipBitOrder;
     
     /// =========================
     /// Compute the packed bits
@@ -109,7 +110,7 @@ if (_FILE)
             for (var _x=0; _x<charWid; _x++)
             {
                 var _samplex = _x1 + _x;
-                if (_flipbitorder)
+                if (_flipbitmap)
                     _samplex = _x1 + (charWid - 1 - _x);
                 
                 var _idx = (_texturewid * _y + _samplex) * 4;
@@ -118,7 +119,15 @@ if (_FILE)
                 var _b = buffer_peek(_texturebuff, _idx, buffer_u8), _g = buffer_peek(_texturebuff, _idx + 1, buffer_u8), _r = buffer_peek(_texturebuff, _idx + 2, buffer_u8);
                 var _binary = clamp(round((_b + _g + _r) / 3 / 255), 0.0, 1.0);
                 
-                _packed |= (_binary << _bitswritten);
+                if (_flipbitorder)
+                {
+                    _packed |= (_binary << (7 - _bitswritten));
+                }
+                else
+                {
+                    _packed |= (_binary << _bitswritten);
+                }
+                
                 _rowbinary += string(_binary);
                 
                 _bitswritten++;
@@ -192,16 +201,25 @@ if (_FILE)
                 var _intidx = 0;
                 for (var _x=0; _x<charAsciiWid; _x++)
                 {
+                    // äääääääääääääääääääääääää what the hell is this
                     var _samplex = _x1 + _x;
-                    if (_flipbitorder)
+                    if (_flipbitmap)
                         _samplex = _x1 + (charAsciiWid - 1 - _x);
                     var _idx = (_texturewidascii * _y + _samplex) * 4;
-                    // var _pixel = surface_getpixel(fntTex, _x, _y);
+                    
                     // fetch surface data
                     var _b = buffer_peek(_texturebuff, _idx, buffer_u8), _g = buffer_peek(_texturebuff, _idx + 1, buffer_u8), _r = buffer_peek(_texturebuff, _idx + 2, buffer_u8);
                     var _binary = clamp(round((_b + _g + _r) / 3 / 255), 0.0, 1.0);
                     
-                    _packed |= (_binary << _bitswritten);
+                    if (_flipbitorder)
+                    {
+                        _packed |= (_binary << (7 - _bitswritten));
+                    }
+                    else
+                    {
+                        _packed |= (_binary << _bitswritten);
+                    }
+                    
                     _rowbinary += string(_binary);
                     
                     _bitswritten++;
@@ -361,17 +379,20 @@ if (_FILE)
             file_text_write_string(_FILE, chr(9) + "글자당 비트맵 사이즈 / BITMAP SIZE OF EACH GLYPH : " + string(_intperrow * 8) + "x" +  string(charHei) + "px"); file_text_writeln(_FILE);
             file_text_write_string(_FILE, chr(9) + "원본 비트맵 사이즈 / UNALIGNED BITMAP SIZE OF EACH GLYPH : " + string(charWid) + "x" +  string(charHei) + "px"); file_text_writeln(_FILE);
         }
-        var _flipstr = chr(9) + "비트맵 비트 순서 뒤집힘 / BITMAP BIT ORDER FLIPPED : ";
-        if (_flipbitorder)
-        {
+        var _flipstr = chr(9) + "비트맵 뒤집힘 / BITMAP HORIZONTALLY FLIPPED : ";
+        if (_flipbitmap)
             _flipstr += "TRUE";
-        }
         else
-        {
             _flipstr += "FALSE";
-        }
-        
         file_text_write_string(_FILE, _flipstr); file_text_writeln(_FILE);
+        
+        var _flipstr = chr(9) + "비트 순서 뒤집힘 / BIT ORDER FLIPPED : ";
+        if (_flipbitorder)
+            _flipstr += "TRUE";
+        else
+            _flipstr += "FALSE";
+        file_text_write_string(_FILE, _flipstr); file_text_writeln(_FILE);
+        
         file_text_write_string(_FILE, chr(9) + "===================================="); file_text_writeln(_FILE);
         file_text_write_string(_FILE, chr(9) + "생성 시간 / CREATION TIME : " + date_datetime_string(date_current_datetime())); file_text_writeln(_FILE);
         file_text_write_string(_FILE, "*/"); file_text_writeln(_FILE); file_text_writeln(_FILE);
